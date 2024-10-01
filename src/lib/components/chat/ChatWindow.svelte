@@ -15,6 +15,7 @@
   import { snapScrollToBottom } from '$lib/actions/snapScrollToBottom'
   import { optimizeImage } from '$lib/utils/optimizeImage'
   import { fileSelector } from '$lib/utils/fileSelector'
+  import { cn } from '$lib/utils/ui'
 
   export let messages: Message[] = []
   export let loading = false
@@ -101,7 +102,7 @@
     use:snapScrollToBottom={messages.length ? [...messages] : false}
     bind:this={chatContainer}
   >
-    <div class="max-w-3xl mx-auto flex flex-col gap-2 pt-2 pb-24">
+    <div class="max-w-3xl mx-auto flex flex-col gap-2 pt-2 pb-36">
       {#each messages as message}
         <ChatMessage
           {message}
@@ -118,10 +119,25 @@
   </div>
   <div class="absolute bottom-0 left-0 right-0 flex justify-center px-3.5 py-4">
     <div class="w-full max-w-3xl">
-      <div class="flex gap-2 justify-between items-end mb-2">
-        <div class="flex-1 overflow-x-auto flex gap-2 flex-nowrap">
+      <div class="flex gap-2 justify-end items-center mb-2">
+        {#if loading}
+          <Button variant="outline" on:click={() => dispatch('stop')}>
+            <PauseIcon class="w-4 h-4" />
+            <span>Stop generating</span>
+          </Button>
+        {/if}
+      </div>
+      <form
+        class="relative w-full flex-1 rounded-xl border bg-gray-100 focus-within:border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:focus-within:border-gray-500"
+        on:submit|preventDefault={handleSubmit}
+      >
+        <div
+          class="flex-1 overflow-x-auto flex gap-2 flex-nowrap px-12 py-2 {cn({
+            hidden: images.length === 0,
+          })}"
+        >
           {#each images as image, index}
-            <div class="flex-shrink-0 w-20 h-20 relative">
+            <div class="flex-shrink-0 w-14 h-14 relative">
               <img
                 src={image.url}
                 class="w-full h-full object-cover rounded-lg"
@@ -138,17 +154,6 @@
             </div>
           {/each}
         </div>
-        {#if loading}
-          <Button variant="outline" on:click={() => dispatch('stop')}>
-            <PauseIcon class="w-4 h-4" />
-            <span>Stop generating</span>
-          </Button>
-        {/if}
-      </div>
-      <form
-        class="relative flex w-full flex-1 items-center rounded-xl border bg-gray-100 focus-within:border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:focus-within:border-gray-500"
-        on:submit|preventDefault={handleSubmit}
-      >
         <div class="flex w-full flex-1 border-none bg-transparent">
           <button
             class="btn mx-1 my-1 h-[2.4rem] self-end rounded-lg bg-transparent p-1 px-[0.7rem] text-gray-400 enabled:hover:text-gray-700 disabled:opacity-60 enabled:dark:hover:text-gray-100 dark:disabled:opacity-40"

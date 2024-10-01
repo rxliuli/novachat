@@ -44,6 +44,9 @@ importers:
       hast-util-to-html:
         specifier: ^9.0.3
         version: 9.0.3
+      idb:
+        specifier: ^8.0.0
+        version: 8.0.0
       isomorphic-dompurify:
         specifier: ^2.16.0
         version: 2.16.0
@@ -147,6 +150,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.47)
+      rollup-plugin-import-data-uri:
+        specifier: ^1.0.2
+        version: 1.0.2
       svelte:
         specifier: ^4.2.18
         version: 4.2.19
@@ -1270,6 +1276,9 @@ packages:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
 
+  idb@8.0.0:
+    resolution: {integrity: sha512-l//qvlAKGmQO31Qn7xdzagVPPaHTxXx199MhrAFuVBTPqydcPYBWjkrbv4Y0ktB+GmWOiwHl237UUOrLmQxLvw==}
+
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
@@ -1869,6 +1878,9 @@ packages:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
     deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
+
+  rollup-plugin-import-data-uri@1.0.2:
+    resolution: {integrity: sha512-YK8wvd4tITnjxEVGoxBmimvIdPg4DXQFsd6n8UygrLAvdSIRmdS5P1LyglZlON74CbBZJdCx9KHuiNR5p/miXA==}
 
   rollup@4.22.4:
     resolution: {integrity: sha512-vD8HJ5raRcWOyymsR6Z3o6+RzfEPCnVLMFJ6vRslO1jt4LO6dUo5Qnpg7y4RkZFM2DMe3WUirkI5c16onjrc6A==}
@@ -3589,6 +3601,8 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
+  idb@8.0.0: {}
+
   ieee754@1.2.1: {}
 
   image-q@4.0.0:
@@ -4351,6 +4365,10 @@ snapshots:
   rimraf@2.7.1:
     dependencies:
       glob: 7.2.3
+
+  rollup-plugin-import-data-uri@1.0.2:
+    dependencies:
+      mime-types: 2.1.35
 
   rollup@4.22.4:
     dependencies:
