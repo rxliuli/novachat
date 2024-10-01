@@ -2,6 +2,7 @@ import { OpenAI } from 'openai'
 import type { Message } from '$lib/types/Message'
 import { get } from 'svelte/store'
 import { settingsStore } from '$lib/stores/settings'
+import { blobToDataURI } from '$lib/utils/datauri'
 
 interface ChatCompletionChunk {
   text: string
@@ -68,13 +69,14 @@ function convertReq(
 }
 
 function openai(): Bot {
-  const store = get(settingsStore)
-  const client = () =>
-    new OpenAI({
+  const client = () => {
+    const store = get(settingsStore)
+    return new OpenAI({
       apiKey: store.apiKey,
       baseURL: store.baseUrl,
       dangerouslyAllowBrowser: true,
     })
+  }
   return {
     name: 'OpenAI',
     async invoke(options: BotRequest) {

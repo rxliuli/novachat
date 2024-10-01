@@ -1,4 +1,4 @@
-import { localStore } from './localStore'
+import { indexedDBAdapter, localStore } from '../utils/localStore'
 
 type Settings = {
   theme?: 'system' | 'light' | 'dark'
@@ -7,4 +7,8 @@ type Settings = {
   baseUrl?: string
 }
 
-export const settingsStore = localStore<Settings>('NOVACHAT_SETTINGS', {})
+export const settingsStore = localStore<Settings>(
+  'NOVACHAT_SETTINGS',
+  {},
+  indexedDBAdapter(),
+)

@@ -21,7 +21,7 @@
 
   function updateTitle(ev: MouseEvent, it: Conversation) {
     ev.preventDefault()
-    const title = prompt('Enter new title')
+    const title = prompt('Enter new title', it.title)
     if (title) {
       dispatch('editCurrentConversation', { id: it.id, title })
     }

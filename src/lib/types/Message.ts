@@ -1,9 +1,11 @@
 import type { Timestamps } from './Timestamps'
 
-export interface Attachment {
-  url: string
+export type Attachment = Timestamps & {
+  id: string
+  data: Blob
   name: string
   type: 'image/jpeg'
+  url: string
 }
 
 export type Message = Timestamps & {

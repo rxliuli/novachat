@@ -23,7 +23,6 @@ export const snapScrollToBottom = (node: HTMLElement, dependency: unknown) => {
     ) {
       isDetached = false
     }
-    console.log('handleScroll isDetached', isDetached)
 
     prevScrollValue = node.scrollTop
   }

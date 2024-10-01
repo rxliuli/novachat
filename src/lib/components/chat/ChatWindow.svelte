@@ -16,6 +16,8 @@
   import { optimizeImage } from '$lib/utils/optimizeImage'
   import { fileSelector } from '$lib/utils/fileSelector'
   import { cn } from '$lib/utils/ui'
+  import { dataURItoBlob } from '$lib/utils/datauri'
+  import { nanoid } from 'nanoid'
 
   export let messages: Message[] = []
   export let loading = false
@@ -71,10 +73,14 @@
         const buffer = await it.arrayBuffer()
         const optimizedImage = await optimizeImage(buffer)
         return {
-          url: optimizedImage,
+          data: await dataURItoBlob(optimizedImage),
           name: it.name,
           type: 'image/jpeg',
-        } as Attachment
+          id: nanoid(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          url: optimizedImage,
+        } satisfies Attachment
       }),
     )
     images = [...images, ...optimizedImages]

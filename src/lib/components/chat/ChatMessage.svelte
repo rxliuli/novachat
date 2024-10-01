@@ -56,9 +56,7 @@
   </div>
   <div class="flex-grow">
     {#each message.attachments ?? [] as attachment}
-      <div
-        class="overflow-hidden rounded-lg max-w-96 max-h-64 mb-2"
-      >
+      <div class="overflow-hidden rounded-lg max-w-96 max-h-64 mb-2">
         <img src={attachment.url} alt="" class="w-full h-full object-cover" />
       </div>
     {/each}
@@ -73,30 +71,19 @@
         {/each}
       </article>
       <div
-        class="flex justify-end gap-1 {cn({
-          hidden: loading,
-        })}"
+        class="flex justify-end gap-1 group-hover/message:opacity-100 opacity-0 {cn(
+          {
+            hidden: loading,
+          },
+        )}"
       >
-        <Button
-          on:click={() => dispatch('retry')}
-          variant={'ghost'}
-          size={'icon'}
-          class="h-5 w-5 group-hover/message:opacity-100 opacity-0"
-        >
+        <button on:click={() => dispatch('retry')} class="h-5 w-5">
           <RotateCcwIcon class="w-4 h-4" />
-        </Button>
-        <CopyToClipBoardBtn
-          value={message.content}
-          class="h-5 w-5 group-hover/message:opacity-100 opacity-0"
-        />
-        <Button
-          on:click={() => dispatch('delete')}
-          variant={'ghost'}
-          size={'icon'}
-          class="h-5 w-5 group-hover/message:opacity-100 opacity-0"
-        >
+        </button>
+        <CopyToClipBoardBtn value={message.content} class="h-5 w-5 " />
+        <button on:click={() => dispatch('delete')} class="h-5 w-5">
           <Trash2Icon class="w-4 h-4" />
-        </Button>
+        </button>
       </div>
     {:else}
       <pre

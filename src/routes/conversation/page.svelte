@@ -8,23 +8,34 @@
   import { generateTitleForConversation } from '$lib/service/textGeneration/title'
   import { Button } from '$lib/components/ui/button'
   import { CircleAlertIcon } from 'lucide-svelte'
+  import { onDestroy } from 'svelte'
+  import { sortBy } from 'lodash-es'
 
   export let params: { id: string } = { id: '' }
 
   $: conversation = $convStore.conversations.find((it) => it.id === params.id)
+  $: messages = sortBy(conversation?.messages, 'createdAt')
 
   let old: string = params.id
-  function onNavigate(id: string) {
+  async function onNavigate(id: string) {
     console.log('setCurrentId', id)
-    convStore.setCurrentId(id)
     if (id !== old) {
       abortController?.abort()
+      old = id
+    }
+    if (id !== $convStore.id) {
+      convStore.setCurrentId(id)
+    }
+    if (!messages.length) {
+      await convStore.loadMessages(id)
     }
   }
-
   $: if (params.id) {
     onNavigate(params.id)
   }
+  onDestroy(() => {
+    onNavigate('')
+  })
 
   if (!conversation) {
     // console.debug(
@@ -38,7 +49,7 @@
 
   let loading = false
   let pending = false
-  let abortController: AbortController
+  let abortController: AbortController | null = null
 
   async function onSend() {
     if (!conversation || loading || pending) {
@@ -59,14 +70,13 @@
       controller: abortController,
       model: conversation.model,
     })
-    conversation.messages.push(message)
+    await convStore.addMessage(conversation.id, message)
     let content = ''
     loading = true
     try {
       for await (const chunk of stream) {
         content = chunk.replace ? chunk.text : content + chunk.text
-        message.content = content
-        convStore.updateMessages(conversation.id, conversation.messages)
+        await convStore.updateMessage(conversation.id, { ...message, content })
       }
     } catch (err) {
       console.error(err)
@@ -76,6 +86,7 @@
     } finally {
       loading = false
       pending = false
+      abortController = null
     }
   }
 
@@ -105,30 +116,19 @@
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
-    conversation.messages.push(message)
+    await convStore.addMessage(conversation.id, message)
     await onSend()
   }
 
   function handleStop() {
-    abortController.abort()
+    abortController?.abort()
   }
 
-  async function handleRetry(ev: CustomEvent<{ id: string }>) {
+  async function handleRetry(id: string) {
     if (!conversation) {
       return
     }
-    const findIndex = conversation.messages.findIndex(
-      (it) => it.id === ev.detail.id,
-    )
-    if (findIndex === -1) {
-      toast.error('Failed to retry')
-      return
-    }
-    const index =
-      conversation.messages[findIndex].from === 'user'
-        ? findIndex + 1
-        : findIndex
-    conversation.messages = conversation.messages.slice(0, index)
+    await convStore.deleteMessage(id)
     await onSend()
   }
 
@@ -136,18 +136,18 @@
     if (!conversation) {
       return
     }
-    convStore.deleteMessage(ev.detail.id)
+    await convStore.deleteMessage(ev.detail.id)
   }
 </script>
 
 {#if conversation}
   <ChatWindow
-    messages={conversation.messages}
+    {messages}
     {loading}
     {pending}
     on:message={(e) => handleMessage(e.detail)}
     on:stop={handleStop}
-    on:retry={handleRetry}
+    on:retry={(e) => handleRetry(e.detail.id)}
     on:delete={handleDelete}
   />
 {:else}
