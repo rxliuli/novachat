@@ -14,6 +14,7 @@
   import { RotateCcwIcon, Trash2Icon } from 'lucide-svelte'
   import { cn } from '$lib/utils/ui'
   import CopyToClipBoardBtn from '../CopyToClipBoardBtn.svelte'
+  import BotChatMessage from './BotChatMessage.svelte'
   export let message: Message
 
   export let loading: boolean
@@ -33,9 +34,8 @@
 </script>
 
 <div
-  class="flex p-4 group/message {message.from === 'assistant'
-    ? 'bg-gray-100 dark:bg-gray-800'
-    : ''}"
+  class="flex p-4 group/message {message.from === 'assistant' &&
+    'bg-gray-100 dark:bg-gray-800'}"
   id="message-{message.from}-{message.id}"
 >
   <div class="flex-none select-none rounded-full mr-3">
@@ -61,14 +61,10 @@
       </div>
     {/each}
     {#if message.from === 'assistant'}
-      <article class="prose dark:prose-invert">
-        {#each root.children as node}
-          {#if node.type === 'code'}
-            <CodeBlock code={node.value} lang={node.lang ?? ''} />
-          {:else}
-            {@html toHtml(toHast(node))}
-          {/if}
-        {/each}
+      <article
+        class="prose dark:prose-invert max-sm:prose-sm max-w-none [&_p]:break-words [&_p]:break-all"
+      >
+        <BotChatMessage node={root} />
       </article>
       <div
         class="flex justify-end gap-1 group-hover/message:opacity-100 opacity-0 {cn(

@@ -69,3 +69,26 @@ it('Add attachment', async () => {
   const r = await dbApi.messages.getAll({ conversationId: id })
   expect(r.data[0].attachments).length(1)
 })
+
+it('Retry message', async () => {
+  await convStore.init([])
+  const id = nanoid()
+  const msgId = nanoid()
+  await convStore.create(id, get(settingsStore).defaultModel ?? 'gpt-4o', {
+    id: msgId,
+    content: 'Request',
+    from: 'user',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  })
+  expect(get(convStore).conversations).length(1)
+  const message: Message = {
+    id: nanoid(),
+    content: '',
+    from: 'assistant',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+  await convStore.addMessage(id, message)
+  await convStore.deleteMessage(id)
+})

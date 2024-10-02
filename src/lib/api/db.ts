@@ -220,6 +220,9 @@ export class MessageDAO implements IMessageDAO {
       nextCursor: last ? [last.conversationId, last.createdAt] : undefined,
     }
   }
+  async deleteBatch(ids: string[]): Promise<void> {
+    await Promise.all(ids.map((id) => this.delete(id)))
+  }
 }
 
 export class AttachmentDAO implements IAttachmentDAO {

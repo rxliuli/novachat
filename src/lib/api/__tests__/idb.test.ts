@@ -38,6 +38,28 @@ describe('fake-indexeddb', () => {
     })
     await db.add('books', { id: '1', name: 'Book 1' })
   })
+  it('batch delete', async () => {
+    const db = await openDB<{
+      books: {
+        key: string
+        value: {
+          id: string
+          name: string
+        }
+      }
+    }>('test-1-3', 1, {
+      upgrade(db) {
+        db.createObjectStore('books', { keyPath: 'id' })
+      },
+    })
+    await db.add('books', { id: '1', name: 'Book 1' })
+    await db.add('books', { id: '2', name: 'Book 2' })
+    await db.add('books', { id: '3', name: 'Book 3' })
+    await db.delete('books', IDBKeyRange.only(['1', '2', '3']))
+    await Promise.all([db.delete('books', '1'), db.delete('books', '2')])
+    expect(await db.getAll('books')).length(1)
+    expect((await db.getAll('books'))[0].id).eq('3')
+  })
 })
 
 describe('index usage', () => {

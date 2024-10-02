@@ -43,7 +43,7 @@
         variant="ghost"
         size="icon"
         on:click={handleClick}
-        class={$$props.class}
+        class="border-none hover:bg-transparent {$$props.class}"
       >
         <CopyIcon class="w-4 h-4" />
       </Button>

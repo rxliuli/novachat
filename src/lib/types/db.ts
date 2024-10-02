@@ -35,6 +35,7 @@ export interface IMessageDAO {
   getAll(
     options: { conversationId: string } & PaginationOptions,
   ): Promise<PaginationResult<MessageDB>>
+  deleteBatch(ids: string[]): Promise<void>
 }
 
 export interface IAttachmentDAO {

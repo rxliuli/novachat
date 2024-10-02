@@ -30,10 +30,10 @@
   onMount(async () => {
     await initDB()
     if (import.meta.env.DEV) {
-      await migrateLocalStorageToIdb()
-      convStore.subscribe((state) => {
-        console.log(state.id, state.conversations)
-      })
+      // await migrateLocalStorageToIdb()
+      // convStore.subscribe((state) => {
+      //   console.log(state.id, state.conversations)
+      // })
     }
     const list = await dbApi.conversations.getAll({ limit: 100 })
     convStore.init(list.data.map((it) => ({ ...it, messages: [] })))
