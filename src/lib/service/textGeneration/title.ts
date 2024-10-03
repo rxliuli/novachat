@@ -55,7 +55,7 @@ export async function generateTitle(prompt: string, model: string) {
   ]
 
   try {
-    const { text: summary } = await bot.invoke({
+    const { content: summary } = await bot.invoke({
       messages,
       model,
       controller: new AbortController(),

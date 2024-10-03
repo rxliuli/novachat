@@ -10,6 +10,7 @@
   import { CircleAlertIcon } from 'lucide-svelte'
   import { onDestroy } from 'svelte'
   import { sortBy } from 'lodash-es'
+  import { pluginStore } from '$lib/plugins/store'
 
   export let params: { id: string } = { id: '' }
 
@@ -75,7 +76,7 @@
     loading = true
     try {
       for await (const chunk of stream) {
-        content = chunk.replace ? chunk.text : content + chunk.text
+        content = chunk.replace ? chunk.content : content + chunk.content
         await convStore.updateMessage(conversation.id, { ...message, content })
       }
     } catch (err) {

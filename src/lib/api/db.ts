@@ -8,7 +8,7 @@ import type {
   PaginationOptions,
   PaginationResult,
 } from '$lib/types/db'
-import { configure } from '@zenfs/core'
+import fs, { configure } from '@zenfs/core'
 import { IndexedDB } from '@zenfs/dom'
 import dayjs from 'dayjs'
 import { openDB, type DBSchema, type IDBPDatabase, type IDBPIndex } from 'idb'
@@ -19,6 +19,8 @@ configure({
     '/': IndexedDB,
   },
 })
+
+Reflect.set(globalThis, 'fs', fs.promises)
 
 export const dbStore: DBStore = {} as any
 

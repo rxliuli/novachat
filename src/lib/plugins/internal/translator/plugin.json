@@ -1,0 +1,7 @@
+{
+  "id": "novachat.translator",
+  "name": "Translator",
+  "description": "Translate text",
+  "version": "0.1.0",
+  "author": "NovaChat"
+}

@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { settingsStore } from '$lib/stores/settings'
+  import { settingsStore, settingSchemaStore } from '$lib/stores/settings'
   import * as Select from '$lib/components/ui/select'
   import { Input } from '$lib/components/ui/input'
-  import { settingSchemas } from '$lib/constants/settings'
   import { Separator } from '$lib/components/ui/separator'
 
   function onChange(name: string, value: any) {
@@ -14,7 +13,7 @@
 
   let search = ''
 
-  $: schemas = settingSchemas
+  $: schemas = $settingSchemaStore
     .flatMap((it) =>
       Object.entries(it.properties).map(([key, value]) => ({
         name: key as keyof typeof $settingsStore,
@@ -62,7 +61,8 @@
                 it.schema.enumDescriptions?.[
                   it.schema.enum.indexOf(it.schema.default)
                 ] ??
-                it.schema.default}
+                it.schema.default ??
+                'Please select'}
             </Select.Trigger>
             <Select.Content>
               {#each it.schema.enum as value, index}

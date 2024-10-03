@@ -2,15 +2,16 @@ import { OpenAI } from 'openai'
 import type { Message } from '$lib/types/Message'
 import { get } from 'svelte/store'
 import { settingsStore } from '$lib/stores/settings'
-import { blobToDataURI } from '$lib/utils/datauri'
+import { pluginStore } from '$lib/plugins/store'
+import { cb2gen } from '$lib/utils/cb2gen'
 
 interface ChatCompletionChunk {
-  text: string
+  content: string
   replace?: boolean
 }
 
 interface ChatCompletion {
-  text: string
+  content: string
 }
 
 export type EndpointMessage = Pick<Message, 'from' | 'content' | 'attachments'>
@@ -22,89 +23,41 @@ interface BotRequest {
 }
 
 interface Bot {
-  name: string
   invoke(req: BotRequest): Promise<ChatCompletion>
   stream(req: BotRequest): AsyncGenerator<ChatCompletionChunk>
 }
 
-function convertReq(
-  req: BotRequest,
-  stream: true,
-): OpenAI.ChatCompletionCreateParamsStreaming
-function convertReq(
-  req: BotRequest,
-): OpenAI.ChatCompletionCreateParamsNonStreaming
-function convertReq(
-  req: BotRequest,
-  stream?: boolean,
-): OpenAI.ChatCompletionCreateParams {
-  return {
-    model: req.model,
-    messages: req.messages.map((it) => {
-      if (it.from === 'user' && it.attachments) {
-        return {
-          role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: it.content,
-            },
-            ...it.attachments.map(
-              (atta) =>
-                ({
-                  type: 'image_url',
-                  image_url: { url: atta.url },
-                } as OpenAI.ChatCompletionContentPartImage),
-            ),
-          ],
-        }
-      }
-      return {
-        content: it.content,
-        role: it.from,
-      }
-    }),
-    stream,
-  }
-}
-
-function openai(): Bot {
-  const client = () => {
-    const store = get(settingsStore)
-    return new OpenAI({
-      apiKey: store.apiKey,
-      baseURL: store.baseUrl,
-      dangerouslyAllowBrowser: true,
-    })
+function createBot(): Bot {
+  const client = (modelName: string) => {
+    const model = get(pluginStore).models.find((it) => it.id === modelName)
+    if (!model) {
+      throw new Error('Default model not found')
+    }
+    return model
   }
   return {
-    name: 'OpenAI',
     async invoke(options: BotRequest) {
-      const response = await client().chat.completions.create(
-        convertReq(options),
+      return await pluginStore.executeCommand(
+        client(options.model).command.invoke,
+        {
+          model: options.model,
+          messages: options.messages,
+        },
       )
-      return {
-        text: response.choices[0].message.content ?? '',
-      }
     },
-    async *stream(options): AsyncGenerator<ChatCompletionChunk> {
-      const response = await client().chat.completions.create(
-        convertReq(options, true),
+    stream(options): AsyncGenerator<ChatCompletionChunk> {
+      return cb2gen((cb) =>
+        pluginStore.executeCommand(
+          client(options.model).command.stream,
+          {
+            model: options.model,
+            messages: options.messages,
+          },
+          cb,
+        ),
       )
-      options.controller.signal.addEventListener(
-        'abort',
-        response.controller.abort,
-      )
-      for await (const it of response) {
-        if (options.controller.signal.aborted) {
-          break
-        }
-        yield {
-          text: it.choices[0].delta.content ?? '',
-        }
-      }
     },
   }
 }
 
-export const bot = openai()
+export const bot = createBot()

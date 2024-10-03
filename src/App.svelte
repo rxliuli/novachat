@@ -7,19 +7,22 @@
   import { ModeWatcher, setMode } from 'mode-watcher'
   import { Toaster } from '$lib/components/ui/sonner'
   import Layout from '$lib/components/Layout.svelte'
-  import Models from './routes/models/page.svelte'
+  import Plugins from './routes/plugins/page.svelte'
   import Settings from './routes/settings/page.svelte'
+  import Demo from './routes/demo/page.svelte'
   import { settingsStore } from '$lib/stores/settings'
-  import { onMount } from 'svelte'
+  import { onDestroy, onMount } from 'svelte'
   import { dbApi, initDB } from '$lib/api/db'
   import { convStore } from '$lib/stores/converstation'
-  import { migrateLocalStorageToIdb } from '$lib/migrations/localStorageToIdb'
+  import { initPluginSystem, destoryPluginSystem } from '$lib/plugins/command'
+  import { pluginStore } from '$lib/plugins/store'
 
   const routes = {
     '/': Home,
     '/conversation/:id': Chat,
-    '/models': Models,
+    '/plugins': Plugins,
     '/settings': Settings,
+    '/demo': Demo,
     '*': NotFound,
   }
 
@@ -29,15 +32,15 @@
 
   onMount(async () => {
     await initDB()
-    if (import.meta.env.DEV) {
-      // await migrateLocalStorageToIdb()
-      // convStore.subscribe((state) => {
-      //   console.log(state.id, state.conversations)
-      // })
-    }
     const list = await dbApi.conversations.getAll({ limit: 100 })
     convStore.init(list.data.map((it) => ({ ...it, messages: [] })))
   })
+
+  onMount(async () => {
+    await initPluginSystem()
+    console.log($pluginStore)
+  })
+  onDestroy(destoryPluginSystem)
 </script>
 
 <Layout>

@@ -6,8 +6,6 @@
   import { toHast } from 'mdast-util-to-hast'
 
   export let node: Root | Parent
-
-  console.log('node', node)
 </script>
 
 {#each node.children as it}

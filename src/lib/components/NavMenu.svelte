@@ -44,7 +44,7 @@
       class="flex items-center gap-2 font-semibold"
       on:click={() => dispatch('hideSidebar')}
     >
-      <BotIcon class="h-6 w-6" />
+      <img src="/icon/32.png" class="h-6 w-6" alt="NovaChat" />
       <span class="">NovaChat</span>
     </a>
     <a href="#/" class="ml-auto">
@@ -105,9 +105,9 @@
         Theme
       </a>
       <a
-        href="#/models"
+        href="#/plugins"
         class={sidebarItemClsx}
-        on:click={() => dispatch('hideSidebar')}>Models</a
+        on:click={() => dispatch('hideSidebar')}>Plugins</a
       >
       <a
         href="#/settings"
