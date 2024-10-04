@@ -55,6 +55,10 @@ export default defineConfig({
                 text: '使用插件',
                 link: '/zh-CN/guide/plugin-usage',
               },
+              {
+                text: '自托管',
+                link: '/zh-CN/guide/self-host',
+              },
             ],
           },
           {
