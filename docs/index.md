@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: https://chat.novachat.app
+      link: https://app.novachat.dev
     - theme: alt
       text: View Docs
       link: /guide/intro

@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: 开始使用
-      link: https://chat.novachat.app
+      link: https://app.novachat.dev
     - theme: alt
       text: 查看文档
       link: /zh-CN/guide/intro
