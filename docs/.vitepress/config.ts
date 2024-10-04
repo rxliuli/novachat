@@ -81,4 +81,5 @@ export default defineConfig({
   markdown: {
     breaks: true,
   },
+  ignoreDeadLinks: 'localhostLinks',
 })
