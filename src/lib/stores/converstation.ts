@@ -2,6 +2,7 @@ import { dbApi } from '$lib/api/db'
 import type { Conversation } from '$lib/types/Conversation'
 import type { Attachment, Message } from '$lib/types/Message'
 import { blobToDataURI } from '$lib/utils/datauri'
+import { produce } from 'immer'
 import { omit } from 'lodash-es'
 import { get, writable } from 'svelte/store'
 
@@ -134,33 +135,30 @@ export const convStore = {
     })
   },
   retryMessage: async (messageId: string) => {
-    let deleteMessages: Message[] = []
-    store.update((state) => {
-      return {
-        ...state,
-        conversations: state.conversations.map((conversation) => {
-          if (conversation.id !== state.id) {
-            return conversation
-          }
-          const findIndex = conversation.messages.findIndex(
-            (it) => it.id === messageId,
-          )
-          if (findIndex === -1) {
-            return conversation
-          }
-          const index =
-            conversation.messages[findIndex].from === 'user'
-              ? findIndex + 1
-              : findIndex
-          deleteMessages = conversation.messages.slice(index)
-          return {
-            ...conversation,
-            messages: conversation.messages.slice(0, index),
-          }
-        }),
-      }
-    })
-    await dbApi.messages.deleteBatch(deleteMessages.map((it) => it.id))
+    let deleteMessages: string[] = []
+    store.update(
+      produce((draft) => {
+        const conversation = draft.conversations.find(
+          (it) => it.id === draft.id,
+        )
+        if (!conversation) {
+          return
+        }
+        const findIndex = conversation.messages.findIndex(
+          (it) => it.id === messageId,
+        )
+        if (findIndex === -1) {
+          return
+        }
+        const index =
+          conversation.messages[findIndex].from === 'user'
+            ? findIndex + 1
+            : findIndex
+        deleteMessages = conversation.messages.slice(index).map((it) => it.id)
+        conversation.messages = conversation.messages.slice(0, index)
+      }),
+    )
+    await dbApi.messages.deleteBatch(deleteMessages)
   },
   deleteMessage: async (messageId: string) => {
     store.update((state) => ({

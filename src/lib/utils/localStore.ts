@@ -22,7 +22,13 @@ export function localStore<T>(
       adapter.write(key, value)
       return set(value)
     },
-    update,
+    update: (updater) => {
+      return update((draft) => {
+        const value = updater(draft)
+        adapter.write(key, value)
+        return value
+      })
+    },
   }
 }
 

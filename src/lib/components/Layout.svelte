@@ -38,7 +38,7 @@
 </svelte:head>
 
 <div
-  class="grid min-h-screen w-full h-full grid-cols-1 grid-rows-[auto_1fr] overflow-hidden md:grid-rows-1 md:grid-cols-[280px_1fr] lg:grid-cols-[280px_1fr]"
+  class="grid min-h-screen w-full h-full grid-cols-1 grid-rows-[auto_1fr] overflow-hidden md:grid-rows-1 md:grid-cols-[280px_1fr] lg:grid-cols-[280px_1fr] dark:bg-gray-900"
 >
   <MobileNav
     title={mobileNavTitle}

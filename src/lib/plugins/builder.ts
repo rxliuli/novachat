@@ -2,7 +2,7 @@ import { build, initialize, type Plugin } from 'esbuild-wasm'
 import wasmURL from 'esbuild-wasm/esbuild.wasm?url'
 import loaderRaw from './client/loader.ts?raw'
 import pluginRaw from './client/plugin.ts?raw'
-import protocolRaw from './protocol.ts?script'
+import protocolRaw from './client/protocol.ts?script'
 import cb2genRaw from '$lib/utils/cb2gen?raw'
 import { once } from '@liuli-util/async'
 
@@ -62,7 +62,7 @@ export async function buildCode(code: string): Promise<string> {
           content: pluginRaw,
         },
         {
-          path: '../protocol',
+          path: './protocol',
           content: protocolRaw,
         },
         {

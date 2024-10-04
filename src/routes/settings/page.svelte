@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { settingsStore, settingSchemaStore } from '$lib/stores/settings'
+  import { settingsStore } from '$lib/stores/settings'
   import * as Select from '$lib/components/ui/select'
   import { Input } from '$lib/components/ui/input'
   import { Separator } from '$lib/components/ui/separator'
+  import { settingSchemaStore } from '$lib/stores/settingSchema'
 
   function onChange(name: string, value: any) {
     ;($settingsStore as any)[name] = value

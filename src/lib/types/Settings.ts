@@ -7,7 +7,7 @@ export type SettingSchema = {
     Schema & {
       enumDescriptions?: string[]
       default?: string
-      format?: 'password' | 'url'
+      format?: 'password' | 'url' | string
     }
   >
 }

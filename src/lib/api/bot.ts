@@ -4,6 +4,7 @@ import { get } from 'svelte/store'
 import { settingsStore } from '$lib/stores/settings'
 import { pluginStore } from '$lib/plugins/store'
 import { cb2gen } from '$lib/utils/cb2gen'
+import { sortBy } from 'lodash-es'
 
 interface ChatCompletionChunk {
   content: string
@@ -31,7 +32,7 @@ function createBot(): Bot {
   const client = (modelName: string) => {
     const model = get(pluginStore).models.find((it) => it.id === modelName)
     if (!model) {
-      throw new Error('Default model not found')
+      throw new Error(`Model ${modelName} not found`)
     }
     return model
   }
@@ -41,7 +42,7 @@ function createBot(): Bot {
         client(options.model).command.invoke,
         {
           model: options.model,
-          messages: options.messages,
+          messages: sortBy(options.messages, 'createdAt'),
         },
       )
     },
@@ -51,7 +52,7 @@ function createBot(): Bot {
           client(options.model).command.stream,
           {
             model: options.model,
-            messages: options.messages,
+            messages: sortBy(options.messages, 'createdAt'),
           },
           cb,
         ),

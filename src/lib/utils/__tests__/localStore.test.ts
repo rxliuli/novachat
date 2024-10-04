@@ -36,3 +36,14 @@ it('localStorageAdapter', async () => {
     JSON.stringify({ theme: 'dark' }),
   )
 })
+
+it('update', async () => {
+  const store = localStore('settings', { theme: 'system' }, indexedDBAdapter())
+  store.update((draft) => {
+    draft.theme = 'dark'
+    return draft
+  })
+  expect(get(store)).toEqual({ theme: 'dark' })
+  await new Promise((resolve) => setTimeout(resolve, 0))
+  expect(await idbGet('settings')).toEqual({ theme: 'dark' })
+})

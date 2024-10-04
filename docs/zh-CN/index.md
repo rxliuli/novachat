@@ -1,15 +1,29 @@
-# NovaChat
-
-## 简介
-
-支持插件、本地优先的 ChatUI。喜欢 PoeAI，但不喜欢订阅制，使用 API 后，每个月的 AI 账单减少 10 倍以上（$20 => $1.43）。
-
-- 本地优先
-- 插件支持
-- Web 跨端支持
-- 轻客户端包装
-- 开源&隐私
-
-## 感谢
-
-在目前的所有 ChatUI 中，功能性上最喜欢 PoeAI，UI 上最喜欢 HF ChatUI。由于后者是开源的，所以直接复制了许多组件和代码。
+---
+layout: home
+hero:
+  name: NovaChat
+  text: 支持插件、本地优先的 ChatUI。
+  image:
+    src: /logo.png
+    alt: NovaChat
+  actions:
+    - theme: brand
+      text: 开始使用
+      link: https://chat.novachat.app
+    - theme: alt
+      text: 查看文档
+      link: /zh-CN/guide/intro
+features:
+  - icon: 💻
+    title: 本地优先
+    details: 所有数据都在本地处理，不用担心隐私泄露。
+  - icon: 🔌
+    title: 插件支持
+    details: 支持插件，可以扩展更多功能。
+  - icon: 📦
+    title: 简单的自托管
+    details: 只需要一个静态服务器，就可以运行。
+  - icon: 🔒
+    title: 开源&隐私
+    details: 开源，可以自己部署，也可以自己开发插件。
+---

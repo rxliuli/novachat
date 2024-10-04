@@ -14,7 +14,7 @@ import dayjs from 'dayjs'
 import { openDB, type DBSchema, type IDBPDatabase, type IDBPIndex } from 'idb'
 import { omit, pick } from 'lodash-es'
 
-configure({
+await configure({
   mounts: {
     '/': IndexedDB,
   },

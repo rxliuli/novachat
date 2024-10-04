@@ -1,14 +1,6 @@
 import * as novachat from '@novachat/plugin'
 import OpenAI from 'openai'
-import { get } from 'idb-keyval'
 
-function convertReq(
-  req: novachat.QueryRequest,
-  stream: true,
-): OpenAI.ChatCompletionCreateParamsStreaming
-function convertReq(
-  req: novachat.QueryRequest,
-): OpenAI.ChatCompletionCreateParamsNonStreaming
 function convertReq(
   req: novachat.QueryRequest,
   stream?: boolean,
@@ -45,10 +37,8 @@ function convertReq(
 
 export async function activate(context: novachat.PluginContext) {
   const client = async () => {
-    // TODO: use settings api
-    const store = await get('NOVACHAT_SETTINGS')
     return new OpenAI({
-      apiKey: store['openai.apiKey'],
+      apiKey: await novachat.setting.get('openai.apiKey'),
       dangerouslyAllowBrowser: true,
     })
   }
@@ -65,7 +55,9 @@ export async function activate(context: novachat.PluginContext) {
     async invoke(query) {
       const response = await (
         await client()
-      ).chat.completions.create(convertReq(query))
+      ).chat.completions.create(
+        convertReq(query) as OpenAI.ChatCompletionCreateParamsNonStreaming,
+      )
       return {
         content: response.choices[0].message.content ?? '',
       }
@@ -73,7 +65,9 @@ export async function activate(context: novachat.PluginContext) {
     async *stream(query) {
       const response = await (
         await client()
-      ).chat.completions.create(convertReq(query, true))
+      ).chat.completions.create(
+        convertReq(query, true) as OpenAI.ChatCompletionCreateParamsStreaming,
+      )
       for await (const it of response) {
         yield {
           content: it.choices[0].delta.content ?? '',

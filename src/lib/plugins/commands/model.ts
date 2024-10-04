@@ -6,6 +6,8 @@ import {
   type QueryResponse,
 } from '../client/plugin'
 import { pluginStore, type ActivatedModel } from '../store'
+import { settingsStore } from '$lib/stores/settings'
+import { produce } from 'immer'
 
 interface SystemCommandType {
   'model.getDefault': () => Promise<Model | undefined>
@@ -59,4 +61,32 @@ function requestLLM(modelName: string, stream?: boolean) {
     throw new Error(`Command not found: ${command}`)
   }
   return cmd.handler
+}
+
+interface SettingCommandType {
+  'setting.get': (key: string) => Promise<any>
+  'setting.set': (key: string, value: any) => Promise<void>
+}
+
+export function createSettingCommand() {
+  pluginStore.addCommand({
+    id: 'setting.get',
+    type: 'system',
+    handler: (key: string) => get(settingsStore)[key],
+  })
+  pluginStore.addCommand({
+    id: 'setting.set',
+    type: 'system',
+    handler: (key: string, value: any) =>
+      settingsStore.update(
+        produce((draft) => {
+          draft[key] = value
+        }),
+      ),
+  })
+}
+
+export function initSystemCommand() {
+  createModelCommand()
+  createSettingCommand()
 }

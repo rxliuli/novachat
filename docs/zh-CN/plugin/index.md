@@ -13,6 +13,10 @@
 - 缓存相关: localStorage/sessionStorage/indexedDB/cookie，考虑使用[设置 API](./config.md)
 - 远端代码: 包括 `eval/Function/import/import()`，不安全的代名词，请将代码都打包到一个文件
 
+## 插件类型
+
+目前插件主要分为 LLM Provider、Bot 两类。虽然都可以在 NovaChat 中使用，但后者不需要自定义 API Key 之类的，只会使用配置的默认 LLM Model。
+
 ## 感谢
 
-插件系统参考了之前已有的许多优秀的设计，例如 VSCode for Web、Figma、Joplin 等。
+插件系统参考了许多优秀的设计，例如 VSCode for Web、Figma、Joplin 等。

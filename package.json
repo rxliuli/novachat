@@ -8,7 +8,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@rollup/pluginutils": "^5.1.2",
@@ -34,6 +37,7 @@
     "tslib": "^2.6.3",
     "typescript": "^5.5.3",
     "vite": "^5.4.1",
+    "vitepress": "^1.3.4",
     "vitest": "^2.1.1"
   },
   "dependencies": {
@@ -55,6 +59,7 @@
     "embla-carousel-svelte": "^8.3.0",
     "esbuild-wasm": "^0.24.0",
     "formsnap": "^1.0.1",
+    "franc-min": "^6.2.0",
     "hast-util-to-html": "^9.0.3",
     "idb": "^8.0.0",
     "idb-keyval": "^6.2.1",

@@ -5,12 +5,13 @@
   "version": "0.1.0",
   "author": "NovaChat",
   "configuration": {
-    "title": "OpenAI Configuration",
+    "title": "OpenAI",
     "properties": {
       "openai.apiKey": {
         "type": "string",
         "description": "The API key to use for OpenAI",
-        "default": ""
+        "default": "",
+        "format": "password"
       }
     }
   }

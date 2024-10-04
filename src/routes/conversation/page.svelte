@@ -11,6 +11,8 @@
   import { onDestroy } from 'svelte'
   import { sortBy } from 'lodash-es'
   import { pluginStore } from '$lib/plugins/store'
+  import { settingsStore } from '$lib/stores/settings'
+  import AccordionContent from '$lib/components/ui/accordion/accordion-content.svelte'
 
   export let params: { id: string } = { id: '' }
 
@@ -95,7 +97,19 @@
     if (!conversation) {
       return
     }
-    const title = await generateTitleForConversation(conversation)
+    const modelName =
+      $pluginStore.models.find((it) => it.id === conversation.model)?.type ===
+      'llm'
+        ? conversation.model
+        : $settingsStore.defaultModel
+    if (!modelName) {
+      console.warn('No model name found')
+      return
+    }
+    const title = await generateTitleForConversation({
+      ...conversation,
+      model: modelName,
+    })
     if (title) {
       convStore.updateTitle(conversation.id, title)
     }

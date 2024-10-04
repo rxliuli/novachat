@@ -9,7 +9,6 @@
   import Layout from '$lib/components/Layout.svelte'
   import Plugins from './routes/plugins/page.svelte'
   import Settings from './routes/settings/page.svelte'
-  import Demo from './routes/demo/page.svelte'
   import { settingsStore } from '$lib/stores/settings'
   import { onDestroy, onMount } from 'svelte'
   import { dbApi, initDB } from '$lib/api/db'
@@ -22,7 +21,6 @@
     '/conversation/:id': Chat,
     '/plugins': Plugins,
     '/settings': Settings,
-    '/demo': Demo,
     '*': NotFound,
   }
 

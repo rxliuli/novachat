@@ -35,7 +35,7 @@
 
 <div
   class="flex p-4 group/message {message.from === 'assistant' &&
-    'bg-gray-100 dark:bg-gray-800'}"
+    'bg-gray-100 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-800'}"
   id="message-{message.from}-{message.id}"
 >
   <div class="flex-none select-none rounded-full mr-3">

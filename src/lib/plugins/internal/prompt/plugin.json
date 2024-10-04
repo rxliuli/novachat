@@ -1,0 +1,7 @@
+{
+  "id": "novachat.prompt-generator",
+  "name": "Prompt Generator",
+  "description": "You can generate a structured prompt by sharing basic details about your task.",
+  "version": "0.1.0",
+  "author": "NovaChat"
+}

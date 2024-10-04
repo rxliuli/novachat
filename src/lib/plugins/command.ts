@@ -1,17 +1,23 @@
 import fs from '@zenfs/core'
 import { buildCode } from './builder'
-import type { PluginExportType, PluginImportType } from './protocol'
+import type { PluginExportType, PluginImportType } from './client/protocol'
 import { defineMessaging } from './messging'
-import { pluginStore, type PluginManifest } from './store'
+import {
+  installedPlugins,
+  pluginStore,
+  type PluginInstallState,
+  type PluginManifest,
+} from './store'
 import JSZip from 'jszip'
 import { get, set } from 'idb-keyval'
-import { createModelCommand } from './commands/model'
+import { initSystemCommand } from './commands/model'
 import { get as getStore } from 'svelte/store'
+import { uniqBy } from 'lodash-es'
 
-export function definePluginProtocol(port: Worker) {
+export function definePluginProtocol(port: Worker, pluginId: string) {
   const { onMessage } = defineMessaging<PluginImportType>()
   onMessage(port, 'register', async ({ id, cb }) =>
-    pluginStore.addCommand({ type: 'plugin', id, handler: cb }),
+    pluginStore.addCommand({ type: 'plugin', id, handler: cb, pluginId }),
   )
   onMessage(port, 'unregister', ({ id }) => pluginStore.deleteCommand(id))
   onMessage(port, 'execute', async (options) =>
@@ -37,6 +43,11 @@ export async function activePluginFromLocal(id: string) {
 }
 
 export async function activePlugin(loader: PluginLoadResult) {
+  if (
+    getStore(pluginStore).plugins.some((it) => it.id === loader.manifest.id)
+  ) {
+    throw new Error(`Plugin ${loader.manifest.id} already active`)
+  }
   const workerCode = await buildCode(loader.code)
   const url = URL.createObjectURL(
     new Blob([workerCode], { type: 'application/javascript' }),
@@ -50,8 +61,10 @@ export async function activePlugin(loader: PluginLoadResult) {
     worker,
     manifest: loader.manifest,
   })
-  const { sendMessage } = definePluginProtocol(worker)
-  await sendMessage('activate', {})
+  const { sendMessage } = definePluginProtocol(worker, loader.manifest.id)
+  await sendMessage('activate', {
+    pluginId: loader.manifest.id,
+  })
 }
 
 // run in main thread
@@ -64,6 +77,7 @@ export async function installPluginFromZip(blob: Blob) {
   }
   const plugin = JSON.parse(pluginJson) as PluginManifest
   await installPlugin({ manifest: plugin, code: indexJs, type: 'local' })
+  return plugin.id
 }
 
 export async function installPlugin(loadResult: PluginLoadResult) {
@@ -74,10 +88,16 @@ export async function installPlugin(loadResult: PluginLoadResult) {
     JSON.stringify(loadResult.manifest, null, 2),
   )
   await fs.promises.writeFile(`${pluginDIr}/index.js`, loadResult.code)
-  set('plugins', [
-    ...((await get('plugins')) ?? []),
-    { id: loadResult.manifest.id, enabled: true },
-  ])
+  set(
+    'plugins',
+    uniqBy(
+      [
+        ...((await get('plugins')) ?? []),
+        { id: loadResult.manifest.id, enabled: true },
+      ] as PluginInstallState[],
+      (it) => it.id,
+    ),
+  )
 }
 
 export interface PluginLoadResult {
@@ -87,16 +107,13 @@ export interface PluginLoadResult {
 }
 
 export async function loadInstalledPlugins(): Promise<PluginLoadResult[]> {
-  const list = ((await get('plugins')) ?? []) as {
-    id: string
-    enabled: boolean
-  }[]
+  const list = getStore(installedPlugins)
   const plugins = (
     await Promise.all(
       list.map(async (it) => {
         if (
-          !(await pathExists(`/plugins/${it.id}/plugin.json`)) ||
-          !(await pathExists(`/plugins/${it.id}/index.js`))
+          !(await fs.promises.exists(`/plugins/${it.id}/plugin.json`)) ||
+          !(await fs.promises.exists(`/plugins/${it.id}/index.js`))
         ) {
           return
         }
@@ -115,12 +132,18 @@ export async function loadInstalledPlugins(): Promise<PluginLoadResult[]> {
 }
 
 export async function initPluginSystem() {
-  createModelCommand()
+  initSystemCommand()
   const plugins = [
     ...(await import('$lib/plugins/internal')).internalPlugins,
     ...(await loadInstalledPlugins()),
   ]
-  await Promise.all(plugins.map(activePlugin))
+  for (const it of plugins) {
+    try {
+      await activePlugin(it)
+    } catch (err) {
+      console.error(`Failed to active plugin ${it.manifest.id}`, err)
+    }
+  }
 }
 
 export async function destoryPluginSystem() {
@@ -128,13 +151,24 @@ export async function destoryPluginSystem() {
   store.plugins.forEach((it) => {
     it.worker.terminate()
   })
-  store.plugins = []
-  store.commands = []
-  store.models = []
+  pluginStore.reset()
 }
 
-const pathExists = (p: string) =>
-  fs.promises
-    .exists(p)
-    .then(() => true)
-    .catch(() => false)
+export async function uninstallPlugin(id: string) {
+  stopPlugin(id)
+  pluginStore.uninstallPlugin(id)
+  installedPlugins.update((draft) => {
+    return draft.filter((it) => it.id !== id)
+  })
+  await fs.promises.rm(`/plugins/${id}`, { recursive: true, force: true })
+}
+
+export function stopPlugin(id: string) {
+  const store = getStore(pluginStore)
+  const plugin = store.plugins.find((it) => it.id === id)
+  if (!plugin) {
+    return
+  }
+  plugin.worker.terminate()
+  pluginStore.uninstallPlugin(id)
+}

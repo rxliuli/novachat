@@ -1,4 +1,7 @@
 import { activate } from './index'
-import { defineWorkerProtocol } from '../protocol'
+import { defineWorkerProtocol, setPluginContext } from './protocol'
 
-defineWorkerProtocol().onInit(activate)
+defineWorkerProtocol().onInit((c) => {
+  setPluginContext(c)
+  activate(c)
+})

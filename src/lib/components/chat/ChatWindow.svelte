@@ -18,7 +18,7 @@
   import { cn } from '$lib/utils/ui'
   import { dataURItoBlob } from '$lib/utils/datauri'
   import { nanoid } from 'nanoid'
-
+    
   export let messages: Message[] = []
   export let loading = false
   export let pending = false
@@ -201,6 +201,7 @@
           {/if}
         </div>
       </form>
+      <slot name="footer" />
     </div>
   </div>
 </div>

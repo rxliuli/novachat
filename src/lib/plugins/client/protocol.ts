@@ -1,7 +1,9 @@
-import { defineMessaging } from './messging'
+import { defineMessaging } from '../messging'
 
 // 只负责定义通信协议部分，具体由协议注册或调用命令则不关心
-export interface PluginContext {}
+export interface PluginContext {
+  pluginId: string
+}
 
 export type PluginExportType = {
   activate: (context: PluginContext) => void
@@ -26,4 +28,10 @@ export function defineWorkerProtocol() {
   }
 }
 
-export { defineMessaging }
+let pluginContext: PluginContext = {} as any
+
+function setPluginContext(context: PluginContext) {
+  Object.assign(pluginContext, context)
+}
+
+export { defineMessaging, pluginContext, setPluginContext }
