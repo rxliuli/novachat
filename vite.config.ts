@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig, Plugin } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import path from 'node:path'
@@ -56,6 +57,9 @@ function script(): Plugin {
 }
 
 export default defineConfig({
+  test: {
+    include: ['src/**/*.test.ts'],
+  },
   plugins: [svelte(), script(), plugin() as any],
   resolve: {
     alias: {
