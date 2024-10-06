@@ -1,6 +1,5 @@
 {
   "name": "@novachat/plugin-openai",
-  "private": true,
   "keywords": [
     "novachat",
     "novachat-plugin"

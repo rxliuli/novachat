@@ -1,6 +1,5 @@
 {
   "name": "@novachat/plugin-ollama",
-  "private": true,
   "keywords": [
     "novachat",
     "novachat-plugin"

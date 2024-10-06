@@ -1,6 +1,5 @@
 {
   "name": "@novachat/plugin-translator",
-  "private": true,
   "keywords": [
     "novachat",
     "novachat-plugin"
