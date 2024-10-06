@@ -68,7 +68,7 @@
 </script>
 
 <div>
-  <div class="flex flex-col lg:flex-row min-h-screen">
+  <div class="flex flex-col lg:flex-row min-h-dvh">
     <main class="flex-1 p-6">
       <div class="mb-8 flex justify-between">
         <h2 class="text-2xl font-bold mb-2">Plugins</h2>

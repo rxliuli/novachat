@@ -2,13 +2,10 @@
   import type { Message } from '$lib/types/Message'
   import { BotIcon, UserIcon } from 'lucide-svelte'
   import { fromMarkdown } from 'mdast-util-from-markdown'
-  import { toHast } from 'mdast-util-to-hast'
-  import { toHtml } from 'hast-util-to-html'
   import { gfm } from 'micromark-extension-gfm'
   import { gfmFromMarkdown } from 'mdast-util-gfm'
   import { newlineToBreak } from 'mdast-util-newline-to-break'
   import type { Root } from 'mdast'
-  import CodeBlock from '../CodeBlock.svelte'
   import { createEventDispatcher } from 'svelte'
   import { Button } from '../ui/button'
   import { RotateCcwIcon, Trash2Icon } from 'lucide-svelte'
@@ -67,7 +64,7 @@
         <BotChatMessage node={root} />
       </article>
       <div
-        class="flex justify-end gap-1 group-hover/message:opacity-100 opacity-0 {cn(
+        class="flex justify-end gap-1 md:group-hover/message:opacity-100 md:opacity-0 {cn(
           {
             hidden: loading,
           },
@@ -85,7 +82,7 @@
       <pre
         class="text-gray-700 dark:text-gray-300 text-wrap">{message.content.trim()}</pre>
       <div
-        class="flex justify-end gap-1 group-hover/message:opacity-100 opacity-0 {cn(
+        class="flex justify-end gap-1 md:group-hover/message:opacity-100 md:opacity-0 {cn(
           {
             hidden: loading,
           },

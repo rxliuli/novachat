@@ -43,7 +43,7 @@
   </a>
 </nav>
 <nav
-  class="fixed inset-0 z-30 grid max-h-screen h-full grid-cols-1 grid-rows-[auto,auto,1fr,auto] bg-white dark:bg-gray-900 {isOpen
+  class="fixed inset-0 z-30 grid max-h-dvh h-full grid-cols-1 grid-rows-[auto,auto,1fr,auto] bg-white dark:bg-gray-900 {isOpen
     ? 'block'
     : 'hidden'}"
 >

@@ -22,7 +22,7 @@
     {@html highlightedCode}
   </div>
   <CopyToClipBoardBtn
-    class="btn rounded-lg border absolute top-2 right-0 group-hover/code-block:opacity-100 opacity-0"
+    class="btn rounded-lg border absolute top-2 right-0 md:group-hover/code-block:opacity-100 md:opacity-0"
     value={code}
   />
 </div>
