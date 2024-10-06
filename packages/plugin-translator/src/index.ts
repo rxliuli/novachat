@@ -32,9 +32,9 @@ export async function activate() {
       const toLanguage = language === localLanguage ? 'eng' : localLanguage
       const stream = novachat.model.stream({
         messages: [
-          { from: 'system', content: SYSTEM_MESSAGE },
+          { role: 'system', content: SYSTEM_MESSAGE },
           {
-            from: 'user',
+            role: 'user',
             content: USER_MESSAGE.replace('{{to}}', toLanguage).replace(
               '{{text}}',
               lastMessage.content,

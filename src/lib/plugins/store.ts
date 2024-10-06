@@ -98,7 +98,7 @@ export const pluginStore = {
       }),
     )
   },
-  uninstallPlugin(id: string) {
+  destoryPluginContext(id: string) {
     store.update(
       produce((draft) => {
         draft.plugins = draft.plugins.filter((p) => p.id !== id)

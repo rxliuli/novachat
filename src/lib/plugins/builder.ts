@@ -1,9 +1,8 @@
 import { build, initialize, type Plugin } from 'esbuild-wasm'
 import wasmURL from 'esbuild-wasm/esbuild.wasm?url'
 import loaderRaw from './client/loader.ts?raw'
-import pluginRaw from './client/plugin.ts?raw'
-import protocolRaw from './client/protocol.ts?script'
-import cb2genRaw from '$lib/utils/cb2gen?raw'
+import addInterceptorRaw from './client/addInterceptor.ts?script'
+import pluginLibRaw from '@novachat/plugin/internal?raw'
 import { once } from '@liuli-util/async'
 
 const initESBuild = once(async () => {
@@ -59,15 +58,15 @@ export async function buildCode(code: string): Promise<string> {
         },
         {
           path: '@novachat/plugin',
-          content: pluginRaw,
+          content: 'export * from "@novachat/plugin/internal"',
         },
         {
-          path: './protocol',
-          content: protocolRaw,
+          path: '@novachat/plugin/internal',
+          content: pluginLibRaw,
         },
         {
-          path: '$lib/utils/cb2gen',
-          content: cb2genRaw,
+          path: './addInterceptor',
+          content: addInterceptorRaw,
         },
       ]),
     ],

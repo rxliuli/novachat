@@ -6,11 +6,6 @@ declare module '*?data-uri' {
   export default content
 }
 
-declare module '@novachat/plugin' {
-  export type * from '$lib/plugins/client/plugin'
-  export * from '$lib/plugins/client/plugin'
-}
-
 declare module '*?script' {
   const content: string
   export default content

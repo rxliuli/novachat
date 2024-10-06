@@ -1,7 +1,5 @@
-import { OpenAI } from 'openai'
 import type { Message } from '$lib/types/Message'
 import { get } from 'svelte/store'
-import { settingsStore } from '$lib/stores/settings'
 import { pluginStore } from '$lib/plugins/store'
 import { cb2gen } from '$lib/utils/cb2gen'
 import { sortBy } from 'lodash-es'
@@ -42,7 +40,10 @@ function createBot(): Bot {
         client(options.model).command.invoke,
         {
           model: options.model,
-          messages: sortBy(options.messages, 'createdAt'),
+          messages: sortBy(options.messages, 'createdAt').map((it) => ({
+            ...it,
+            role: it.from,
+          })),
         },
       )
     },
@@ -52,7 +53,10 @@ function createBot(): Bot {
           client(options.model).command.stream,
           {
             model: options.model,
-            messages: sortBy(options.messages, 'createdAt'),
+            messages: sortBy(options.messages, 'createdAt').map((it) => ({
+              ...it,
+              role: it.from,
+            })),
           },
           cb,
         ),

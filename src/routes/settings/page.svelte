@@ -46,6 +46,7 @@
         <label for={it.name} class="block mb-1">{it.schema.description}</label>
         {#if it.schema.enum}
           <Select.Root
+            name={it.name}
             selected={{
               value: $settingsStore[it.name],
               label: $settingsStore[it.name],

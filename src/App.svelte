@@ -36,7 +36,7 @@
 
   onMount(async () => {
     await initPluginSystem()
-    console.log($pluginStore)
+    // console.log($pluginStore)
   })
   onDestroy(destoryPluginSystem)
 </script>

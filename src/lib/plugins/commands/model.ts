@@ -4,7 +4,7 @@ import {
   type QueryChunkResponse,
   type QueryRequest,
   type QueryResponse,
-} from '../client/plugin'
+} from '@novachat/plugin/internal'
 import { pluginStore, type ActivatedModel } from '../store'
 import { settingsStore } from '$lib/stores/settings'
 import { produce } from 'immer'

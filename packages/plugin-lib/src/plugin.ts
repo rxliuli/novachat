@@ -1,14 +1,24 @@
-import type { Attachment, Message } from '$lib/types/Message'
-import { cb2gen } from '$lib/utils/cb2gen'
+import type { Attachment, Message } from './Message'
+import { cb2gen } from './utils/cb2gen'
 import {
   defineWorkerProtocol,
   pluginContext,
   type PluginContext,
 } from './protocol'
-import type { ActivatedModel } from '../store'
+
+interface ActivatedModel {
+  id: string
+  name: string
+  pluginId: string
+  command: {
+    invoke: string
+    stream: string
+  }
+  type: 'llm' | 'bot'
+}
 
 interface QueryRequest {
-  messages: (Pick<Message, 'content' | 'from'> & {
+  messages: (Pick<Message, 'content' | 'role'> & {
     attachments?: Pick<Attachment, 'url'>[]
   })[]
   model: string

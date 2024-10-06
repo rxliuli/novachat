@@ -5,8 +5,12 @@ import plugin from 'rollup-plugin-import-data-uri'
 import { build as buildForESBuild } from 'esbuild'
 
 function script(): Plugin {
+  let env: Record<string, string> = {}
   return {
     name: 'script',
+    configResolved(config) {
+      env = config.env
+    },
     async transform(_code, id) {
       let readId: string = '',
         external: string[] = []
@@ -27,7 +31,19 @@ function script(): Plugin {
         sourcemap: true,
         format: 'esm',
         target: 'esnext',
+        platform: 'browser',
         entryPoints: [realId],
+        define: {
+          ...Object.entries(env)
+            .filter(([k]) => k.startsWith('VITE_'))
+            .reduce(
+              (acc, [k, v]) => ({
+                ...acc,
+                [`import.meta.env.${k}`]: JSON.stringify(v),
+              }),
+              {},
+            ),
+        },
         external,
       })
       const code = result.outputFiles[0].text

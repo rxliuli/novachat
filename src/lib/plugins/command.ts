@@ -1,6 +1,9 @@
 import fs from '@zenfs/core'
 import { buildCode } from './builder'
-import type { PluginExportType, PluginImportType } from './client/protocol'
+import type {
+  PluginExportType,
+  PluginImportType,
+} from '@novachat/plugin/internal'
 import { defineMessaging } from './messging'
 import {
   installedPlugins,
@@ -81,6 +84,7 @@ export async function installPluginFromZip(blob: Blob) {
 }
 
 export async function installPlugin(loadResult: PluginLoadResult) {
+  stopPlugin(loadResult.manifest.id)
   const pluginDIr = `/plugins/${loadResult.manifest.id}/`
   await fs.promises.mkdir(pluginDIr, { recursive: true })
   await fs.promises.writeFile(
@@ -155,8 +159,7 @@ export async function destoryPluginSystem() {
 }
 
 export async function uninstallPlugin(id: string) {
-  stopPlugin(id)
-  pluginStore.uninstallPlugin(id)
+  pluginStore.destoryPluginContext(id)
   installedPlugins.update((draft) => {
     return draft.filter((it) => it.id !== id)
   })
@@ -170,5 +173,29 @@ export function stopPlugin(id: string) {
     return
   }
   plugin.worker.terminate()
-  pluginStore.uninstallPlugin(id)
+  pluginStore.destoryPluginContext(id)
+}
+
+export async function loadRemotePlugins() {
+  const r = await fetch(
+    'https://raw.githubusercontent.com/novachat/plugins/refs/heads/main/plugins.json',
+  )
+  return Object.values((await r.json()) as Record<string, PluginManifest>)
+}
+
+export async function installPluginForRemote(manifest: PluginManifest) {
+  const r = await fetch(
+    import.meta.env.VITE_REVERSE_PROXY_URL +
+      '?url=' +
+      `https://github.com/novachat/plugins/raw/refs/heads/main/plugins/${manifest.id}/plugin.zip`,
+  )
+  if (!r.ok) {
+    throw new Error('Failed to download plugin' + r.statusText)
+  }
+  const zip = await new JSZip().loadAsync(await r.blob())
+  const code = await zip.file('index.js')?.async('string')
+  if (!code) {
+    throw new Error('Failed to install plugin')
+  }
+  await installPlugin({ manifest, code, type: 'local' })
 }

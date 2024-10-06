@@ -1,0 +1,32 @@
+{
+  "name": "@novachat/plugin-translator",
+  "private": true,
+  "keywords": [
+    "novachat",
+    "novachat-plugin"
+  ],
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "publish"
+  ],
+  "scripts": {
+    "setup": "pnpm build",
+    "build": "tsup",
+    "dev": "pnpm build --watch"
+  },
+  "sideEffects": false,
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  },
+  "dependencies": {
+    "@novachat/plugin": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

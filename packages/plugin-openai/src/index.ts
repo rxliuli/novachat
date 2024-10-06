@@ -8,7 +8,7 @@ function convertReq(
   return {
     model: req.model,
     messages: req.messages.map((it) => {
-      if (it.from === 'user' && it.attachments) {
+      if (it.role === 'user' && it.attachments) {
         return {
           role: 'user',
           content: [
@@ -28,7 +28,7 @@ function convertReq(
       }
       return {
         content: it.content,
-        role: it.from,
+        role: it.role,
       }
     }),
     stream,

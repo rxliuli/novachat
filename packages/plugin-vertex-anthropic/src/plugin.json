@@ -1,0 +1,33 @@
+{
+  "id": "novachat.vertex-anthropic",
+  "name": "Vertex Anthropic",
+  "description": "Vertex Anthropic Provider",
+  "version": "0.1.0",
+  "author": "NovaChat",
+  "configuration": {
+    "title": "Vertex Anthropic",
+    "properties": {
+      "vertexAnthropic.googleSaClientEmail": {
+        "type": "string",
+        "description": "Google Service Account Client Email",
+        "default": ""
+      },
+      "vertexAnthropic.googleSaPrivateKey": {
+        "type": "string",
+        "description": "Google Service Account Private Key",
+        "default": "",
+        "format": "password"
+      },
+      "vertexAnthropic.region": {
+        "type": "string",
+        "description": "Google Cloud Region",
+        "default": "us-east5"
+      },
+      "vertexAnthropic.projectId": {
+        "type": "string",
+        "description": "Google Cloud Project ID",
+        "default": ""
+      }
+    }
+  }
+}
