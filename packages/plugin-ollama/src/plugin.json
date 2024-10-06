@@ -1,0 +1,7 @@
+{
+  "id": "novachat.ollama",
+  "name": "Ollama",
+  "description": "Ollama Provider",
+  "version": "0.1.0",
+  "author": "NovaChat"
+}

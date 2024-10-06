@@ -1,5 +1,5 @@
 {
-  "name": "@novachat/plugin-translator",
+  "name": "@novachat/plugin-ollama",
   "private": true,
   "keywords": [
     "novachat",
@@ -18,9 +18,9 @@
   },
   "sideEffects": false,
   "devDependencies": {
+    "ollama": "^0.5.9",
     "tsup": "^8.3.0",
     "typescript": "^5.3.3",
-    "@langchain/textsplitters": "^0.1.0",
     "vitest": "^1.2.2"
   },
   "dependencies": {
