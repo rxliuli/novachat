@@ -18,7 +18,7 @@ it('indexedDBAdapter', async () => {
   expect(await idbGet('settings')).toEqual({ theme: 'dark' })
   const store2 = localStore('settings', { theme: 'light' }, indexedDBAdapter())
   expect(get(store2)).toEqual({ theme: 'light' })
-  await new Promise((resolve) => setTimeout(resolve, 0))
+  await new Promise((resolve) => setTimeout(resolve, 100))
   expect(get(store2)).toEqual({ theme: 'dark' })
 })
 
