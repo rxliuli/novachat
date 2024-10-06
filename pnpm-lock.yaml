@@ -262,6 +262,25 @@ importers:
         specifier: ^1.2.2
         version: 1.6.0(@types/node@22.7.4)(happy-dom@15.7.4)(jsdom@25.0.1)
 
+  packages/plugin-ollama:
+    dependencies:
+      '@novachat/plugin':
+        specifier: workspace:*
+        version: link:../plugin-lib
+    devDependencies:
+      ollama:
+        specifier: ^0.5.9
+        version: 0.5.9
+      tsup:
+        specifier: ^8.3.0
+        version: 8.3.0(@microsoft/api-extractor@7.47.9(@types/node@22.7.4))(jiti@1.21.6)(postcss@8.4.47)(typescript@5.6.2)(yaml@2.5.1)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.6.2
+      vitest:
+        specifier: ^1.2.2
+        version: 1.6.0(@types/node@22.7.4)(happy-dom@15.7.4)(jsdom@25.0.1)
+
   packages/plugin-openai:
     dependencies:
       '@novachat/plugin':
@@ -300,6 +319,9 @@ importers:
         specifier: workspace:*
         version: link:../plugin-lib
     devDependencies:
+      '@langchain/textsplitters':
+        specifier: ^0.1.0
+        version: 0.1.0(@langchain/core@0.3.7(openai@4.67.1(zod@3.23.8)))
       tsup:
         specifier: ^8.3.0
         version: 8.3.0(@microsoft/api-extractor@7.47.9(@types/node@22.7.4))(jiti@1.21.6)(postcss@8.4.47)(typescript@5.6.2)(yaml@2.5.1)
@@ -331,9 +353,6 @@ importers:
       jose:
         specifier: ^5.9.3
         version: 5.9.3
-      openai:
-        specifier: ^4.65.0
-        version: 4.67.1(zod@3.23.8)
       tsup:
         specifier: ^8.3.0
         version: 8.3.0(@microsoft/api-extractor@7.47.9(@types/node@22.7.4))(jiti@1.21.6)(postcss@8.4.47)(typescript@5.6.2)(yaml@2.5.1)
@@ -1293,6 +1312,12 @@ packages:
   '@langchain/core@0.3.7':
     resolution: {integrity: sha512-6wsnEtw5GlhmBhoLfw/g8Hrp09BNwQwDLXyuv3GyK+ay4/3H3YuhAphqQLO4HNphuZIZKlW9ihSrqdCMvvbvZQ==}
     engines: {node: '>=18'}
+
+  '@langchain/textsplitters@0.1.0':
+    resolution: {integrity: sha512-djI4uw9rlkAb5iMhtLED+xJebDdAG935AdP4eRTB02R7OB/act55Bj9wsskhZsvuyQRpO4O1wQOp85s6T6GWmw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@langchain/core': '>=0.2.21 <0.4.0'
 
   '@liuli-util/async@3.7.0':
     resolution: {integrity: sha512-Up4JHlYRolyoyK/R75rN/5cD0PlKtvvbkkU6AWYn8farfzxQay8mcS7kHeVl5L3Lc0dbQpmGoEMcUK1gcLmeNg==}
@@ -3098,6 +3123,9 @@ packages:
 
   ohash@1.1.4:
     resolution: {integrity: sha512-FlDryZAahJmEF3VR3w1KogSEdWX3WhA5GPakFx4J81kEAiHyLMpdLLElS8n8dfNadMgAne/MywcvmogzscVt4g==}
+
+  ollama@0.5.9:
+    resolution: {integrity: sha512-F/KZuDRC+ZsVCuMvcOYuQ6zj42/idzCkkuknGyyGVmNStMZ/sU3jQpvhnl4SyC0+zBzLiKNZJnJeuPFuieWZvQ==}
 
   omggif@1.0.10:
     resolution: {integrity: sha512-LMJTtvgc/nugXj0Vcrrs68Mn2D1r0zf630VNtqtpI1FEO7e+O9FP4gqs9AcnBaSEeoHIPm28u6qgPR0oyEpGSw==}
@@ -5091,6 +5119,11 @@ snapshots:
       zod-to-json-schema: 3.23.3(zod@3.23.8)
     transitivePeerDependencies:
       - openai
+
+  '@langchain/textsplitters@0.1.0(@langchain/core@0.3.7(openai@4.67.1(zod@3.23.8)))':
+    dependencies:
+      '@langchain/core': 0.3.7(openai@4.67.1(zod@3.23.8))
+      js-tiktoken: 1.0.15
 
   '@liuli-util/async@3.7.0': {}
 
@@ -7284,6 +7317,10 @@ snapshots:
   object-hash@3.0.0: {}
 
   ohash@1.1.4: {}
+
+  ollama@0.5.9:
+    dependencies:
+      whatwg-fetch: 3.6.20
 
   omggif@1.0.10: {}
 

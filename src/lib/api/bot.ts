@@ -48,18 +48,20 @@ function createBot(): Bot {
       )
     },
     stream(options): AsyncGenerator<ChatCompletionChunk> {
-      return cb2gen((cb) =>
-        pluginStore.executeCommand(
-          client(options.model).command.stream,
-          {
-            model: options.model,
-            messages: sortBy(options.messages, 'createdAt').map((it) => ({
-              ...it,
-              role: it.from,
-            })),
-          },
-          cb,
-        ),
+      return cb2gen(
+        (cb) =>
+          pluginStore.executeCommand(
+            client(options.model).command.stream,
+            {
+              model: options.model,
+              messages: sortBy(options.messages, 'createdAt').map((it) => ({
+                ...it,
+                role: it.from,
+              })),
+            },
+            cb,
+          ),
+        options.controller.signal,
       )
     },
   }

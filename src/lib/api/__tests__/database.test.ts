@@ -166,11 +166,12 @@ describe('AttachmentDAO', () => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       name: 'test.png',
-      data: new Blob(),
+      data: new Blob(['test'], { type: 'plain/text' }),
       type: 'image/jpeg',
     })
     const r = await dao.getAllByMessageId('msg-1')
     expect(r).length(1)
+    expect(await r[0].data.text()).eq('test')
   })
 })
 

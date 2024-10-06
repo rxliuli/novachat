@@ -66,7 +66,7 @@
                 it.schema.default ??
                 'Please select'}
             </Select.Trigger>
-            <Select.Content>
+            <Select.Content class="overflow-y-auto max-h-[20rem]">
               {#each it.schema.enum as value, index}
                 <Select.Item {value}
                   >{it.schema.enumDescriptions?.[index] ?? value}</Select.Item

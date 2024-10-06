@@ -12,7 +12,6 @@
   import { sortBy } from 'lodash-es'
   import { pluginStore } from '$lib/plugins/store'
   import { settingsStore } from '$lib/stores/settings'
-  import AccordionContent from '$lib/components/ui/accordion/accordion-content.svelte'
 
   export let params: { id: string } = { id: '' }
 
@@ -97,18 +96,13 @@
     if (!conversation) {
       return
     }
-    const modelName =
-      $pluginStore.models.find((it) => it.id === conversation.model)?.type ===
-      'llm'
-        ? conversation.model
-        : $settingsStore.defaultModel
-    if (!modelName) {
+    if (!$settingsStore.defaultModel) {
       console.warn('No model name found')
       return
     }
     const title = await generateTitleForConversation({
       ...conversation,
-      model: modelName,
+      model: $settingsStore.defaultModel,
     })
     if (title) {
       convStore.updateTitle(conversation.id, title)

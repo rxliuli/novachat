@@ -62,7 +62,13 @@ interface Messging<T extends Record<string, (...args: any[]) => any>> {
   ): void
   sendMessage<K extends keyof T & string>(
     port: LikeMessagePort,
-    name: K,
+    name:
+      | K
+      | {
+          name: K
+          timeout?: number
+          signal?: AbortSignal
+        },
     ...args: Parameters<T[K]>
   ): Promise<Awaited<ReturnType<T[K]>>>
 }
@@ -73,12 +79,17 @@ export function defineMessaging<
   const sendMessage: Messging<T>['sendMessage'] = (port, name, ...args) => {
     const wf = warpCallback(args)
     wf.cbs.forEach((it) => onMessage(port, it.key, it.cb as any))
-    return put(port, name, ...wf.value)
+    return put(port, name as any, ...wf.value)
   }
   const onMessage: Messging<T>['onMessage'] = (port, name, cb) => {
     listen(port, name as any, (...args) => {
-      const uwf = unWarpCallback(args, (name, ...args) =>
-        sendMessage(port, name, ...(args as any)),
+      const uwf = unWarpCallback(args, (cbName, ...args) =>
+        sendMessage(
+          port,
+          // TODO: This llm stream need long timeout
+          { name: cbName, timeout: 1000 * 60 * 10 },
+          ...(args as any),
+        ),
       )
       return cb(...uwf)
     })

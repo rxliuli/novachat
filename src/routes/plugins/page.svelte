@@ -5,7 +5,6 @@
     installPluginForRemote,
     installPluginFromZip,
     loadRemotePlugins,
-    stopPlugin,
     uninstallPlugin,
   } from '$lib/plugins/command'
   import {
@@ -17,6 +16,7 @@
   import { uniq, uniqBy } from 'lodash-es'
   import { BlocksIcon, Loader2Icon } from 'lucide-svelte'
   import { toast } from 'svelte-sonner'
+  import InstallButton from './components/InstallButton.svelte'
 
   async function onInstallPluginFromLocal() {
     const files = await fileSelector({
@@ -98,9 +98,9 @@
                     Uninstall
                   </Button>
                 {:else}
-                  <Button on:click={() => onInstallPlugin(plugin.manifest)}>
-                    Install
-                  </Button>
+                  <InstallButton
+                    onInstall={() => onInstallPlugin(plugin.manifest)}
+                  />
                 {/if}
               </div>
             </div>
