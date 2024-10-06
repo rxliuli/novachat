@@ -103,7 +103,9 @@ export async function getPagination<
 
 export class ConversationDAO implements IConversationDAO {
   async getAll(
-    options?: PaginationOptions,
+    options?: PaginationOptions & {
+      conversationId?: string
+    },
   ): Promise<PaginationResult<ConversationDB>> {
     const conversations = await getPagination({
       index: dbStore.idb
@@ -135,7 +137,7 @@ export class ConversationDAO implements IConversationDAO {
         txConv.store.delete(id),
         txMsg.store
           .index('by-conversation-id')
-          .getAllKeys()
+          .getAllKeys(id)
           .then((keys) => Promise.all(keys.map((k) => txMsg.store.delete(k)))),
       ])
     } catch (e) {

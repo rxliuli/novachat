@@ -20,7 +20,9 @@ export interface PaginationResult<T> {
 }
 
 export interface IConversationDAO {
-  getAll(options?: PaginationOptions): Promise<PaginationResult<ConversationDB>>
+  getAll(options?: PaginationOptions & {
+    conversationId?: string
+  }): Promise<PaginationResult<ConversationDB>>
   create(conversation: ConversationDB): Promise<void>
   delete(id: string): Promise<void>
   update(

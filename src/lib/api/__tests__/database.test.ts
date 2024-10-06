@@ -98,7 +98,10 @@ describe('ConversationDAO', () => {
     await dbApi.conversations.delete('chat-1')
     expect(
       (await dbApi.messages.getAll({ conversationId: 'chat-1' })).data,
-    ).toEqual([])
+    ).length(0)
+    expect(
+      (await dbApi.messages.getAll({ conversationId: 'chat-2' })).data,
+    ).length(1)
   })
 })
 
