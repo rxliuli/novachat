@@ -1,8 +1,3 @@
-```
-npm install
-npm run dev
-```
+# @novachat/plugin-reverse-proxy
 
-```
-npm run deploy
-```
+NovaChat Reverse Proxy, for proxying requests to external services.

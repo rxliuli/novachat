@@ -1,13 +1,6 @@
 # Introduction
 
-A ChatUI that supports plugins and prioritizes local processing. I like PoeAI, but dislike the subscription model. After using the API, my monthly AI bill decreased by more than 10 times ($20 => $1.43).
+Welcome to the official website of NovaChat 👏🏻
+NovaChat is a plugin-supported, local-first ChatUI. You can use it directly in your browser or host it remotely yourself. In the future, it will support fully offline client downloads.
 
-- Local first
-- Plugin support
-- Simple self-hosting
-- Cross-platform web support
-- Open Source & Privacy
-
-## Thanks
-
-Among all current ChatUIs, I like PoeAI the most for functionality and HF ChatUI the most for UI design. Since the latter is open-source, I directly copied many components and code from it.
+![intro](/images/intro-1.png)

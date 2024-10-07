@@ -1,3 +1,3 @@
-# @novachat/plugin-openai
+# @novachat/plugin-ollama
 
-NovaChat OpenAI Plugin.
+NovaChat Ollama Plugin.

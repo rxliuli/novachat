@@ -26,13 +26,28 @@ export default defineConfig({
             text: 'Guide',
             items: [
               { text: 'Introduction', link: '/guide/intro' },
-              { text: 'OpenAI', link: '/guide/openai' },
-              { text: 'Plugin Usage', link: '/guide/plugin-usage' },
+              {
+                text: 'Using Plugins',
+                link: '/guide/plugin-usage',
+              },
+              {
+                text: 'Self-Hosting',
+                link: '/guide/self-host',
+              },
             ],
           },
           {
-            text: 'Plugin',
-            items: [{ text: 'Introduction', link: '/plugin/intro' }],
+            text: 'Plugins',
+            items: [
+              {
+                text: 'Introduction',
+                link: '/plugin/',
+              },
+              {
+                text: 'Developing Plugins',
+                link: '/plugin/dev',
+              },
+            ],
           },
         ],
       },
@@ -47,10 +62,6 @@ export default defineConfig({
             text: '指南',
             items: [
               { text: '介绍', link: '/zh-CN/guide/intro' },
-              {
-                text: '使用 OpenAI',
-                link: '/zh-CN/guide/openai',
-              },
               {
                 text: '使用插件',
                 link: '/zh-CN/guide/plugin-usage',

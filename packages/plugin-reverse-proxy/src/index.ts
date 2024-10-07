@@ -10,7 +10,10 @@ app
       origin: (origin) => {
         if (origin) {
           const u = new URL(origin)
-          if (['localhost', 'app.novachat.dev'].includes(u.hostname)) {
+          if (
+            ['localhost', 'app.novachat.dev'].includes(u.hostname) ||
+            u.hostname.endsWith('.pages.dev')
+          ) {
             return origin
           }
         }

@@ -1,28 +1,28 @@
-# 创建插件
+# Creating a Plugin
 
-插件根目录至少需要包含两个文件：
+The root directory of a plugin must contain at least two files:
 
-- plugin.json: 描述插件信息的 json 文件
-- index.js: 实现功能的 JavaScript 脚本
+- plugin.json: A JSON file describing the plugin information
+- index.js: A JavaScript script implementing the functionality
 
-插件的 bundle 就是这两个文件的 zip 压缩包。
+The plugin bundle is a zip archive of these two files.
 
-## 配置 plugin.json
+## Configuring plugin.json
 
-| 字段          | 类型   | 是否必须 | 说明                                                                           |
-| ------------- | ------ | -------- | ------------------------------------------------------------------------------ |
-| id            | string | ✅       | 插件的唯一标识符，必须由数字、小写字母和 . 组成。                              |
-| name          | string | ✅       | 插件名称，无限制，建议别太长。                                                 |
-| version       | string | ✅       | 插件版本号，必须由数字、小写字母和 . 组成。                                    |
-| description   | string | -        | 插件描述信息。                                                                 |
-| configuration | object | -        | 插件选项数组，该字段用于提供一些选项供用户选择或填写，详情见 `config object`。 |
+| Field         | Type   | Required | Description                                                                                                         |
+| ------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| id            | string | ✅       | Unique identifier for the plugin, must consist of numbers, lowercase letters, and dots.                             |
+| name          | string | ✅       | Plugin name, no restrictions, but it's recommended to keep it short.                                                |
+| version       | string | ✅       | Plugin version number, must consist of numbers, lowercase letters, and dots.                                        |
+| description   | string | -        | Plugin description.                                                                                                 |
+| configuration | object | -        | Array of plugin options, this field is used to provide options for users to select or fill in, see `config object`. |
 
 ### config object
 
-| 字段       | 类型                   | 是否必须 | 说明                       |
-| ---------- | ---------------------- | -------- | -------------------------- |
-| title      | string                 | ✅       | 插件在配置页面显示的分类   |
-| properties | Record<string, object> | ✅       | 配置 JSON Schema，示例如下 |
+| Field      | Type                   | Required | Description                                                 |
+| ---------- | ---------------------- | -------- | ----------------------------------------------------------- |
+| title      | string                 | ✅       | Category displayed on the configuration page for the plugin |
+| properties | Record<string, object> | ✅       | Configuration JSON Schema, example below                    |
 
 ```json
 {
@@ -38,11 +38,11 @@
 }
 ```
 
-## 实现 index.js
+## Implementing index.js
 
-前文提到，index.js 是一个 JavaScript 脚本，需要导出一个 activate 函数供 NovaChat 初始化，而所有插件相关的 API 都从 `@novachat/plugin` 中导入。
+As mentioned earlier, index.js is a JavaScript script that needs to export an activate function for NovaChat to initialize, and all plugin-related APIs are imported from `@novachat/plugin`.
 
-下面是一个不做任何事情的插件：
+Here's a plugin that doesn't do anything:
 
 ```ts
 export async function activate() {
@@ -50,11 +50,11 @@ export async function activate() {
 }
 ```
 
-### 添加 LLM 支持
+### Adding LLM Support
 
-要添加新的 LLM 支持，需要使用 `novachat.model.registerProvider` 注册新的 LLM Provider，一般会提供多个模型。
+To add support for a new LLM, use `novachat.model.registerProvider` to register a new LLM Provider, which generally provides multiple models.
 
-下面是 OpenAI Provider 的实现：
+Here's an implementation of the OpenAI Provider:
 
 ```ts
 import * as novachat from '@novachat/plugin'
@@ -137,7 +137,7 @@ export async function activate(context: novachat.PluginContext) {
 }
 ```
 
-上面使用 `novachat.setting.get('openai.apiKey')` 获取用户配置的 API Key，所以还需要在 plugin.json 中添加配置选项。
+The above uses `novachat.setting.get('openai.apiKey')` to get the user-configured API Key, so you also need to add configuration options in plugin.json.
 
 ```json
 {
@@ -155,11 +155,11 @@ export async function activate(context: novachat.PluginContext) {
 }
 ```
 
-> 参考: <https://github.com/rxliuli/novachat/tree/main/packages/plugin-openai>
+> Reference: <https://github.com/rxliuli/novachat/tree/main/packages/plugin-openai>
 
-### 实现 Prompt Bot
+### Implementing a Prompt Bot
 
-有时候只想使用提示词来进行角色扮演或其他任何事情，希望使用已经配置的 LLM Provider。这种情况下可以实现一个 Prompt Bot，下面是一个翻译插件，它会检测输入内容的语言，如果与用户配置的默认语言相同，就会翻译为英语，否则翻译为用户配置的语言。
+Sometimes you just want to use prompts for role-playing or other purposes, hoping to use the already configured LLM Provider. In this case, you can implement a Prompt Bot. Here's a translation plugin that detects the language of the input content and translates it to English if it matches the user's default language, otherwise translates it to the user's configured language.
 
 ```ts
 import * as novachat from '@novachat/plugin'
@@ -215,4 +215,4 @@ export async function activate() {
 }
 ```
 
-> 参考: <https://github.com/rxliuli/novachat/tree/main/packages/plugin-translator>
+> Reference: <https://github.com/rxliuli/novachat/tree/main/packages/plugin-translator>
