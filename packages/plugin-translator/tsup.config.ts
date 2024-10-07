@@ -8,6 +8,7 @@ export default defineConfig({
   format: ['esm'],
   bundle: true,
   splitting: false,
+  sourcemap: 'inline',
   esbuildOptions: (options) => {
     options.platform = 'browser'
   },

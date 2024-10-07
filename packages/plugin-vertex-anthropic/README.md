@@ -1,3 +1,3 @@
-# @novachat/plugin-openai
+# @novachat/plugin-vertex-anthropic
 
-NovaChat OpenAI Plugin.
+NovaChat Vertex Anthropic Plugin.

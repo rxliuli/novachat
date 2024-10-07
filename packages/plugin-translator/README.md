@@ -1,3 +1,3 @@
-# @novachat/plugin-openai
+# @novachat/plugin-translator
 
-NovaChat OpenAI Plugin.
+NovaChat Translator Plugin.

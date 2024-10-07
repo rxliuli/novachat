@@ -53,11 +53,21 @@ async function parseReq(
   stream: boolean,
 ): Promise<AnthropicTypes.MessageCreateParams> {
   return {
-    ...req,
-    messages: await convertMessages(req.messages),
+    messages: await convertMessages(
+      req.messages.filter((it) =>
+        (
+          [
+            'user',
+            'assistant',
+          ] as novachat.QueryRequest['messages'][number]['role'][]
+        ).includes(it.role),
+      ),
+    ),
     max_tokens: getModelMaxTokens(req.model),
     stream,
-  }
+    model: req.model,
+    system: req.messages.find((it) => it.role === 'system')?.content,
+  } as AnthropicTypes.MessageCreateParamsNonStreaming
 }
 
 function parseResponse(
