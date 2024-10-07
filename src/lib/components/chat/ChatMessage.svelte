@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Message } from '$lib/types/Message'
-  import { BotIcon, UserIcon } from 'lucide-svelte'
+  import { BotIcon, UserIcon, TriangleAlertIcon } from 'lucide-svelte'
   import { fromMarkdown } from 'mdast-util-from-markdown'
   import { gfm } from 'micromark-extension-gfm'
   import { gfmFromMarkdown } from 'mdast-util-gfm'
@@ -13,6 +13,7 @@
   import CopyToClipBoardBtn from '../CopyToClipBoardBtn.svelte'
   import BotChatMessage from './BotChatMessage.svelte'
   export let message: Message
+  import * as Alert from '$lib/components/ui/alert'
 
   export let loading: boolean
 
@@ -53,9 +54,17 @@
   </div>
   <div class="flex-grow">
     {#each message.attachments ?? [] as attachment}
-      <div class="overflow-hidden rounded-lg max-w-96 max-h-64 mb-2">
-        <img src={attachment.url} alt="" class="w-full h-full object-cover" />
-      </div>
+      {#if attachment.url}
+        <div class="overflow-hidden rounded-lg max-w-96 max-h-64 mb-2">
+          <img src={attachment.url} alt="" class="w-full h-full object-cover" />
+        </div>
+      {:else}
+        <Alert.Root variant="destructive" class="mb-2">
+          <TriangleAlertIcon class="h-4 w-4" />
+          <Alert.Title>Error</Alert.Title>
+          <Alert.Description>Image load failed.</Alert.Description>
+        </Alert.Root>
+      {/if}
     {/each}
     {#if message.from === 'assistant'}
       <article

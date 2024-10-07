@@ -34,16 +34,20 @@ function createBot(): Bot {
     }
     return model
   }
+  function handleMessages(messages: EndpointMessage[]) {
+    return sortBy(messages, 'createdAt').map((it) => ({
+      ...it,
+      role: it.from,
+      attachments: it.attachments?.filter((it) => it.url),
+    }))
+  }
   return {
     async invoke(options: BotRequest) {
       return await pluginStore.executeCommand(
         client(options.model).command.invoke,
         {
           model: options.model,
-          messages: sortBy(options.messages, 'createdAt').map((it) => ({
-            ...it,
-            role: it.from,
-          })),
+          messages: handleMessages(options.messages),
         },
       )
     },
@@ -54,10 +58,7 @@ function createBot(): Bot {
             client(options.model).command.stream,
             {
               model: options.model,
-              messages: sortBy(options.messages, 'createdAt').map((it) => ({
-                ...it,
-                role: it.from,
-              })),
+              messages: handleMessages(options.messages),
             },
             cb,
           ),

@@ -1,6 +1,6 @@
 import { dbApi } from '$lib/api/db'
 import type { Conversation } from '$lib/types/Conversation'
-import type { Attachment, Message } from '$lib/types/Message'
+import type { Message } from '$lib/types/Message'
 import { blobToDataURI } from '$lib/utils/datauri'
 import { produce } from 'immer'
 import { omit } from 'lodash-es'
@@ -212,10 +212,19 @@ export const convStore = {
       ).data.map(async (it) => ({
         ...it,
         attachments: await Promise.all(
-          it.attachments.map(async (atta) => ({
-            ...atta,
-            url: await blobToDataURI(atta.data),
-          })),
+          it.attachments.map(async (atta) => {
+            try {
+              return {
+                ...atta,
+                url: await blobToDataURI(atta.data),
+              }
+            } catch (e) {
+              return {
+                ...atta,
+                url: '',
+              }
+            }
+          }),
         ),
       })),
     )
