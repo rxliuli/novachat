@@ -3,5 +3,14 @@
   "name": "Demo Plugin",
   "description": "Plugin for testing",
   "version": "0.1.0",
-  "author": "rxliuli"
+  "author": "rxliuli",
+  "configuration": {
+    "title": "Demo Plugin",
+    "properties": {
+      "demo.key": {
+        "type": "string",
+        "default": "demo"
+      }
+    }
+  }
 }

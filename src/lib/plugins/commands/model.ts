@@ -8,6 +8,7 @@ import {
 import { pluginStore, type ActivatedModel } from '../store'
 import { settingsStore } from '$lib/stores/settings'
 import { produce } from 'immer'
+import { settingSchemaStore } from '$lib/stores/settingSchema'
 
 interface SystemCommandType {
   'model.getDefault': () => Promise<Model | undefined>
@@ -72,7 +73,23 @@ export function createSettingCommand() {
   pluginStore.addCommand({
     id: 'setting.get',
     type: 'system',
-    handler: (key: string) => get(settingsStore)[key],
+    handler: (key: string) => {
+      const store = get(pluginStore)
+      const plugin = store.plugins.find((it) =>
+        Object.keys(it.manifest.configuration?.properties ?? {}).some(
+          (it) => it === key,
+        ),
+      )
+      if (!plugin) {
+        return
+      }
+      return (
+        get(settingsStore)[key] ??
+        Object.entries(plugin.manifest.configuration?.properties ?? {}).find(
+          ([k]) => k === key,
+        )?.[1].default
+      )
+    },
   })
   pluginStore.addCommand({
     id: 'setting.set',
