@@ -1,4 +1,3 @@
-import { derived } from 'svelte/store'
 import { indexedDBAdapter, localStore } from '../utils/localStore'
 
 type Settings = {

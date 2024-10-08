@@ -8,7 +8,6 @@ import {
 import { pluginStore, type ActivatedModel } from '../store'
 import { settingsStore } from '$lib/stores/settings'
 import { produce } from 'immer'
-import { settingSchemaStore } from '$lib/stores/settingSchema'
 
 interface SystemCommandType {
   'model.getDefault': () => Promise<Model | undefined>

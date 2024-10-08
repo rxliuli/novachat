@@ -1,21 +1,21 @@
 import JSZip from 'jszip'
-import { defineConfig } from 'tsup'
-import manifest from './src/plugin.json'
 import { mkdir, readFile, writeFile } from 'fs/promises'
+import { type Plugin } from 'esbuild'
+import path from 'path'
 
-export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['esm'],
-  bundle: true,
-  splitting: false,
-  sourcemap: 'inline',
-  esbuildOptions: (options) => {
-    options.platform = 'browser'
-  },
-  plugins: [
-    {
-      name: 'plugin-novachat',
-      async buildEnd() {
+export function novachatPlugin(options: { root: string }): Plugin {
+  return {
+    name: 'esbuild-plugin-novachat',
+    setup(build) {
+      build.onEnd(async () => {
+        const manifest = JSON.parse(
+          await readFile(
+            path.resolve(options.root, 'src/plugin.json'),
+            'utf-8',
+          ),
+        )
+        const pkg = JSON.parse(await readFile('package.json', 'utf-8'))
+        manifest.version = pkg.version
         const zip = new JSZip()
         zip.file('plugin.json', JSON.stringify(manifest))
         zip.file('index.js', await readFile('dist/index.js'))
@@ -28,7 +28,7 @@ export default defineConfig({
           'publish/plugin.json',
           JSON.stringify(manifest, null, 2),
         )
-      },
+      })
     },
-  ],
-})
+  }
+}

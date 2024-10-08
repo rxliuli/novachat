@@ -16,6 +16,7 @@ import { get, set } from 'idb-keyval'
 import { initSystemCommand } from './commands/model'
 import { get as getStore } from 'svelte/store'
 import { uniqBy } from 'lodash-es'
+import { internalPlugins } from './internal'
 
 export function definePluginProtocol(port: Worker, pluginId: string) {
   const { onMessage } = defineMessaging<PluginImportType>()
@@ -138,7 +139,7 @@ export async function loadInstalledPlugins(): Promise<PluginLoadResult[]> {
 export async function initPluginSystem() {
   initSystemCommand()
   const plugins = [
-    ...(await import('$lib/plugins/internal')).internalPlugins,
+    ...internalPlugins,
     ...(await loadInstalledPlugins()),
   ]
   for (const it of plugins) {

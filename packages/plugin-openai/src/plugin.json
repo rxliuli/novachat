@@ -12,6 +12,11 @@
         "description": "OpenAI API key",
         "default": "",
         "format": "password"
+      },
+      "openai.baseURL": {
+        "type": "string",
+        "description": "OpenAI Base URL",
+        "default": "https://api.openai.com/v1"
       }
     }
   }

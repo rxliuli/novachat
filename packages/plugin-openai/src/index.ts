@@ -39,12 +39,23 @@ export async function activate(context: novachat.PluginContext) {
   const client = async () => {
     return new OpenAI({
       apiKey: await novachat.setting.get('openai.apiKey'),
+      baseURL: await novachat.setting.get('openai.baseURL'),
       dangerouslyAllowBrowser: true,
     })
   }
+  const list = await (await client()).models.list()
   await novachat.model.registerProvider({
     name: 'OpenAI',
-    models: [
+    models: list.data
+      .filter((model) =>
+        ['text-', 'dall-', 'tts-', 'winsper-', 'davinci', 'babbage'].every(
+          (it) => !(model.id as string).startsWith(it),
+        ),
+      )
+      .map((it) => ({
+        id: it.id,
+        name: it.id,
+      })) ?? [
       { id: 'o1-preview', name: 'o1-preview' },
       { id: 'o1-mini', name: 'o1-mini' },
       { id: 'gpt-4o', name: 'GPT-4o' },

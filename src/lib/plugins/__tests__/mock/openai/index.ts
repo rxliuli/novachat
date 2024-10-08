@@ -1,4 +1,4 @@
-import * as novachat from '@novachat/plugin'
+import * as novachat from 'packages/plugin/dist'
 
 export async function activate(context: novachat.PluginContext) {
   await novachat.model.registerProvider({

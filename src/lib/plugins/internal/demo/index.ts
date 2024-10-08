@@ -1,4 +1,4 @@
-import * as novachat from '@novachat/plugin'
+import * as novachat from 'packages/plugin/dist'
 
 export async function activate() {
   console.log(await novachat.setting.get('demo.key'))

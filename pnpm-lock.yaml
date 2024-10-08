@@ -34,7 +34,7 @@ importers:
         version: 0.36.3
       '@novachat/plugin':
         specifier: workspace:*
-        version: link:packages/plugin-lib
+        version: link:packages/plugin
       '@shikijs/rehype':
         specifier: ^1.21.0
         version: 1.21.0
@@ -247,9 +247,27 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1(@types/node@22.7.4)(happy-dom@15.7.4)(jsdom@25.0.1)
 
-  packages:
-
+  packages/cli:
+    dependencies:
+      chalk:
+        specifier: ^5.3.0
+        version: 5.3.0
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
+      esbuild:
+        specifier: ^0.24.0
+        version: 0.24.0
+      jszip:
+        specifier: ^3.10.1
+        version: 3.10.1
     devDependencies:
+      '@types/chalk':
+        specifier: ^2.2.0
+        version: 2.2.0
+      '@types/node':
+        specifier: ^22.7.3
+        version: 22.7.4
       tslib:
         specifier: ^2.6.3
         version: 2.7.0
@@ -260,7 +278,7 @@ importers:
         specifier: ^5.6.2
         version: 5.6.2
 
-  packages/plugin-lib:
+  packages/plugin:
     devDependencies:
       '@fcanvas/communicate':
         specifier: ^1.1.6
@@ -279,11 +297,13 @@ importers:
         version: 1.6.0(@types/node@22.7.4)(happy-dom@15.7.4)(jsdom@25.0.1)
 
   packages/plugin-ollama:
-    dependencies:
+    devDependencies:
+      '@novachat/cli':
+        specifier: workspace:*
+        version: link:../cli
       '@novachat/plugin':
         specifier: workspace:*
-        version: link:../plugin-lib
-    devDependencies:
+        version: link:../plugin
       ollama:
         specifier: ^0.5.9
         version: 0.5.9
@@ -298,17 +318,16 @@ importers:
         version: 1.6.0(@types/node@22.7.4)(happy-dom@15.7.4)(jsdom@25.0.1)
 
   packages/plugin-openai:
-    dependencies:
+    devDependencies:
+      '@novachat/cli':
+        specifier: workspace:*
+        version: link:../cli
       '@novachat/plugin':
         specifier: workspace:*
-        version: link:../plugin-lib
-    devDependencies:
+        version: link:../plugin
       openai:
         specifier: ^4.65.0
         version: 4.67.1(zod@3.23.8)
-      tsup:
-        specifier: ^8.3.0
-        version: 8.3.0(@microsoft/api-extractor@7.47.9(@types/node@22.7.4))(jiti@1.21.6)(postcss@8.4.47)(typescript@5.6.2)(yaml@2.5.1)
       typescript:
         specifier: ^5.3.3
         version: 5.6.2
@@ -330,17 +349,16 @@ importers:
         version: 3.80.0(@cloudflare/workers-types@4.20241004.0)
 
   packages/plugin-translator:
-    dependencies:
-      '@novachat/plugin':
-        specifier: workspace:*
-        version: link:../plugin-lib
     devDependencies:
       '@langchain/textsplitters':
         specifier: ^0.1.0
         version: 0.1.0(@langchain/core@0.3.7(openai@4.67.1(zod@3.23.8)))
-      tsup:
-        specifier: ^8.3.0
-        version: 8.3.0(@microsoft/api-extractor@7.47.9(@types/node@22.7.4))(jiti@1.21.6)(postcss@8.4.47)(typescript@5.6.2)(yaml@2.5.1)
+      '@novachat/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@novachat/plugin':
+        specifier: workspace:*
+        version: link:../plugin
       typescript:
         specifier: ^5.3.3
         version: 5.6.2
@@ -349,10 +367,6 @@ importers:
         version: 1.6.0(@types/node@22.7.4)(happy-dom@15.7.4)(jsdom@25.0.1)
 
   packages/plugin-vertex-anthropic:
-    dependencies:
-      '@novachat/plugin':
-        specifier: workspace:*
-        version: link:../plugin-lib
     devDependencies:
       '@anthropic-ai/sdk':
         specifier: ^0.28.0
@@ -363,18 +377,18 @@ importers:
       '@langchain/anthropic':
         specifier: ^0.3.3
         version: 0.3.3(@langchain/core@0.3.7(openai@4.67.1(zod@3.23.8)))
-      esbuild:
-        specifier: ^0.24.0
-        version: 0.24.0
+      '@novachat/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@novachat/plugin':
+        specifier: workspace:*
+        version: link:../plugin
       google-auth-library:
         specifier: ^9.14.1
         version: 9.14.1
       jose:
         specifier: ^5.9.3
         version: 5.9.3
-      tsup:
-        specifier: ^8.3.0
-        version: 8.3.0(@microsoft/api-extractor@7.47.9(@types/node@22.7.4))(jiti@1.21.6)(postcss@8.4.47)(typescript@5.6.2)(yaml@2.5.1)
       typescript:
         specifier: ^5.3.3
         version: 5.6.2
@@ -1594,6 +1608,10 @@ packages:
   '@types/argparse@1.0.38':
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
 
+  '@types/chalk@2.2.0':
+    resolution: {integrity: sha512-1zzPV9FDe1I/WHhRkf9SNgqtRJWZqrBWgu7JGveuHmmyR9CnAPCie2N/x+iHrgnpYBIcCJWHBoMRv2TRWktsvw==}
+    deprecated: This is a stub types definition for chalk (https://github.com/chalk/chalk). chalk provides its own type definitions, so you don't need @types/chalk installed!
+
   '@types/cookie@0.6.0':
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
 
@@ -2080,6 +2098,10 @@ packages:
   chai@5.1.1:
     resolution: {integrity: sha512-pT1ZgP8rPNqUgieVaEY+ryQr6Q4HXNg8Ei9UnLUrjN4IA7dvQC5JB+/kxVcPNDHyBcc/26CXPkbNzq3qwrOEKA==}
     engines: {node: '>=12'}
+
+  chalk@5.3.0:
+    resolution: {integrity: sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   character-entities-html4@2.1.0:
     resolution: {integrity: sha512-1v7fgQRj6hnSwFpq1Eu0ynr/CDEw0rXo2B61qXrLNdHZmPKgb7fqS1a2JwF0rISo9q77jDI8VMEHoApn8qDoZA==}
@@ -5457,6 +5479,10 @@ snapshots:
   '@types/argparse@1.0.38':
     optional: true
 
+  '@types/chalk@2.2.0':
+    dependencies:
+      chalk: 5.3.0
+
   '@types/cookie@0.6.0': {}
 
   '@types/debug@4.1.12':
@@ -5999,6 +6025,8 @@ snapshots:
       deep-eql: 5.0.2
       loupe: 3.1.1
       pathval: 2.0.0
+
+  chalk@5.3.0: {}
 
   character-entities-html4@2.1.0: {}
 

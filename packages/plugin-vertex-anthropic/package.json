@@ -4,7 +4,7 @@
     "novachat",
     "novachat-plugin"
   ],
-  "version": "0.1.1",
+  "version": "0.2.0",
   "license": "MIT",
   "type": "module",
   "files": [
@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "setup": "pnpm build",
-    "build": "tsup",
+    "build": "novachat",
     "dev": "pnpm build --watch"
   },
   "sideEffects": false,
@@ -20,13 +20,11 @@
     "@anthropic-ai/sdk": "^0.28.0",
     "@anthropic-ai/vertex-sdk": "^0.4.2",
     "@langchain/anthropic": "^0.3.3",
+    "@novachat/cli": "workspace:*",
     "google-auth-library": "^9.14.1",
     "jose": "^5.9.3",
-    "tsup": "^8.3.0",
     "typescript": "^5.3.3",
-    "vitest": "^1.2.2"
-  },
-  "dependencies": {
+    "vitest": "^1.2.2",
     "@novachat/plugin": "workspace:*"
   },
   "publishConfig": {

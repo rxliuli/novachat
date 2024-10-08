@@ -4,7 +4,7 @@
     "novachat",
     "novachat-plugin"
   ],
-  "version": "0.1.1",
+  "version": "0.2.0",
   "license": "MIT",
   "type": "module",
   "files": [
@@ -12,17 +12,15 @@
   ],
   "scripts": {
     "setup": "pnpm build",
-    "build": "tsup",
+    "build": "novachat",
     "dev": "pnpm build --watch"
   },
   "sideEffects": false,
   "devDependencies": {
-    "tsup": "^8.3.0",
+    "@novachat/cli": "workspace:*",
     "typescript": "^5.3.3",
     "@langchain/textsplitters": "^0.1.0",
-    "vitest": "^1.2.2"
-  },
-  "dependencies": {
+    "vitest": "^1.2.2",
     "@novachat/plugin": "workspace:*"
   },
   "publishConfig": {
