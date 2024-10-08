@@ -10,7 +10,9 @@ export function localStore<T>(
   key: string,
   initial: T,
   adapter: LocalStoreAdapter<T>,
-): Writable<T> {
+): Writable<T> & {
+  getValue(): Promise<T>
+} {
   const { subscribe, set, update } = writable(initial)
   const r = adapter.read(key)
   const init = (r: T | undefined | null) =>
@@ -28,6 +30,11 @@ export function localStore<T>(
         adapter.write(key, value)
         return value
       })
+    },
+    async getValue() {
+      const r = await adapter.read(key)
+      set(r)
+      return r
     },
   }
 }

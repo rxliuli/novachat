@@ -112,7 +112,7 @@ export interface PluginLoadResult {
 }
 
 export async function loadInstalledPlugins(): Promise<PluginLoadResult[]> {
-  const list = getStore(installedPlugins)
+  const list = await installedPlugins.getValue()
   const plugins = (
     await Promise.all(
       list.map(async (it) => {
