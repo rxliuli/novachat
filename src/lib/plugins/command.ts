@@ -138,10 +138,7 @@ export async function loadInstalledPlugins(): Promise<PluginLoadResult[]> {
 
 export async function initPluginSystem() {
   initSystemCommand()
-  const plugins = [
-    ...internalPlugins,
-    ...(await loadInstalledPlugins()),
-  ]
+  const plugins = [...internalPlugins, ...(await loadInstalledPlugins())]
   for (const it of plugins) {
     try {
       await activePlugin(it)
@@ -186,9 +183,7 @@ export async function loadRemotePlugins() {
 
 export async function installPluginForRemote(manifest: PluginManifest) {
   const r = await fetch(
-    import.meta.env.VITE_REVERSE_PROXY_URL +
-      '?url=' +
-      `https://github.com/novachat/plugins/raw/refs/heads/main/plugins/${manifest.id}/plugin.zip`,
+    `https://raw.githubusercontent.com/novachat/plugins/refs/heads/main/plugins/${manifest.id}/plugin.zip`,
   )
   if (!r.ok) {
     throw new Error('Failed to download plugin' + r.statusText)

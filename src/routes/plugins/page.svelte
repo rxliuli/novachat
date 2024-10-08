@@ -43,13 +43,16 @@
   $: plugins = uniqBy(
     remotePlugins.concat($pluginStore.plugins.map((it) => it.manifest)),
     (it) => it.id,
-  ).map((manifest) => ({
-    manifest: manifest,
-    installed: uniq([
-      ...$pluginStore.plugins.map((it) => it.id),
-      ...$installedPlugins.map((it) => it.id),
-    ]).some((it) => it === manifest.id),
-  }))
+  ).map((manifest) => {
+    const findPlugin = $pluginStore.plugins.find((it) => it.id === manifest.id)
+    return {
+      manifest: manifest,
+      installed: !!findPlugin,
+      canUpdate:
+        findPlugin?.manifest.version &&
+        findPlugin.manifest.version !== manifest.version,
+    }
+  })
 
   async function onLoadRemotePlugins() {
     remotePlugins = await loadRemotePlugins()
@@ -92,15 +95,25 @@
               </p>
               <div>
                 {#if plugin.installed}
+                  {#if plugin.canUpdate}
+                    <InstallButton
+                      onClick={() => onInstallPlugin(plugin.manifest)}
+                    >
+                      Update
+                    </InstallButton>
+                  {/if}
                   <Button
+                    size="sm"
                     on:click={() => onUninstallPlugin(plugin.manifest.id)}
                   >
                     Uninstall
                   </Button>
                 {:else}
                   <InstallButton
-                    onInstall={() => onInstallPlugin(plugin.manifest)}
-                  />
+                    onClick={() => onInstallPlugin(plugin.manifest)}
+                  >
+                    Install
+                  </InstallButton>
                 {/if}
               </div>
             </div>
