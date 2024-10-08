@@ -79,6 +79,7 @@
     "mdast-util-newline-to-break": "^2.0.0",
     "mdast-util-to-hast": "^13.2.0",
     "micromark-extension-gfm": "^3.0.0",
+    "minimatch": "^10.0.1",
     "mockjs": "^1.1.0",
     "mode-watcher": "^0.4.1",
     "nanoid": "^5.0.7",
