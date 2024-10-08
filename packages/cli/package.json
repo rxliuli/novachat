@@ -5,8 +5,12 @@
   "description": "Build Novachat plugin with esbuild",
   "type": "module",
   "bin": {
-    "novachat": "./dist/bin.js"
+    "novachat": "./bin.js"
   },
+  "files": [
+    "dist",
+    "bin.js"
+  ],
   "scripts": {
     "setup": "pnpm build",
     "build": "tsup"
