@@ -8,6 +8,7 @@
     "novachat": "./dist/bin.js"
   },
   "scripts": {
+    "setup": "pnpm build",
     "build": "tsup"
   },
   "license": "GPL-3.0-only",
