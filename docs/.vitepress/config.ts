@@ -1,4 +1,6 @@
 import { defineConfig } from 'vitepress'
+import typedocSidebar from '../api/typedoc-sidebar.json'
+import { twitterMeta } from 'vitepress-plugin-twitter-card'
 
 export default defineConfig({
   title: 'NovaChat',
@@ -49,6 +51,10 @@ export default defineConfig({
               },
             ],
           },
+          {
+            text: 'API',
+            items: typedocSidebar,
+          },
         ],
       },
     },
@@ -85,6 +91,10 @@ export default defineConfig({
               },
             ],
           },
+          {
+            text: 'API',
+            items: typedocSidebar,
+          },
         ],
       },
     },
@@ -93,4 +103,10 @@ export default defineConfig({
     breaks: true,
   },
   ignoreDeadLinks: 'localhostLinks',
+  extends() {
+    return twitterMeta({
+      site: 'rxliuli',
+      image: 'https://novachat.dev/logo.png',
+    })
+  },
 })

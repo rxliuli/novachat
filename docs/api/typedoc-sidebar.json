@@ -1,0 +1,42 @@
+[
+  {
+    "text": "Interfaces",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "Model",
+        "link": "/api/interfaces/Model.md"
+      },
+      {
+        "text": "PluginContext",
+        "link": "/api/interfaces/PluginContext.md"
+      },
+      {
+        "text": "QueryChunkResponse",
+        "link": "/api/interfaces/QueryChunkResponse.md"
+      },
+      {
+        "text": "QueryRequest",
+        "link": "/api/interfaces/QueryRequest.md"
+      },
+      {
+        "text": "QueryResponse",
+        "link": "/api/interfaces/QueryResponse.md"
+      }
+    ]
+  },
+  {
+    "text": "Variables",
+    "collapsed": true,
+    "items": [
+      {
+        "text": "model",
+        "link": "/api/variables/model.md"
+      },
+      {
+        "text": "setting",
+        "link": "/api/variables/setting.md"
+      }
+    ]
+  }
+]

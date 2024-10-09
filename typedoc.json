@@ -1,0 +1,13 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./packages/plugin"],
+  "plugin": ["typedoc-plugin-markdown", "typedoc-vitepress-theme"],
+  "docsRoot": "./docs",
+  "out": "./docs/api",
+  "entryPointStrategy": "packages",
+  "sidebar": {
+    "collapse": false,
+    "pretty": true
+  },
+  "skipErrorChecking": true
+}
