@@ -1,0 +1,17 @@
+{
+  "id": "novachat.anthropic",
+  "name": "Anthropic",
+  "description": "Anthropic Provider",
+  "version": "0.1.0",
+  "author": "NovaChat",
+  "configuration": {
+    "title": "Anthropic",
+    "properties": {
+      "anthropic.apiKey": {
+        "type": "string",
+        "description": "Anthropic API Key",
+        "default": ""
+      }
+    }
+  }
+}

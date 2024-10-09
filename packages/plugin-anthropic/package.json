@@ -1,10 +1,10 @@
 {
-  "name": "@novachat/plugin-openai",
+  "name": "@novachat/plugin-anthropic",
   "keywords": [
     "novachat",
     "novachat-plugin"
   ],
-  "version": "0.2.1",
+  "version": "0.1.0",
   "license": "MIT",
   "type": "module",
   "files": [
@@ -17,11 +17,11 @@
   },
   "sideEffects": false,
   "devDependencies": {
-    "openai": "^4.65.0",
+    "@anthropic-ai/sdk": "^0.28.0",
     "@novachat/cli": "workspace:*",
     "typescript": "^5.3.3",
-    "@novachat/plugin": "workspace:*",
-    "vitest": "^1.2.2"
+    "vitest": "^1.2.2",
+    "@novachat/plugin": "workspace:*"
   },
   "publishConfig": {
     "access": "public",

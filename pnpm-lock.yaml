@@ -311,6 +311,24 @@ importers:
         specifier: ^1.2.2
         version: 1.6.0(@types/node@22.7.4)(happy-dom@15.7.4)(jsdom@25.0.1)
 
+  packages/plugin-anthropic:
+    devDependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.28.0
+        version: 0.28.0
+      '@novachat/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@novachat/plugin':
+        specifier: workspace:*
+        version: link:../plugin
+      typescript:
+        specifier: ^5.3.3
+        version: 5.6.2
+      vitest:
+        specifier: ^1.2.2
+        version: 1.6.0(@types/node@22.7.4)(happy-dom@15.7.4)(jsdom@25.0.1)
+
   packages/plugin-ollama:
     devDependencies:
       '@novachat/cli':

@@ -6,7 +6,7 @@ import {
 import { minimatch } from 'minimatch'
 
 // const EXCLUDE_HOSTNAME = ['127.0.0.1', 'localhost']
-const INCLUDE_HOSTNAME = ['*.googleapis.com']
+const INCLUDE_HOSTNAME = ['*.googleapis.com', 'api.anthropic.com']
 
 const newLocal: InterceptOptions = {
   request(req) {
