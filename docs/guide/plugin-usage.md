@@ -9,10 +9,11 @@ By default, NovaChat does not support any LLM Providers, but you can easily down
 1. Download the OpenAI Provider
 2. Open the [NovaChat settings page](https://app.novachat.dev/#/settings)
 3. Enter your OpenAI API key in the **API key** field
-4. Select the model you want to use in the **Model** dropdown
+4. Refresh the page
+5. Select the model you want to use in the **Model** dropdown
    ![openai-1](/images/plugin-usage-openai-1.png)
-5. Click **New Chat** to start a new conversation
-6. Enter your question and press Enter to send
+6. Click **New Chat** to start a new conversation
+7. Enter your question and press Enter to send
    ![openai-2](/images/plugin-usage-openai-2.png)
 
 ## Vertex Anthropic
