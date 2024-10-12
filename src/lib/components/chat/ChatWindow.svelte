@@ -18,7 +18,8 @@
   import { cn } from '$lib/utils/ui'
   import { dataURItoBlob } from '$lib/utils/datauri'
   import { nanoid } from 'nanoid'
-    
+  import { LightboxGallery, GalleryImage } from 'svelte-lightbox'
+
   export let messages: Message[] = []
   export let loading = false
   export let pending = false
@@ -100,6 +101,18 @@
   const onDeleteImage = (index: number) => {
     images = images.filter((_, i) => i !== index)
   }
+
+  let isLightboxOpen = false
+  let lightboxIndex = 0
+
+  function openLightbox(index: number) {
+    isLightboxOpen = true
+    lightboxIndex = index
+  }
+
+  function closeLightbox() {
+    isLightboxOpen = false
+  }
 </script>
 
 <div class="relative h-full">
@@ -144,11 +157,16 @@
         >
           {#each images as image, index}
             <div class="flex-shrink-0 w-14 h-14 relative">
-              <img
-                src={image.url}
-                class="w-full h-full object-cover rounded-lg"
-                alt={image.name}
-              />
+              <button
+                class="w-full h-full"
+                on:click={() => openLightbox(index)}
+              >
+                <img
+                  src={image.url}
+                  class="w-full h-full object-cover rounded-lg"
+                  alt={image.name}
+                />
+              </button>
               <button
                 class="absolute top-0 right-0"
                 on:click={() => onDeleteImage(index)}
@@ -205,3 +223,17 @@
     </div>
   </div>
 </div>
+
+<LightboxGallery bind:isVisible={isLightboxOpen} activeImage={lightboxIndex}>
+  {#each images as image}
+    <GalleryImage>
+      <img src={image.url} alt={image.name} />
+    </GalleryImage>
+  {/each}
+</LightboxGallery>
+
+<style>
+  :global(.svelte-lightbox-body svg) {
+    display: inline-block;
+  }
+</style>
