@@ -1,10 +1,46 @@
 import { build, BuildOptions, context } from 'esbuild'
-import { Command } from 'commander'
+import { Argument, Command } from 'commander'
 import path from 'path'
 import { novachatPlugin } from './plugin'
 import chalk from 'chalk'
+import { cp } from 'fs/promises'
+import { updateText } from './lib'
 
 new Command()
+  .addCommand(
+    new Command('init')
+      .addArgument(new Argument('name', 'Project name').argRequired())
+      .description('Bootstrap Project')
+      .action(async (name) => {
+        const templateDir = path.resolve(
+          __dirname,
+          '../templates/plugin-template',
+        )
+        const toPath = path.resolve(name)
+        await cp(templateDir, toPath, {
+          recursive: true,
+          filter: (src) => src !== path.resolve(templateDir, 'node_modules'),
+        })
+        console.log(chalk.green('Project initialized successfully'))
+        await updateText({
+          rootPath: path.resolve(name),
+          rules: [
+            {
+              path: 'package.json',
+              replaces: [['@novachat/plugin-template', name]],
+            },
+            {
+              path: 'README.md',
+              replaces: [['@novachat/plugin-template', name]],
+            },
+            {
+              path: 'src/plugin.json',
+              replaces: [['novachat.template', name]],
+            },
+          ],
+        })
+      }),
+  )
   .description('Build Novachat plugin with esbuild')
   .option('-w, --watch', 'Watch mode')
   .action(async ({ watch }) => {

@@ -1,7 +1,6 @@
 {
   "name": "@novachat/cli",
   "version": "0.1.0",
-  "private": true,
   "description": "Build Novachat plugin with esbuild",
   "type": "module",
   "bin": {
@@ -9,19 +8,23 @@
   },
   "files": [
     "dist",
-    "bin.js"
+    "bin.js",
+    "templates"
   ],
   "scripts": {
     "setup": "pnpm build",
-    "build": "tsup"
+    "build": "tsup",
+    "start": "vite-node src/bin.ts"
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
+    "@liuli-util/test": "^3.8.0",
     "@types/chalk": "^2.2.0",
     "@types/node": "^22.7.3",
     "tslib": "^2.6.3",
     "tsup": "^8.3.0",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.2"
   },
   "dependencies": {
     "chalk": "^5.3.0",

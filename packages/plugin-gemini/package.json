@@ -1,0 +1,30 @@
+{
+  "name": "@novachat/plugin-gemini",
+  "keywords": [
+    "novachat",
+    "novachat-plugin"
+  ],
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "publish"
+  ],
+  "scripts": {
+    "setup": "pnpm build",
+    "build": "novachat",
+    "dev": "pnpm build --watch"
+  },
+  "sideEffects": false,
+  "devDependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@novachat/cli": "workspace:*",
+    "@novachat/plugin": "workspace:*",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
