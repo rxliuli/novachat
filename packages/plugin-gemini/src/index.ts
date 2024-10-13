@@ -13,13 +13,15 @@ function parseRequest(
   }
   return {
     systemInstruction: systemInstruction(),
-    contents: req.messages.map(
-      (m) =>
-        ({
-          role: m.role,
-          parts: [{ text: m.content }],
-        } as GoogleAI.Content),
-    ),
+    contents: req.messages
+      .filter((m) => m.role !== 'system')
+      .map(
+        (m) =>
+          ({
+            role: m.role === 'user' ? 'user' : 'model',
+            parts: [{ text: m.content }],
+          } as GoogleAI.Content),
+      ),
   }
 }
 
