@@ -5,7 +5,6 @@
   import type { Conversation } from '$lib/types/Conversation'
   import { convStore } from '$lib/stores/converstation'
   import { cn } from '$lib/utils/ui'
-  import { toggleMode } from 'mode-watcher'
   import { location } from 'svelte-spa-router'
 
   export let conversations: Conversation[]
@@ -94,16 +93,6 @@
   </div>
   <div class="mt-auto px-1 py-2">
     <nav class="grid items-start px-2 text-sm font-medium lg:px-4">
-      <a
-        href="#/"
-        on:click={(ev) => {
-          ev.preventDefault()
-          toggleMode()
-        }}
-        class={sidebarItemClsx}
-      >
-        Theme
-      </a>
       <a
         href="#/plugins"
         class={sidebarItemClsx}
