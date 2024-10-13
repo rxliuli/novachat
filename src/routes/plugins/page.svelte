@@ -82,18 +82,18 @@
         <div class="flex justify-center items-center h-full">
           <Loader2Icon class="w-4 h-4 animate-spin" />
         </div>
-      {:then _loadPluginsState}
+      {:then _}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {#each plugins as plugin}
             <div
-              class="bg-gray-100 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-800 p-4"
+              class="bg-gray-100 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-800 p-4 flex flex-col justify-between"
             >
               <BlocksIcon class="w-4 h-4" />
               <h3 class="text-lg font-semibold">{plugin.manifest.name}</h3>
               <p class="text-sm mb-2">
                 {plugin.manifest.description || 'No description'}
               </p>
-              <div>
+              <div class="mt-auto">
                 {#if plugin.installed}
                   {#if plugin.canUpdate}
                     <InstallButton
