@@ -237,6 +237,22 @@ export const convStore = {
       }
     })
   },
+  async updateModel(id: string, modelId: string) {
+    store.update(
+      produce((state) => {
+        const conversation = state.conversations.find((it) => it.id === id)
+        if (!conversation) {
+          return
+        }
+        conversation.model = modelId
+      }),
+    )
+    await dbApi.conversations.update({
+      id,
+      model: modelId,
+      updatedAt: new Date().toISOString(),
+    })
+  },
 }
 
 // if (localStorage.getItem('conversations')) {

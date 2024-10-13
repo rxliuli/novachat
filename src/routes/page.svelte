@@ -40,31 +40,6 @@
     console.log('retry', ev)
   }
 
-  let toggleModel = false
-  function handleModelChange() {
-    toggleModel = !toggleModel
-  }
-
-  function handleModelSelect(model: ActivatedModel) {
-    console.log('model select', model)
-    $settingsStore.defaultBot = model.id
-    toggleModel = false
-    console.log('defaultBot', $settingsStore.defaultBot)
-  }
-
-  function getDefaultBotName() {
-    const modelName = $settingsStore.defaultBot ?? $settingsStore.defaultModel
-    if (!modelName) {
-      return
-    }
-    const model = $pluginStore.models.find((it) => it.id === modelName)
-    return model?.name ?? modelName
-  }
-
-  let defaultBotName: string | undefined
-  $: if ($settingsStore && $pluginStore) {
-    defaultBotName = getDefaultBotName()
-  }
 </script>
 
 <ChatWindow
@@ -74,26 +49,4 @@
   on:message={(ev) => handleMessage(ev.detail)}
   on:stop={handleStop}
   on:retry={handleRetry}
->
-  <div slot="footer" class="py-2">
-    <div class="flex text-sm items-center gap-2 text-gray-400/90">
-      <span>Model: </span>
-      <button class="flex items-center gap-1" on:click={handleModelChange}>
-        {defaultBotName ?? 'Select a model'}
-        <ChevronsUpDownIcon class="w-4 h-4" />
-      </button>
-    </div>
-  </div>
-</ChatWindow>
-
-<Command.Dialog bind:open={toggleModel}>
-  <Command.Input placeholder="Select a model..." />
-  <Command.List>
-    <Command.Empty>No results found.</Command.Empty>
-    {#each $pluginStore.models as model}
-      <Command.Item onSelect={() => handleModelSelect(model)}>
-        <span>{model.name}</span>
-      </Command.Item>
-    {/each}
-  </Command.List>
-</Command.Dialog>
+/>

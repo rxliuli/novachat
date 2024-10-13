@@ -149,7 +149,7 @@ export class ConversationDAO implements IConversationDAO {
   }
   async update(
     conversation: Pick<ConversationDB, 'id'> &
-      Partial<Pick<ConversationDB, 'updatedAt' | 'title'>>,
+      Partial<Pick<ConversationDB, 'updatedAt' | 'title' | 'model'>>,
   ): Promise<void> {
     const table = dbStore.idb
       .transaction('conversations', 'readwrite')
@@ -160,7 +160,7 @@ export class ConversationDAO implements IConversationDAO {
     }
     await dbStore.idb.put('conversations', {
       ...existing,
-      ...pick(conversation, 'updatedAt', 'title'),
+      ...pick(conversation, 'updatedAt', 'title', 'model'),
     })
   }
 }

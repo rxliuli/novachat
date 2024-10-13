@@ -10,7 +10,7 @@
   import { CircleAlertIcon } from 'lucide-svelte'
   import { onDestroy } from 'svelte'
   import { sortBy } from 'lodash-es'
-  import { pluginStore } from '$lib/plugins/store'
+  import { pluginStore, type ActivatedModel } from '$lib/plugins/store'
   import { settingsStore } from '$lib/stores/settings'
 
   export let params: { id: string } = { id: '' }
@@ -147,6 +147,12 @@
     }
     await convStore.deleteMessage(ev.detail.id)
   }
+  function handleModelSelect(model: ActivatedModel) {
+    if (!conversation) {
+      return
+    }
+    convStore.updateModel(conversation.id, model.id)
+  }
 </script>
 
 {#if conversation}
@@ -158,6 +164,7 @@
     on:stop={handleStop}
     on:retry={(e) => handleRetry(e.detail.id)}
     on:delete={handleDelete}
+    on:selectModel={(ev) => handleModelSelect(ev.detail)}
   />
 {:else}
   <div class="flex flex-col items-center justify-center h-full text-center">

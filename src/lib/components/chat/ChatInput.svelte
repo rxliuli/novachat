@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isDesktop } from '$lib/utils/isDesktop'
-  import { createEventDispatcher, onMount } from 'svelte'
+  import { onMount } from 'svelte'
 
   export let value = ''
   export let minRows = 1
@@ -9,31 +9,9 @@
   export let disabled = false
 
   let textareaElement: HTMLTextAreaElement
-  let isCompositionOn = false
-
-  const dispatch = createEventDispatcher<{ submit: void }>()
 
   $: minHeight = `${1 + minRows * 1.5}em`
   $: maxHeight = maxRows ? `${1 + maxRows * 1.5}em` : `auto`
-
-  function handleKeydown(event: KeyboardEvent) {
-    // submit on enter
-    if (
-      event.key === 'Enter' &&
-      !event.shiftKey &&
-      !isCompositionOn &&
-      isDesktop(window)
-    ) {
-      event.preventDefault()
-      // blur to close keyboard on mobile
-      textareaElement.blur()
-      // refocus so that user on desktop can start typing without needing to reclick on textarea
-      if (isDesktop(window)) {
-        textareaElement.focus()
-      }
-      dispatch('submit') // use a custom event instead of `event.target.form.requestSubmit()` as it does not work on Safari 14
-    }
-  }
 
   onMount(() => {
     if (isDesktop(window)) {
@@ -58,9 +36,10 @@
     bind:value
     bind:this={textareaElement}
     {disabled}
-    on:keydown={handleKeydown}
-    on:compositionstart={() => (isCompositionOn = true)}
-    on:compositionend={() => (isCompositionOn = false)}
+    on:input
+    on:compositionstart
+    on:compositionend
+    on:keydown
     on:beforeinput
     {placeholder}
   />

@@ -8,6 +8,7 @@
     PauseIcon,
     LinkIcon,
     CircleXIcon,
+    ChevronsUpDownIcon,
   } from 'lucide-svelte'
   import Button from '$lib/components/ui/button/button.svelte'
   import ChatMessage from './ChatMessage.svelte'
@@ -19,6 +20,12 @@
   import { dataURItoBlob } from '$lib/utils/datauri'
   import { nanoid } from 'nanoid'
   import { LightboxGallery, GalleryImage } from 'svelte-lightbox'
+  import { pluginStore, type ActivatedModel } from '$lib/plugins/store'
+  import { isDesktop } from '$lib/utils/isDesktop'
+  import { settingsStore } from '$lib/stores/settings'
+  import { toast } from 'svelte-sonner'
+  import * as Command from '../ui/command'
+  import { convStore } from '$lib/stores/converstation'
 
   export let messages: Message[] = []
   export let loading = false
@@ -32,11 +39,13 @@
     stop: void
     retry: { id: Message['id'] }
     delete: { id: Message['id'] }
+    selectModel: ActivatedModel
   }>()
 
   const handleSubmit = () => {
-    if (loading) return
-    if (!message.trim()) return
+    if (loading || pending || !message.trim()) {
+      return
+    }
     dispatch('message', {
       content: message.trim(),
       attachments: images,
@@ -110,8 +119,102 @@
     lightboxIndex = index
   }
 
-  function closeLightbox() {
-    isLightboxOpen = false
+  let filteredModels: ActivatedModel[] = []
+  let selectedModelIndex = -1
+  let showModelList = false
+  let modelListContainer: HTMLElement
+  let isCompositionOn = false
+
+  const handleInput = (event: Event) => {
+    const target = event.target as HTMLTextAreaElement
+    message = target.value
+
+    if (message.startsWith('@')) {
+      const query = message.slice(1).toLowerCase()
+      filteredModels = $pluginStore.models.filter((model) =>
+        model.name.toLowerCase().includes(query),
+      )
+      showModelList = filteredModels.length > 0
+      selectedModelIndex = 0
+    } else {
+      showModelList = false
+      selectedModelIndex = -1
+    }
+  }
+
+  const handleKeydown = (event: KeyboardEvent) => {
+    if (showModelList) {
+      if (event.key === 'ArrowUp') {
+        event.preventDefault()
+        selectedModelIndex =
+          (selectedModelIndex - 1 + filteredModels.length) %
+          filteredModels.length
+        modelListContainer.children[selectedModelIndex].scrollIntoView({
+          block: 'nearest',
+        })
+      } else if (event.key === 'ArrowDown') {
+        event.preventDefault()
+        selectedModelIndex = (selectedModelIndex + 1) % filteredModels.length
+        modelListContainer.children[selectedModelIndex].scrollIntoView({
+          block: 'nearest',
+        })
+      } else if (event.key === 'Enter') {
+        event.preventDefault()
+        selectModel(filteredModels[selectedModelIndex])
+      } else if (event.key === 'Escape') {
+        // showModelList = false
+      }
+    } else if (
+      event.key === 'Enter' &&
+      !event.shiftKey &&
+      !isCompositionOn &&
+      isDesktop(window)
+    ) {
+      event.preventDefault()
+      handleSubmit()
+    }
+  }
+
+  const selectModel = (model: ActivatedModel) => {
+    handleModelSelect(model)
+    message = ''
+    showModelList = false
+  }
+
+  let toggleModel = false
+  function handleModelChange() {
+    toggleModel = !toggleModel
+  }
+
+  function handleModelSelect(selectedModel: ActivatedModel) {
+    $settingsStore.defaultBot = selectedModel.id
+    dispatch('selectModel', selectedModel)
+    toast.success(`Selected model: ${selectedModel.name}`)
+    setTimeout(() => {
+      ;(document.querySelector('#chat-input') as HTMLTextAreaElement)?.focus()
+    }, 100)
+  }
+
+  function getDefaultBotName() {
+    if ($convStore.id) {
+      const conversation = $convStore.conversations.find(
+        (it) => it.id === $convStore.id,
+      )
+      if (conversation) {
+        return conversation.model
+      }
+    }
+    const modelName = $settingsStore.defaultBot ?? $settingsStore.defaultModel
+    if (!modelName) {
+      return
+    }
+    const model = $pluginStore.models.find((it) => it.id === modelName)
+    return model?.name ?? modelName
+  }
+
+  let defaultBotName: string | undefined
+  $: if ($settingsStore && $pluginStore) {
+    defaultBotName = getDefaultBotName()
   }
 </script>
 
@@ -145,6 +248,23 @@
             <span>Stop generating</span>
           </Button>
         {/if}
+      </div>
+      <div
+        class="max-h-48 overflow-y-auto bg-popover rounded-md mb-2 {!showModelList &&
+          'hidden'}"
+        bind:this={modelListContainer}
+      >
+        {#each filteredModels as model, index}
+          <button
+            class="block w-full text-left p-2 rounded-md {selectedModelIndex ===
+              index && 'bg-accent'}"
+            on:mouseover={() => (selectedModelIndex = index)}
+            on:focus={() => (selectedModelIndex = index)}
+            on:click={() => selectModel(model)}
+          >
+            {model.name}
+          </button>
+        {/each}
       </div>
       <form
         class="relative w-full flex-1 rounded-xl border bg-gray-100 focus-within:border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:focus-within:border-gray-500"
@@ -191,13 +311,11 @@
             placeholder={'Ask anything'}
             bind:value={message}
             on:submit={handleSubmit}
-            on:beforeinput={(ev) => {
-              // if ($page.data.loginRequired) {
-              //   ev.preventDefault()
-              //   loginModalOpen = true
-              // }
-            }}
             on:paste={onPaste}
+            on:input={handleInput}
+            on:keydown={handleKeydown}
+            on:compositionstart={() => (isCompositionOn = true)}
+            on:compositionend={() => (isCompositionOn = false)}
             maxRows={6}
             disabled={lastIsError}
           />
@@ -219,7 +337,15 @@
           {/if}
         </div>
       </form>
-      <slot name="footer" />
+      <div class="py-2">
+        <div class="flex text-sm items-center gap-2 text-gray-400/90">
+          <span>Model: </span>
+          <button class="flex items-center gap-1" on:click={handleModelChange}>
+            {defaultBotName ?? 'Select a model'}
+            <ChevronsUpDownIcon class="w-4 h-4" />
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -231,6 +357,18 @@
     </GalleryImage>
   {/each}
 </LightboxGallery>
+
+<Command.Dialog bind:open={toggleModel}>
+  <Command.Input placeholder="Select a model..." />
+  <Command.List>
+    <Command.Empty>No results found.</Command.Empty>
+    {#each $pluginStore.models as model}
+      <Command.Item onSelect={() => handleModelSelect(model)}>
+        <span>{model.name}</span>
+      </Command.Item>
+    {/each}
+  </Command.List>
+</Command.Dialog>
 
 <style>
   :global(.svelte-lightbox-body svg) {
