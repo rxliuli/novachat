@@ -3,12 +3,11 @@
   import { convStore } from '$lib/stores/converstation'
   import { settingsStore } from '$lib/stores/settings'
   import type { Message } from '$lib/types/Message'
-  import { ChevronsUpDownIcon } from 'lucide-svelte'
   import { nanoid } from 'nanoid'
   import { push } from 'svelte-spa-router'
-  import * as Command from '$lib/components/ui/command'
-  import { pluginStore, type ActivatedModel } from '$lib/plugins/store'
   import { toast } from 'svelte-sonner'
+  import { onMount } from 'svelte'
+  import { pluginStore } from '$lib/plugins/store'
 
   let loading = false
   let pending = false
@@ -32,14 +31,26 @@
     push(`/conversation/${id}`)
   }
 
-  function handleStop() {
-    console.log('stop')
-  }
-
-  function handleRetry(ev: CustomEvent<{ id: string; content?: string }>) {
-    console.log('retry', ev)
-  }
-
+  onMount(() => {
+    if ($pluginStore.plugins.length === 0) {
+      toast.info('Please install a plugin', {
+        action: {
+          label: 'Install Plugin',
+          onClick: () => push('/plugins'),
+        },
+      })
+      return
+    }
+    if (!$settingsStore.defaultModel) {
+      toast.info('Please configure a default model', {
+        action: {
+          label: 'Configure Model',
+          onClick: () => push('/settings'),
+        },
+      })
+      return
+    }
+  })
 </script>
 
 <ChatWindow
@@ -47,6 +58,4 @@
   {loading}
   {pending}
   on:message={(ev) => handleMessage(ev.detail)}
-  on:stop={handleStop}
-  on:retry={handleRetry}
 />
