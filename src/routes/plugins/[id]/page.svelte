@@ -1,134 +1,115 @@
 <script lang="ts">
-  import { type PluginManifest } from '$lib/plugins/store'
-  import InstallButton from '../components/InstallButton.svelte'
-  import {
-    activePluginFromLocal,
-    installPluginForRemote,
-    loadRemotePlugins,
-  } from '$lib/plugins/command'
-  import { toast } from 'svelte-sonner'
   import { onMount } from 'svelte'
-  import { gfmFromMarkdown } from 'mdast-util-gfm'
-  import { newlineToBreak } from 'mdast-util-newline-to-break'
-  import { gfm } from 'micromark-extension-gfm'
-  import { fromMarkdown } from 'mdast-util-from-markdown'
-  import { toHast } from 'mdast-util-to-hast'
-  import { toHtml } from 'hast-util-to-html'
   import { createHighlighter } from 'shiki'
-  import type { Code } from 'mdast'
-  import type { Element } from 'hast'
+  import { md2html } from '../utils/md2html'
+  import PluginActions from '../components/PluginActions.svelte'
+  import { serializeError } from 'serialize-error'
+  import { loadPlugins, plugins } from '../store/plugin'
+  import * as Breadcrumb from '$lib/components/ui/breadcrumb'
 
   export let params: { id: string } = { id: '' }
 
-  let plugin: PluginManifest
+  const loadPluginsState = loadPlugins()
+
+  $: plugin = $plugins.find((it) => it.manifest.id === params.id)
   let readmeHtml: string = ''
 
   onMount(async () => {
-    const plugins = await loadRemotePlugins()
-    const findPlugin = plugins.find((it) => it.id === params.id)
-    if (findPlugin) {
-      plugin = findPlugin
+    await loadPluginsState
+    if (!plugin) {
+      return
     }
     const r = await fetch(
-      `https://raw.githubusercontent.com/novachat/plugins/refs/heads/main/plugins/${plugin.id}/README.md`,
+      `https://raw.githubusercontent.com/novachat/plugins/refs/heads/main/plugins/${plugin.manifest.id}/README.md`,
     )
     if (!r.ok) {
       return
     }
-    const root = fromMarkdown(await r.text(), {
-      extensions: [gfm()],
-      mdastExtensions: [gfmFromMarkdown(), { transforms: [newlineToBreak] }],
-    })
     const highlighter = await createHighlighter({
       themes: ['github-light', 'github-dark'],
       langs: ['typescript', 'javascript', 'json'],
     })
-    const hast = toHast(root, {
-      handlers: {
-        code: (state, node, parent) => {
-          const code = node as Code
-          const lang = code.lang
-          const value = code.value
-          const hast = highlighter.codeToHast(value, {
-            lang: lang!,
-            themes: {
-              light: 'github-light',
-              dark: 'github-dark',
-            },
-          })
-          return [hast.children[0] as Element]
-        },
-      },
-    })
-    readmeHtml = toHtml(hast)
+    readmeHtml = md2html(await r.text(), highlighter)
   })
-
-  async function onInstallPlugin(manifest: PluginManifest) {
-    try {
-      await installPluginForRemote(manifest)
-      await activePluginFromLocal(manifest.id)
-    } catch (err) {
-      console.error(err)
-      toast.error('Failed to install plugin')
-    }
-  }
 </script>
 
 <div class="container p-2 md:p-4 max-w-3xl">
-  {#if plugin}
-    <div class="p-5 bg-gray-900 text-white">
-      <div class="flex items-start mb-5">
-        {#if plugin.icons}
-          <img
-            src={plugin.icons['128']}
-            alt={plugin.name}
-            class="w-16 h-16 mr-5"
-          />
-        {:else}
-          <div
-            class="w-16 h-16 mr-5 bg-gray-800 rounded-full flex items-center justify-center"
-          >
-            <span class="text-2xl font-bold">{plugin.name[0]}</span>
+  <script lang="ts">
+    import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js'
+    import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
+  </script>
+
+  <Breadcrumb.Root>
+    <Breadcrumb.List>
+      <Breadcrumb.Item>
+        <Breadcrumb.Link href="#/plugins">Plugins</Breadcrumb.Link>
+      </Breadcrumb.Item>
+      <Breadcrumb.Separator />
+      <Breadcrumb.Item>
+        <Breadcrumb.Page>{plugin?.manifest.name}</Breadcrumb.Page>
+      </Breadcrumb.Item>
+    </Breadcrumb.List>
+  </Breadcrumb.Root>
+  {#await loadPluginsState}
+    <div class="flex justify-center items-center h-full">
+      <div class="spinner spinner-primary"></div>
+    </div>
+  {:then _}
+    {#if plugin}
+      <div class="p-5 bg-gray-900 text-white">
+        <div class="flex items-start mb-5">
+          {#if plugin.manifest.icons}
+            <img
+              src={plugin.manifest.icons['128']}
+              alt={plugin.manifest.name}
+              class="w-16 h-16 mr-5"
+            />
+          {:else}
+            <div
+              class="w-16 h-16 mr-5 bg-gray-800 rounded-full flex items-center justify-center"
+            >
+              <span class="text-2xl font-bold">{plugin.manifest.name[0]}</span>
+            </div>
+          {/if}
+          <div>
+            <h1 class="text-2xl font-bold mb-2">{plugin.manifest.name}</h1>
+            <p class="text-gray-300 mb-4">{plugin.manifest.description}</p>
+            <PluginActions {plugin} />
           </div>
-        {/if}
-        <div>
-          <h1 class="text-2xl font-bold mb-2">{plugin.name}</h1>
-          <p class="text-gray-300 mb-4">{plugin.description}</p>
-          <InstallButton onClick={() => onInstallPlugin(plugin)}>
-            Install
-          </InstallButton>
+        </div>
+        <div class="grid grid-cols-[auto_1fr] gap-x-4">
+          <span class="text-sm text-gray-400">Author</span>
+          <span>{plugin.manifest.author}</span>
+          <span class="text-sm text-gray-400">Version</span>
+          <span>{plugin.manifest.version}</span>
+          <span class="text-sm text-gray-400">Updated</span>
+          <span
+            >{(plugin.manifest.lastUpdated
+              ? new Date(plugin.manifest.lastUpdated)
+              : new Date()
+            ).toLocaleDateString()}</span
+          >
+          {#if plugin.manifest.homepage}
+            <a
+              href={plugin.manifest.homepage}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-blue-400 hover:underline">Website</a
+            >
+            <span />
+          {/if}
+        </div>
+        <hr class="my-4" />
+        <div
+          class="prose prose-h1:text-[1.5rem] prose-h2:text-[1.25rem] prose-h3:text-[1.125rem] prose-h4:text-[1rem] prose-h5:text-[0.875rem] prose-h6:text-[0.75rem] dark:prose-invert max-sm:prose-sm max-w-none [&_p]:break-words [&_p]:break-all"
+        >
+          {@html readmeHtml}
         </div>
       </div>
-      <div class="grid grid-cols-[auto_1fr] gap-x-4">
-        <span class="text-sm text-gray-400">Author</span>
-        <span>{plugin.author}</span>
-        <span class="text-sm text-gray-400">Version</span>
-        <span>{plugin.version}</span>
-        <span class="text-sm text-gray-400">Updated</span>
-        <span
-          >{(plugin.lastUpdated
-            ? new Date(plugin.lastUpdated)
-            : new Date()
-          ).toLocaleDateString()}</span
-        >
-        {#if plugin.homepage}
-          <a
-            href={plugin.homepage}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-blue-400 hover:underline">Website</a
-          >
-          <span />
-        {/if}
-      </div>
-      <hr class="my-4" />
-      <div
-        class="prose dark:prose-invert max-sm:prose-sm max-w-none [&_p]:break-words [&_p]:break-all"
-      >
-        {@html readmeHtml}
-      </div>
-    </div>
-  {:else}
-    <div class="p-5 bg-gray-900 text-white">Plugin not found</div>
-  {/if}
+    {:else}
+      <div class="p-5 bg-gray-900 text-white">Plugin not found</div>
+    {/if}
+  {:catch _err}
+    <div class="prose">{serializeError(_err).message}</div>
+  {/await}
 </div>

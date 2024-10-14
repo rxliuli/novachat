@@ -2,21 +2,14 @@
   import { Button } from '$lib/components/ui/button'
   import {
     activePluginFromLocal,
-    installPluginForRemote,
     installPluginFromZip,
-    loadRemotePlugins,
-    uninstallPlugin,
   } from '$lib/plugins/command'
-  import {
-    installedPlugins,
-    pluginStore,
-    type PluginManifest,
-  } from '$lib/plugins/store'
+  import { pluginStore } from '$lib/plugins/store'
   import { fileSelector } from '$lib/utils/fileSelector'
-  import { uniqBy } from 'lodash-es'
   import { BlocksIcon, Loader2Icon } from 'lucide-svelte'
   import { toast } from 'svelte-sonner'
-  import InstallButton from './components/InstallButton.svelte'
+  import PluginActions from './components/PluginActions.svelte'
+  import { loadPlugins, plugins } from './store/plugin'
 
   async function onInstallPluginFromLocal() {
     const files = await fileSelector({
@@ -35,39 +28,7 @@
     }
   }
 
-  async function onUninstallPlugin(pluginId: string) {
-    await uninstallPlugin(pluginId)
-  }
-
-  let remotePlugins: PluginManifest[] = []
-  $: plugins = uniqBy(
-    remotePlugins.concat($pluginStore.plugins.map((it) => it.manifest)),
-    (it) => it.id,
-  ).map((manifest) => {
-    const findPlugin = $pluginStore.plugins.find((it) => it.id === manifest.id)
-    return {
-      manifest: manifest,
-      installed: !!findPlugin,
-      canUpdate:
-        findPlugin?.manifest.version &&
-        findPlugin.manifest.version !== manifest.version,
-    }
-  })
-
-  async function onLoadRemotePlugins() {
-    remotePlugins = await loadRemotePlugins()
-  }
-  const loadPluginsState = onLoadRemotePlugins()
-
-  async function onInstallPlugin(manifest: PluginManifest) {
-    try {
-      await installPluginForRemote(manifest)
-      await activePluginFromLocal(manifest.id)
-    } catch (err) {
-      console.error(err)
-      toast.error('Failed to install plugin')
-    }
-  }
+  const loadPluginsState = loadPlugins()
 </script>
 
 <div>
@@ -84,7 +45,7 @@
         </div>
       {:then _}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {#each plugins as plugin}
+          {#each $plugins as plugin}
             <a
               class="bg-gray-100 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-800 p-4 flex flex-col justify-between"
               href={`#/plugins/${plugin.manifest.id}`}
@@ -94,32 +55,7 @@
               <p class="text-sm mb-2">
                 {plugin.manifest.description || 'No description'}
               </p>
-              <div class="mt-auto">
-                {#if plugin.installed}
-                  {#if plugin.canUpdate}
-                    <InstallButton
-                      onClick={() => onInstallPlugin(plugin.manifest)}
-                    >
-                      Update
-                    </InstallButton>
-                  {/if}
-                  <Button
-                    size="sm"
-                    on:click={(ev) => {
-                      ev.preventDefault()
-                      onUninstallPlugin(plugin.manifest.id)
-                    }}
-                  >
-                    Uninstall
-                  </Button>
-                {:else}
-                  <InstallButton
-                    onClick={() => onInstallPlugin(plugin.manifest)}
-                  >
-                    Install
-                  </InstallButton>
-                {/if}
-              </div>
+              <PluginActions class="mt-auto" {plugin} />
             </a>
           {/each}
         </div>
@@ -128,7 +64,7 @@
           <p class="text-sm text-gray-500">
             Failed to load plugins: {somError.message}
           </p>
-          <Button on:click={() => onLoadRemotePlugins()}>Refresh</Button>
+          <Button on:click={loadPlugins}>Refresh</Button>
         </div>
       {/await}
     </main>
