@@ -15,7 +15,14 @@
   }
 </script>
 
-<Button size="sm" on:click={() => handleClick()} disabled={loading}>
+<Button
+  size="sm"
+  on:click={(ev) => {
+    ev.preventDefault()
+    handleClick()
+  }}
+  disabled={loading}
+>
   {#if loading}
     <Loader2Icon class="mr-1 w-4 h-4 animate-spin" />
   {/if}

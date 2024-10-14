@@ -7,7 +7,7 @@
   import { push } from 'svelte-spa-router'
   import { toast } from 'svelte-sonner'
   import { onMount } from 'svelte'
-  import { pluginStore } from '$lib/plugins/store'
+  import { installedPlugins, pluginStore } from '$lib/plugins/store'
 
   let loading = false
   let pending = false
@@ -31,8 +31,8 @@
     push(`/conversation/${id}`)
   }
 
-  onMount(() => {
-    if ($pluginStore.plugins.length === 0) {
+  onMount(async () => {
+    if ((await installedPlugins.getValue()).length === 0) {
       toast.info('Please install a plugin', {
         action: {
           label: 'Install Plugin',

@@ -13,7 +13,7 @@
     type PluginManifest,
   } from '$lib/plugins/store'
   import { fileSelector } from '$lib/utils/fileSelector'
-  import { uniq, uniqBy } from 'lodash-es'
+  import { uniqBy } from 'lodash-es'
   import { BlocksIcon, Loader2Icon } from 'lucide-svelte'
   import { toast } from 'svelte-sonner'
   import InstallButton from './components/InstallButton.svelte'
@@ -85,8 +85,9 @@
       {:then _}
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {#each plugins as plugin}
-            <div
+            <a
               class="bg-gray-100 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-800 p-4 flex flex-col justify-between"
+              href={`#/plugins/${plugin.manifest.id}`}
             >
               <BlocksIcon class="w-4 h-4" />
               <h3 class="text-lg font-semibold">{plugin.manifest.name}</h3>
@@ -104,7 +105,10 @@
                   {/if}
                   <Button
                     size="sm"
-                    on:click={() => onUninstallPlugin(plugin.manifest.id)}
+                    on:click={(ev) => {
+                      ev.preventDefault()
+                      onUninstallPlugin(plugin.manifest.id)
+                    }}
                   >
                     Uninstall
                   </Button>
@@ -116,7 +120,7 @@
                   </InstallButton>
                 {/if}
               </div>
-            </div>
+            </a>
           {/each}
         </div>
       {:catch somError}

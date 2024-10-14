@@ -17,6 +17,11 @@ export interface PluginManifest {
   name: string
   version: string
   description?: string
+  author?: string
+  homepage?: string
+  repository?: string
+  lastUpdated?: string
+  icons?: Record<string, string>
   configuration?: SettingSchema
 }
 

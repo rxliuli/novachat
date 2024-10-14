@@ -14,11 +14,12 @@
   import { dbApi, initDB } from '$lib/api/db'
   import { convStore } from '$lib/stores/converstation'
   import { initPluginSystem, destoryPluginSystem } from '$lib/plugins/command'
-  import { pluginStore } from '$lib/plugins/store'
+  import Plugin from './routes/plugins/[id]/page.svelte'
 
   const routes = {
     '/': Home,
     '/conversation/:id': Chat,
+    '/plugins/:id': Plugin,
     '/plugins': Plugins,
     '/settings': Settings,
     '*': NotFound,
