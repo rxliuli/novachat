@@ -8,7 +8,8 @@
     "properties": {
       "gemini.apiKey": {
         "type": "string",
-        "description": "Google Generative AI API Key"
+        "description": "Google Generative AI API Key",
+        "format": "password"
       }
     }
   }
