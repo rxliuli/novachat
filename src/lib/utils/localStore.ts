@@ -32,7 +32,7 @@ export function localStore<T>(
       })
     },
     async getValue() {
-      const r = await adapter.read(key)
+      const r = (await adapter.read(key)) ?? initial
       set(r)
       return r
     },

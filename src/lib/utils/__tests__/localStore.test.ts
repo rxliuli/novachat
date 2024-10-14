@@ -1,13 +1,17 @@
 // @vitest-environment happy-dom
 import 'fake-indexeddb/auto'
-import { expect, it } from 'vitest'
+import { beforeEach, expect, it } from 'vitest'
 import {
   indexedDBAdapter,
   localStorageAdapter,
   localStore,
 } from '../localStore'
 import { get } from 'svelte/store'
-import { get as idbGet } from 'idb-keyval'
+import { get as idbGet, clear } from 'idb-keyval'
+
+beforeEach(async () => {
+  await clear()
+})
 
 it('indexedDBAdapter', async () => {
   const store = localStore('settings', { theme: 'system' }, indexedDBAdapter())
@@ -46,4 +50,9 @@ it('update', async () => {
   expect(get(store)).toEqual({ theme: 'dark' })
   await new Promise((resolve) => setTimeout(resolve, 0))
   expect(await idbGet('settings')).toEqual({ theme: 'dark' })
+})
+
+it('localStore for default value', async () => {
+  const store = localStore('settings', { theme: 'system' }, indexedDBAdapter())
+  expect(await store.getValue()).toEqual({ theme: 'system' })
 })
