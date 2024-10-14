@@ -1,3 +1,3 @@
-# plugin-gemini
+# @novachat/plugin-gemini
 
-NovaChat Plugin Template.
+Gemini Provider.

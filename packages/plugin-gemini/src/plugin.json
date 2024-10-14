@@ -1,5 +1,5 @@
 {
-  "id": "novachat.plugin-gemini",
+  "id": "novachat.gemini",
   "name": "Gemini",
   "description": "Gemini Provider",
   "version": "0.1.0",
