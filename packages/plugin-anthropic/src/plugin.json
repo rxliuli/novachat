@@ -10,7 +10,8 @@
       "anthropic.apiKey": {
         "type": "string",
         "description": "Anthropic API Key",
-        "default": ""
+        "default": "",
+        "format": "password"
       }
     }
   }
