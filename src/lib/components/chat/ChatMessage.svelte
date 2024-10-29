@@ -21,6 +21,7 @@
   import { inspect } from 'unist-util-inspect'
   import type { Highlighter } from 'shiki'
   import { once } from 'lodash-es'
+  import { highlighter } from '$lib/utils/highlighter'
 
   export let loading: boolean
 
@@ -30,25 +31,8 @@
   }>()
 
   let hast: Root
-  let highlighter: Highlighter
-  async function _getHighlighter() {
-    highlighter = await createHighlighter({
-      themes: ['github-light', 'github-dark'],
-      langs: [
-        'typescript',
-        'javascript',
-        'jsx',
-        'tsx',
-        'json',
-        'svelte',
-        'xml',
-      ],
-    })
-    return highlighter
-  }
-  const getHighlighter = once(_getHighlighter)
+
   async function renderMarkdown() {
-    const highlighter = await getHighlighter()
     const svgHandler = hastSvg()
     const shikiHandler = hastShiki(highlighter)
     hast = toHast(
