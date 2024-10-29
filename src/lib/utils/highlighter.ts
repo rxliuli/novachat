@@ -15,6 +15,13 @@ async function _getHighlighter() {
         'json',
         'svelte',
         'xml',
+        'html',
+        'yaml',
+        'yml',
+        'json5',
+        'rust',
+        'java',
+        'kotlin',
       ],
     })
   }
