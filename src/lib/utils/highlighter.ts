@@ -1,32 +1,42 @@
 import { createHighlighter } from 'shiki'
 import { once } from 'lodash-es'
-import type { Highlighter } from 'shiki'
+import type {
+  Highlighter,
+  LanguageInput,
+  SpecialLanguage,
+  StringLiteralUnion,
+} from 'shiki'
 
-let _highlighter: Highlighter
+export const SUPPORT_LANGUAGES: (
+  | LanguageInput
+  | StringLiteralUnion<string>
+  | SpecialLanguage
+)[] = [
+  'typescript',
+  'javascript',
+  'jsx',
+  'tsx',
+  'html',
+  'css',
+  'scss',
+  'less',
+  'json5',
+  'vue',
+  'json',
+  'svelte',
+  'xml',
+  'yaml',
+  'yml',
+  'rust',
+  'java',
+  'kotlin',
+]
+
 async function _getHighlighter() {
-  if (!_highlighter) {
-    _highlighter = await createHighlighter({
-      themes: ['github-light', 'github-dark'],
-      langs: [
-        'typescript',
-        'javascript',
-        'jsx',
-        'tsx',
-        'json',
-        'svelte',
-        'xml',
-        'html',
-        'yaml',
-        'yml',
-        'json5',
-        'rust',
-        'java',
-        'kotlin',
-      ],
-    })
-  }
-  return _highlighter
+  return await createHighlighter({
+    themes: ['github-light', 'github-dark'],
+    langs: SUPPORT_LANGUAGES,
+  })
 }
 
-const getHighlighter = once(_getHighlighter)
-export const highlighter = await getHighlighter()
+export const highlighter = await _getHighlighter()

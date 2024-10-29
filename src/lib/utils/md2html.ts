@@ -7,6 +7,7 @@ import { gfm } from 'micromark-extension-gfm'
 import { type Highlighter } from 'shiki'
 import type { Code } from 'mdast'
 import type { Element } from 'hast'
+import { SUPPORT_LANGUAGES } from './highlighter'
 
 export function hastSvg(): Handler {
   return (_state, node, _parent) => {
@@ -29,10 +30,14 @@ export function hastSvg(): Handler {
 export function hastShiki(highlighter: Highlighter): Handler {
   return (_state, node, _parent) => {
     const code = node as Code
-    const lang = code.lang
+    let lang = code.lang ?? 'text'
     const value = code.value
+    if (!SUPPORT_LANGUAGES.includes(lang)) {
+      console.warn(`Unsupported language: ${lang}`)
+      lang = 'text'
+    }
     const hast = highlighter.codeToHast(value, {
-      lang: lang!,
+      lang,
       themes: {
         light: 'github-light',
         dark: 'github-dark',
