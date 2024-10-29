@@ -1,19 +1,24 @@
 <script lang="ts">
-  import type { Root, Parent } from 'mdast'
   import CodeBlock from '../CodeBlock.svelte'
-  import { select } from 'unist-util-select'
   import { toHtml } from 'hast-util-to-html'
-  import { toHast } from 'mdast-util-to-hast'
+  import type { Root } from 'hast'
+  import SvgBlock from '../SvgBlock.svelte'
 
-  export let node: Root | Parent
+  export let node: Root
 </script>
 
-{#each node.children as it}
-  {#if it.type === 'code'}
-    <CodeBlock code={it.value} lang={it.lang ?? ''} />
-  {:else if select('code', it)}
-    <svelte:self node={it} />
+{#each node?.children ?? [] as it}
+  {#if 'tagName' in it}
+    {#if it.tagName === 'pre'}
+      <CodeBlock node={it} />
+    {:else if it.tagName === 'custom-svg'}
+      <SvgBlock node={it} />
+    {:else}
+      <svelte:element this={it.tagName} {...it.properties}>
+        <svelte:self node={it} />
+      </svelte:element>
+    {/if}
   {:else}
-    {@html toHtml(toHast(it))}
+    {@html toHtml(it)}
   {/if}
 {/each}

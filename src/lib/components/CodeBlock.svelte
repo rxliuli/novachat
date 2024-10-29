@@ -1,16 +1,18 @@
 <script lang="ts">
   import CopyToClipBoardBtn from './CopyToClipBoardBtn.svelte'
   import { afterUpdate } from 'svelte'
-  import { highlight } from '$lib/utils/highlight'
+  import type { Element } from 'hast'
+  import { toHtml } from 'hast-util-to-html'
 
-  export let code = ''
-  export let lang = ''
+  export let node: Element
 
   let highlightedCode = ''
+  let code = ''
 
   async function highlightCode() {
-    if (code) {
-      highlightedCode = await highlight(code, lang)
+    if (node) {
+      highlightedCode = toHtml(node)
+      code = node.properties.code as string
     }
   }
 

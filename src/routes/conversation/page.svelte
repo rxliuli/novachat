@@ -9,14 +9,13 @@
   import { Button } from '$lib/components/ui/button'
   import { CircleAlertIcon } from 'lucide-svelte'
   import { onDestroy } from 'svelte'
-  import { sortBy } from 'lodash-es'
-  import { pluginStore, type ActivatedModel } from '$lib/plugins/store'
+  import { type ActivatedModel } from '$lib/plugins/store'
   import { settingsStore } from '$lib/stores/settings'
 
   export let params: { id: string } = { id: '' }
 
   $: conversation = $convStore.conversations.find((it) => it.id === params.id)
-  $: messages = sortBy(conversation?.messages, 'createdAt')
+  $: messages = conversation?.messages ?? []
 
   let old: string = params.id
   async function onNavigate(id: string) {
@@ -137,7 +136,7 @@
     if (!conversation) {
       return
     }
-    await convStore.deleteMessage(id)
+    await convStore.retryMessage(id)
     await onSend()
   }
 

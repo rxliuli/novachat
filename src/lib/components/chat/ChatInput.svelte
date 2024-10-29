@@ -22,7 +22,7 @@
 
 <div class="relative min-w-0 flex-1" on:paste>
   <pre
-    class="scrollbar-custom invisible overflow-x-hidden overflow-y-scroll whitespace-pre-wrap break-words p-3"
+    class="scrollbar-custom invisible overflow-x-hidden overflow-y-scroll whitespace-pre-wrap break-words p-3 bg-gray-100 dark:bg-gray-700"
     aria-hidden="true"
     style="min-height: {minHeight}; max-height: {maxHeight}">{(value || ' ') +
       '\n'}</pre>
@@ -31,7 +31,7 @@
     enterkeyhint="send"
     tabindex="0"
     rows="1"
-    class="scrollbar-custom absolute top-0 m-0 h-full w-full resize-none scroll-p-3 overflow-x-hidden overflow-y-scroll border-0 bg-transparent py-3 outline-none focus:ring-0 focus-visible:ring-0"
+    class="scrollbar-custom overflow-y-auto absolute top-0 m-0 h-full w-full resize-none scroll-p-3 overflow-x-hidden border-0 bg-transparent py-3 outline-none focus:ring-0 focus-visible:ring-0"
     class:text-gray-400={disabled}
     bind:value
     bind:this={textareaElement}

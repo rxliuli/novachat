@@ -3,7 +3,7 @@ import type { Conversation } from '$lib/types/Conversation'
 import type { Message } from '$lib/types/Message'
 import { blobToDataURI } from '$lib/utils/datauri'
 import { produce } from 'immer'
-import { omit } from 'lodash-es'
+import { omit, sortBy } from 'lodash-es'
 import { get, writable } from 'svelte/store'
 
 type Store = {
@@ -203,39 +203,43 @@ export const convStore = {
     }))
   },
   async loadMessages(id: string) {
-    const messages = await Promise.all(
-      (
-        await dbApi.messages.getAll({
-          conversationId: id,
-          limit: 100,
-        })
-      ).data.map(async (it) => ({
-        ...it,
-        attachments: await Promise.all(
-          it.attachments.map(async (atta) => {
-            try {
-              return {
-                ...atta,
-                url: await blobToDataURI(atta.data),
+    const messages = sortBy(
+      await Promise.all(
+        (
+          await dbApi.messages.getAll({
+            conversationId: id,
+            limit: 100,
+          })
+        ).data.map(async (it) => ({
+          ...it,
+          attachments: await Promise.all(
+            it.attachments.map(async (atta) => {
+              try {
+                return {
+                  ...atta,
+                  url: await blobToDataURI(atta.data),
+                }
+              } catch (e) {
+                return {
+                  ...atta,
+                  url: '',
+                }
               }
-            } catch (e) {
-              return {
-                ...atta,
-                url: '',
-              }
-            }
-          }),
-        ),
-      })),
+            }),
+          ),
+        })),
+      ),
+      'createdAt',
     )
-    store.update((state) => {
-      return {
-        ...state,
-        conversations: state.conversations.map((it) => {
-          return it.id === id ? { ...it, messages } : it
-        }),
-      }
-    })
+    store.update(
+      produce((draft) => {
+        const conv = draft.conversations.find((it) => it.id === id)
+        if (!conv) {
+          return
+        }
+        conv.messages = messages
+      }),
+    )
   },
   async updateModel(id: string, modelId: string) {
     store.update(

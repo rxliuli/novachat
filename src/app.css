@@ -90,4 +90,16 @@
     /* font-weight: var(--shiki-dark-font-weight) !important; */
     /* text-decoration: var(--shiki-dark-text-decoration) !important; */
   }
+
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-muted-foreground;
+  }
 }

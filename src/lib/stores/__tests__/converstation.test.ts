@@ -8,6 +8,7 @@ import { settingsStore } from '../settings'
 import type { Message } from '$lib/types/Message'
 import { dbApi, dbStore } from '$lib/api/db'
 import dayjs from 'dayjs'
+import { sortBy } from 'lodash-es'
 
 it('Create conversation', async () => {
   await convStore.init([])
@@ -69,6 +70,36 @@ it('Add attachment', async () => {
   expect(await dbApi.attachments.getAllByMessageId(msgId)).length(1)
   const r = await dbApi.messages.getAll({ conversationId: id })
   expect(r.data[0].attachments).length(1)
+})
+
+it('loadMessage', async () => {
+  const chatId1 = nanoid()
+  await convStore.init([
+    {
+      id: chatId1,
+      model: 'gpt-4o',
+      title: 'test',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      messages: [],
+    },
+  ])
+  await Promise.all(
+    Array.from({ length: 10 }).map(async (_, i) => {
+      return dbApi.messages.create({
+        id: (i + 1).toString(),
+        conversationId: chatId1,
+        content: 'Request',
+        from: i % 2 === 0 ? 'user' : 'assistant',
+        createdAt: dayjs().subtract(i, 'day').toISOString(),
+        updatedAt: dayjs().subtract(i, 'day').toISOString(),
+      })
+    }),
+  )
+  await convStore.loadMessages(chatId1)
+  const messages = get(convStore).conversations[0].messages
+  expect(messages).length(10)
+  expect(messages).toEqual(sortBy(messages, 'createdAt'))
 })
 
 describe('Retry message', async () => {

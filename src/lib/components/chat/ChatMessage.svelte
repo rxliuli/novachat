@@ -4,8 +4,8 @@
   import { fromMarkdown } from 'mdast-util-from-markdown'
   import { gfm } from 'micromark-extension-gfm'
   import { gfmFromMarkdown } from 'mdast-util-gfm'
+  import { toHast } from 'mdast-util-to-hast'
   import { newlineToBreak } from 'mdast-util-newline-to-break'
-  import type { Root } from 'mdast'
   import { createEventDispatcher } from 'svelte'
   import { Button } from '../ui/button'
   import { RotateCcwIcon, Trash2Icon } from 'lucide-svelte'
@@ -14,6 +14,13 @@
   import BotChatMessage from './BotChatMessage.svelte'
   export let message: Message
   import * as Alert from '$lib/components/ui/alert'
+  import { createHighlighter } from 'shiki'
+  import { hastShiki, hastSvg } from '$lib/utils/md2html'
+  import type { Root } from 'hast'
+  import type { Code } from 'mdast'
+  import { inspect } from 'unist-util-inspect'
+  import type { Highlighter } from 'shiki'
+  import { once } from 'lodash-es'
 
   export let loading: boolean
 
@@ -22,12 +29,47 @@
     delete: void
   }>()
 
-  let root: Root
-  $: if (message.from === 'assistant') {
-    root = fromMarkdown(message.content, {
-      extensions: [gfm()],
-      mdastExtensions: [gfmFromMarkdown(), { transforms: [newlineToBreak] }],
+  let hast: Root
+  let highlighter: Highlighter
+  async function _getHighlighter() {
+    highlighter = await createHighlighter({
+      themes: ['github-light', 'github-dark'],
+      langs: [
+        'typescript',
+        'javascript',
+        'jsx',
+        'tsx',
+        'json',
+        'svelte',
+        'xml',
+      ],
     })
+    return highlighter
+  }
+  const getHighlighter = once(_getHighlighter)
+  async function renderMarkdown() {
+    const highlighter = await getHighlighter()
+    const svgHandler = hastSvg()
+    const shikiHandler = hastShiki(highlighter)
+    hast = toHast(
+      fromMarkdown(message.content, {
+        extensions: [gfm()],
+        mdastExtensions: [gfmFromMarkdown(), { transforms: [newlineToBreak] }],
+      }),
+      {
+        handlers: {
+          code: (_state, node, _parent) => {
+            return (
+              svgHandler(_state, node, _parent) ??
+              shikiHandler(_state, node, _parent)
+            )
+          },
+        },
+      },
+    ) as Root
+  }
+  $: if (message.from === 'assistant') {
+    renderMarkdown()
   }
 </script>
 
@@ -70,7 +112,7 @@
       <article
         class="prose dark:prose-invert max-sm:prose-sm max-w-none [&_p]:break-words [&_p]:break-all"
       >
-        <BotChatMessage node={root} />
+        <BotChatMessage node={hast} />
       </article>
       <div
         class="flex justify-end gap-1 md:group-hover/message:opacity-100 md:opacity-0 {cn(

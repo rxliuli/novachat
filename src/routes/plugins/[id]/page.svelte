@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { createHighlighter } from 'shiki'
-  import { md2html } from '../utils/md2html'
+  import { md2html } from '../../../lib/utils/md2html'
   import PluginActions from '../components/PluginActions.svelte'
   import { serializeError } from 'serialize-error'
   import { loadPlugins, plugins } from '../store/plugin'
