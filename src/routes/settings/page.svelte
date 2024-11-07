@@ -4,6 +4,9 @@
   import { Input } from '$lib/components/ui/input'
   import { Separator } from '$lib/components/ui/separator'
   import { settingSchemaStore } from '$lib/stores/settingSchema'
+  import { Textarea } from '$lib/components/ui/textarea'
+  import SelectUI from './components/Select.svelte'
+  import { pluginStore } from '$lib/plugins/store'
 
   function onChange(name: string, value: any) {
     ;($settingsStore as any)[name] = value
@@ -45,43 +48,42 @@
       <div class="mb-2">
         <label for={it.name} class="block mb-1">{it.schema.description}</label>
         {#if it.schema.enum}
-          <Select.Root
+          <SelectUI
             name={it.name}
-            selected={{
-              value: $settingsStore[it.name],
-              label: $settingsStore[it.name],
-            }}
-            onSelectedChange={(value) => {
-              value?.value && onChange(it.name, value.value)
-            }}
-          >
-            <Select.Trigger class="w-full">
-              {it.schema.enumDescriptions?.[
-                it.schema.enum.indexOf($settingsStore[it.name])
-              ] ??
-                $settingsStore[it.name] ??
-                it.schema.enumDescriptions?.[
-                  it.schema.enum.indexOf(it.schema.default)
-                ] ??
-                it.schema.default ??
-                'Please select'}
-            </Select.Trigger>
-            <Select.Content class="overflow-y-auto max-h-[20rem]">
-              {#each it.schema.enum as value, index}
-                <Select.Item {value}
-                  >{it.schema.enumDescriptions?.[index] ?? value}</Select.Item
-                >
-              {/each}
-            </Select.Content>
-          </Select.Root>
-        {:else if it.schema.type === 'string'}
-          <Input
-            type={it.schema.format ?? 'text'}
-            id={it.name}
-            name={it.name}
-            value={$settingsStore[it.name] ?? it.schema.default}
-            on:input={(e) => onChangeInput(e, it.name)}
+            value={$settingsStore[it.name]}
+            on:change={(ev) => onChange(it.name, ev.detail)}
+            items={it.schema.enum.map((value, index) => ({
+              value,
+              label: it.schema.enumDescriptions?.[index] ?? value,
+            }))}
+            placeholder="Please select"
           />
+        {:else if it.schema.type === 'string'}
+          {#if it.schema.format === 'markdown'}
+            <Textarea name={it.name} bind:value={$settingsStore[it.name]}
+            ></Textarea>
+          {:else if it.schema.format === 'model'}
+            <SelectUI
+              name={it.name}
+              value={$settingsStore[it.name]}
+              on:change={(ev) => onChange(it.name, ev.detail)}
+              placeholder="Please select"
+              items={$pluginStore.models
+                .filter((it) => it.type === 'llm')
+                .map((it) => ({
+                  value: it.id,
+                  label: it.name,
+                }))}
+            />
+          {:else}
+            <Input
+              type={it.schema.format ?? 'text'}
+              id={it.name}
+              name={it.name}
+              value={$settingsStore[it.name] ?? it.schema.default}
+              on:input={(e) => onChangeInput(e, it.name)}
+            />
+          {/if}
         {/if}
       </div>
     {/each}
