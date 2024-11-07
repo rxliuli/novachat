@@ -3,10 +3,6 @@ import { last } from 'lodash-es'
 import { franc } from 'franc-min'
 import { configuration } from './plugin.json'
 
-const SYSTEM_MESSAGE = `
-You are a professional, authentic machine translation engine. Translate the following source text to {{to}}, Output translation directly without any additional text.
-`.trim()
-
 export async function activate() {
   await novachat.model.registerBot({
     id: 'translator',
@@ -14,11 +10,14 @@ export async function activate() {
     async *stream(
       query: novachat.QueryRequest,
     ): AsyncGenerator<novachat.QueryChunkResponse> {
+      const systemPrompt = await novachat.setting.get('translator.systemPrompt')
       const lastMessage = last(query.messages)
       if (!lastMessage) {
         throw new Error('No last message')
       }
-      const defaultModel = await novachat.model.getDefault()
+      const defaultModel =
+        ((await novachat.setting.get('translator.model')) as string) ??
+        (await novachat.model.getDefault())?.id
       if (!defaultModel) {
         throw new Error('No default model')
       }
@@ -32,7 +31,7 @@ export async function activate() {
         messages: [
           {
             role: 'system',
-            content: SYSTEM_MESSAGE.replace(
+            content: systemPrompt.replace(
               '{{to}}',
               translateConfig.enumDescriptions[
                 translateConfig.enum.indexOf(toLanguage)
@@ -44,7 +43,7 @@ export async function activate() {
             content: lastMessage.content,
           },
         ],
-        model: defaultModel.id,
+        model: defaultModel,
       })
       for await (const it of stream) {
         yield it

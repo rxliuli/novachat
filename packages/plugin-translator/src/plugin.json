@@ -179,6 +179,17 @@
           "Ilokano",
           "Қазақ"
         ]
+      },
+      "translator.systemPrompt": {
+        "type": "string",
+        "description": "System prompt",
+        "default": "You are a professional, authentic machine translation engine. Translate the following source text to {{to}}, Output translation directly without any additional text.",
+        "format": "markdown"
+      },
+      "translator.model": {
+        "type": "string",
+        "description": "Model",
+        "format": "model"
       }
     }
   }
