@@ -53,7 +53,7 @@ export const convStore = {
         title: 'New Chat',
       }),
       dbApi.messages.create({
-        ...message,
+        ...$state.snapshot(message),
         conversationId: id,
       }),
       ...(message.attachments ?? []).map((atta) =>
@@ -94,7 +94,7 @@ export const convStore = {
         updatedAt: new Date().toISOString(),
       }),
       dbApi.messages.create({
-        ...message,
+        ...$state.snapshot(message),
         conversationId: id,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -129,7 +129,7 @@ export const convStore = {
       ),
     }))
     await dbApi.messages.update({
-      ...message,
+      ...$state.snapshot(message),
       conversationId: id,
       updatedAt: new Date().toISOString(),
     })

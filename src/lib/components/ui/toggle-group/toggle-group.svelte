@@ -8,23 +8,40 @@
 	type T = $$Generic<"single" | "multiple">;
 	type $$Props = ToggleGroupPrimitive.Props<T> & VariantProps<typeof toggleVariants>;
 
-	let className: string | undefined | null = undefined;
-	export { className as class };
-	export let variant: $$Props["variant"] = "default";
-	export let size: $$Props["size"] = "default";
-	export let value: $$Props["value"] = undefined;
+	
+	interface Props {
+		class?: string | undefined | null;
+		variant?: $$Props["variant"];
+		size?: $$Props["size"];
+		value?: $$Props["value"];
+		children?: import('svelte').Snippet<[any]>;
+		[key: string]: any
+	}
+
+	let {
+		class: className = undefined,
+		variant = "default",
+		size = "default",
+		value = $bindable(undefined),
+		children,
+		...rest
+	}: Props = $props();
 
 	setToggleGroupCtx({
 		variant,
 		size,
 	});
+
+	const children_render = $derived(children);
 </script>
 
 <ToggleGroupPrimitive.Root
 	class={cn("flex items-center justify-center gap-1", className)}
 	bind:value
-	{...$$restProps}
-	let:builder
+	{...rest}
+	
 >
-	<slot {builder} />
+	{#snippet children({ builder })}
+		{@render children_render?.({ builder, })}
+	{/snippet}
 </ToggleGroupPrimitive.Root>

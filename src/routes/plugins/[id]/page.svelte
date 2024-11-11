@@ -7,12 +7,16 @@
   import { loadPlugins, plugins } from '../store/plugin'
   import * as Breadcrumb from '$lib/components/ui/breadcrumb'
 
-  export let params: { id: string } = { id: '' }
+  interface Props {
+    params?: { id: string };
+  }
+
+  let { params = { id: '' } }: Props = $props();
 
   const loadPluginsState = loadPlugins()
 
-  $: plugin = $plugins.find((it) => it.manifest.id === params.id)
-  let readmeHtml: string = ''
+  let plugin = $derived($plugins.find((it) => it.manifest.id === params.id))
+  let readmeHtml: string = $state('')
 
   onMount(async () => {
     await loadPluginsState
@@ -96,7 +100,7 @@
               rel="noopener noreferrer"
               class="text-blue-400 hover:underline">Website</a
             >
-            <span />
+            <span></span>
           {/if}
         </div>
         <hr class="my-4" />

@@ -1,10 +1,15 @@
 <script lang="ts">
+  import BotChatMessage from './BotChatMessage.svelte';
   import CodeBlock from '../CodeBlock.svelte'
   import { toHtml } from 'hast-util-to-html'
   import type { Root } from 'hast'
   import SvgBlock from '../SvgBlock.svelte'
 
-  export let node: Root
+  interface Props {
+    node: Root;
+  }
+
+  let { node }: Props = $props();
 </script>
 
 {#each node?.children ?? [] as it}
@@ -15,7 +20,7 @@
       <SvgBlock node={it} />
     {:else}
       <svelte:element this={it.tagName} {...it.properties}>
-        <svelte:self node={it} />
+        <BotChatMessage node={it} />
       </svelte:element>
     {/if}
   {:else}

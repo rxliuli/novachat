@@ -3,9 +3,13 @@
   import { Button } from './ui/button'
   import { DownloadIcon } from 'lucide-svelte'
 
-  export let node: Element
+  interface Props {
+    node: Element;
+  }
 
-  $: svg = node.properties.value as string
+  let { node }: Props = $props();
+
+  let svg = $derived(node.properties.value as string)
 
   function handleClick() {
     const blob = new Blob([svg], { type: 'image/svg+xml' })

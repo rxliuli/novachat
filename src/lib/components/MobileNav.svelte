@@ -1,26 +1,37 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { createEventDispatcher } from 'svelte'
   import { SquarePenIcon, XIcon, MenuIcon } from 'lucide-svelte'
-  import { convStore } from '$lib/stores/converstation'
+  import { convStore } from '$lib/stores/converstation.svelte'
   import { location } from 'svelte-spa-router'
 
-  export let isOpen = false
-  export let title: string | undefined
+  interface Props {
+    isOpen?: boolean;
+    title: string | undefined;
+    children?: import('svelte').Snippet;
+  }
 
-  $: title = title ?? 'New Chat'
+  let { isOpen = false, title = $bindable(), children }: Props = $props();
 
-  let closeEl: HTMLButtonElement
-  let openEl: HTMLButtonElement
+  run(() => {
+    title = title ?? 'New Chat'
+  });
+
+  let closeEl: HTMLButtonElement = $state()
+  let openEl: HTMLButtonElement = $state()
 
   const dispatch = createEventDispatcher<{
     toggle: boolean
   }>()
 
-  $: if (isOpen && closeEl) {
-    closeEl.focus()
-  } else if (!isOpen && document.activeElement === closeEl) {
-    openEl.focus()
-  }
+  run(() => {
+    if (isOpen && closeEl) {
+      closeEl.focus()
+    } else if (!isOpen && document.activeElement === closeEl) {
+      openEl.focus()
+    }
+  });
 </script>
 
 <nav
@@ -29,7 +40,7 @@
   <button
     type="button"
     class="-ml-3 flex size-12 shrink-0 items-center justify-center text-lg"
-    on:click={() => dispatch('toggle', true)}
+    onclick={() => dispatch('toggle', true)}
     aria-label="Open menu"
     bind:this={openEl}><MenuIcon /></button
   >
@@ -51,10 +62,10 @@
     <button
       type="button"
       class="-mr-3 ml-auto flex size-12 items-center justify-center text-lg"
-      on:click={() => dispatch('toggle', false)}
+      onclick={() => dispatch('toggle', false)}
       aria-label="Close menu"
       bind:this={closeEl}><XIcon /></button
     >
   </div>
-  <slot />
+  {@render children?.()}
 </nav>

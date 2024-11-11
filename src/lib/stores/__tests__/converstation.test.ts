@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import 'fake-indexeddb/auto'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { convStore } from '../converstation'
+import { convStore } from '../converstation.svelte.svelte'
 import { get } from 'svelte/store'
 import { nanoid } from 'nanoid'
 import { settingsStore } from '../settings'

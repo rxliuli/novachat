@@ -6,11 +6,20 @@
     value: Value
     label?: string
   }
-  export let name: string
-  export let value: any
-  export let items: Selected<any>[]
-  export let placeholder: string
-  $: label = items.find((it) => it.value === value)?.label ?? value
+  interface Props {
+    name: string;
+    value: any;
+    items: Selected<any>[];
+    placeholder: string;
+  }
+
+  let {
+    name,
+    value,
+    items,
+    placeholder
+  }: Props = $props();
+  let label = $derived(items.find((it) => it.value === value)?.label ?? value)
 
   const dispatch = createEventDispatcher<{
     change(value: any): void

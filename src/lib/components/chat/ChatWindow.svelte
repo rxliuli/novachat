@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run, preventDefault } from 'svelte/legacy'
+
   import ChatInput from './ChatInput.svelte'
   import type { Attachment, Message } from '$lib/types/Message'
   import { createEventDispatcher } from 'svelte'
@@ -25,14 +27,18 @@
   import { settingsStore } from '$lib/stores/settings'
   import { toast } from 'svelte-sonner'
   import * as Command from '../ui/command'
-  import { convStore } from '$lib/stores/converstation'
+  import { convStore } from '$lib/stores/converstation.svelte'
 
-  export let messages: Message[] = []
-  export let loading = false
-  export let pending = false
+  interface Props {
+    messages?: Message[]
+    loading?: boolean
+    pending?: boolean
+  }
+
+  let { messages = [], loading = false, pending = false }: Props = $props()
   let lastIsError = false
-  let message: string
-  let images: Attachment[] = []
+  let message: string = $state('')
+  let images: Attachment[] = $state([])
 
   const dispatch = createEventDispatcher<{
     message: Pick<Message, 'content' | 'attachments'>
@@ -75,7 +81,7 @@
     }
   }
 
-  let chatContainer: HTMLElement
+  let chatContainer: HTMLElement | undefined = $state()
 
   async function addImage(files: File[]) {
     const optimizedImages = await Promise.all(
@@ -111,19 +117,19 @@
     images = images.filter((_, i) => i !== index)
   }
 
-  let isLightboxOpen = false
-  let lightboxIndex = 0
+  let isLightboxOpen = $state(false)
+  let lightboxIndex = $state(0)
 
   function openLightbox(index: number) {
     isLightboxOpen = true
     lightboxIndex = index
   }
 
-  let filteredModels: ActivatedModel[] = []
-  let selectedModelIndex = -1
-  let showModelList = false
-  let modelListContainer: HTMLElement
-  let isCompositionOn = false
+  let filteredModels: ActivatedModel[] = $state([])
+  let selectedModelIndex = $state(-1)
+  let showModelList = $state(false)
+  let modelListContainer: HTMLElement | undefined = $state()
+  let isCompositionOn = $state(false)
 
   const handleInput = (event: Event) => {
     const target = event.target as HTMLTextAreaElement
@@ -149,13 +155,13 @@
         selectedModelIndex =
           (selectedModelIndex - 1 + filteredModels.length) %
           filteredModels.length
-        modelListContainer.children[selectedModelIndex].scrollIntoView({
+        modelListContainer?.children[selectedModelIndex].scrollIntoView({
           block: 'nearest',
         })
       } else if (event.key === 'ArrowDown') {
         event.preventDefault()
         selectedModelIndex = (selectedModelIndex + 1) % filteredModels.length
-        modelListContainer.children[selectedModelIndex].scrollIntoView({
+        modelListContainer?.children[selectedModelIndex].scrollIntoView({
           block: 'nearest',
         })
       } else if (event.key === 'Enter') {
@@ -181,7 +187,7 @@
     showModelList = false
   }
 
-  let toggleModel = false
+  let toggleModel = $state(false)
   function handleModelChange() {
     toggleModel = !toggleModel
   }
@@ -213,10 +219,12 @@
     return model?.name ?? modelName
   }
 
-  let defaultBotName: string | undefined
-  $: if ($settingsStore && $pluginStore) {
-    defaultBotName = getDefaultBotName()
-  }
+  let defaultBotName: string | undefined = $state()
+  run(() => {
+    if ($settingsStore && $pluginStore) {
+      defaultBotName = getDefaultBotName()
+    }
+  })
 </script>
 
 <div class="relative h-full">
@@ -240,7 +248,9 @@
       scrollNode={chatContainer}
     />
   </div>
-  <div class="absolute bottom-0 left-0 right-0 flex justify-center px-3.5 py-4 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent">
+  <div
+    class="absolute bottom-0 left-0 right-0 flex justify-center px-3.5 py-4 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"
+  >
     <div class="w-full max-w-3xl">
       <div class="flex gap-2 justify-end items-center mb-2">
         {#if loading}
@@ -259,9 +269,9 @@
           <button
             class="block w-full text-left p-2 rounded-md {selectedModelIndex ===
               index && 'bg-accent'}"
-            on:mouseover={() => (selectedModelIndex = index)}
-            on:focus={() => (selectedModelIndex = index)}
-            on:click={() => selectModel(model)}
+            onmouseover={() => (selectedModelIndex = index)}
+            onfocus={() => (selectedModelIndex = index)}
+            onclick={() => selectModel(model)}
           >
             {model.name}
           </button>
@@ -269,7 +279,7 @@
       </div>
       <form
         class="relative w-full flex-1 rounded-xl border bg-gray-100 focus-within:border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:focus-within:border-gray-500"
-        on:submit|preventDefault={handleSubmit}
+        onsubmit={preventDefault(handleSubmit)}
       >
         <div
           class="flex-1 overflow-x-auto flex gap-2 flex-nowrap px-12 py-2 {cn({
@@ -278,10 +288,7 @@
         >
           {#each images as image, index}
             <div class="flex-shrink-0 w-14 h-14 relative">
-              <button
-                class="w-full h-full"
-                on:click={() => openLightbox(index)}
-              >
+              <button class="w-full h-full" onclick={() => openLightbox(index)}>
                 <img
                   src={image.url}
                   class="w-full h-full object-cover rounded-lg"
@@ -290,7 +297,7 @@
               </button>
               <button
                 class="absolute top-0 right-0"
-                on:click={() => onDeleteImage(index)}
+                onclick={() => onDeleteImage(index)}
               >
                 <CircleXIcon
                   class="w-6 h-6 rounded-full text-gray-50 hover:text-gray-400"
@@ -304,19 +311,18 @@
             class="btn mx-1 my-1 h-[2.4rem] self-end rounded-lg bg-transparent p-1 px-[0.7rem] text-gray-400 enabled:hover:text-gray-700 disabled:opacity-60 enabled:dark:hover:text-gray-100 dark:disabled:opacity-40"
             disabled={pending}
             type="button"
-            on:click={onUploadImage}
+            onclick={onUploadImage}
           >
             <LinkIcon class="w-4 h-4" />
           </button>
           <ChatInput
             placeholder={'Ask anything'}
             bind:value={message}
-            on:submit={handleSubmit}
-            on:paste={onPaste}
-            on:input={handleInput}
-            on:keydown={handleKeydown}
-            on:compositionstart={() => (isCompositionOn = true)}
-            on:compositionend={() => (isCompositionOn = false)}
+            onPaste={onPaste}
+            onInput={handleInput}
+            onKeyDown={handleKeydown}
+            onCompositionStart={() => (isCompositionOn = true)}
+            onCompositionEnd={() => (isCompositionOn = false)}
             maxRows={6}
             disabled={lastIsError}
           />
@@ -341,7 +347,7 @@
       <div class="py-2">
         <div class="flex text-sm items-center gap-2 text-gray-400/90">
           <span>Model: </span>
-          <button class="flex items-center gap-1" on:click={handleModelChange}>
+          <button class="flex items-center gap-1" onclick={handleModelChange}>
             {defaultBotName ?? 'Select a model'}
             <ChevronsUpDownIcon class="w-4 h-4" />
           </button>

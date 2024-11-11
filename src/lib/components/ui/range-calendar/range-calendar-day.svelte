@@ -6,10 +6,24 @@
 	type $$Props = RangeCalendarPrimitive.DayProps;
 	type $$Events = RangeCalendarPrimitive.DayEvents;
 
-	export let date: $$Props["date"];
-	export let month: $$Props["month"];
-	let className: $$Props["class"] = undefined;
-	export { className as class };
+	interface Props {
+		date: $$Props["date"];
+		month: $$Props["month"];
+		class?: $$Props["class"];
+		children?: import('svelte').Snippet<[any]>;
+		[key: string]: any
+	}
+
+	let {
+		date,
+		month,
+		class: className = undefined,
+		children,
+		...rest
+	}: Props = $props();
+	
+
+	const children_render = $derived(children);
 </script>
 
 <RangeCalendarPrimitive.Day
@@ -33,12 +47,14 @@
 		"data-[unavailable]:text-destructive-foreground data-[unavailable]:line-through",
 		className
 	)}
-	{...$$restProps}
-	let:disabled
-	let:unavailable
-	let:builder
+	{...rest}
+	
+	
+	
 >
-	<slot {disabled} {unavailable} {builder}>
-		{date.day}
-	</slot>
+	{#snippet children({ disabled, unavailable, builder })}
+		{#if children_render}{@render children_render({ disabled, unavailable, builder, })}{:else}
+			{date.day}
+		{/if}
+	{/snippet}
 </RangeCalendarPrimitive.Day>

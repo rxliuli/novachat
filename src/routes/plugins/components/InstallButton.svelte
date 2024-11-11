@@ -1,9 +1,14 @@
 <script lang="ts">
   import { Button } from '$lib/components/ui/button'
   import { Loader2Icon } from 'lucide-svelte'
-  export let onClick: () => Promise<void>
+  interface Props {
+    onClick: () => Promise<void>;
+    children?: import('svelte').Snippet;
+  }
 
-  let loading = false
+  let { onClick, children }: Props = $props();
+
+  let loading = $state(false)
 
   async function handleClick() {
     try {
@@ -26,5 +31,5 @@
   {#if loading}
     <Loader2Icon class="mr-1 w-4 h-4 animate-spin" />
   {/if}
-  <slot />
+  {@render children?.()}
 </Button>

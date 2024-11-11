@@ -5,16 +5,21 @@
   import * as Tooltip from './ui/tooltip'
   import { Button } from './ui/button'
 
-  export let value: string
+  interface Props {
+    value: string;
+    [key: string]: any
+  }
 
-  let isSuccess = false
+  let { ...props }: Props = $props();
+
+  let isSuccess = $state(false)
   let timeout: ReturnType<typeof setTimeout>
 
   const handleClick = async (ev: MouseEvent) => {
     ev.preventDefault()
     // writeText() can be unavailable or fail in some cases (iframe, etc) so we try/catch
     try {
-      await navigator.clipboard.writeText(value)
+      await navigator.clipboard.writeText(props.value)
 
       isSuccess = true
       if (timeout) {
@@ -35,19 +40,21 @@
   })
 </script>
 
-<div class={$$props.class}>
+<div class={props.class}>
   <Tooltip.Root open={isSuccess}>
-    <Tooltip.Trigger asChild let:builder>
-      <Button
-        builders={[builder]}
-        variant="ghost"
-        size="icon"
-        on:click={handleClick}
-        class="border-none hover:bg-transparent {$$props.class}"
-      >
-        <CopyIcon class="w-4 h-4" />
-      </Button>
-    </Tooltip.Trigger>
+    <Tooltip.Trigger asChild >
+      {#snippet children({ builder })}
+            <Button
+          builders={[builder]}
+          variant="ghost"
+          size="icon"
+          on:click={handleClick}
+          class="border-none hover:bg-transparent {props.class}"
+        >
+          <CopyIcon class="w-4 h-4" />
+        </Button>
+                {/snippet}
+        </Tooltip.Trigger>
     {#if isSuccess}
       <Tooltip.Content>
         <p>Copied</p>

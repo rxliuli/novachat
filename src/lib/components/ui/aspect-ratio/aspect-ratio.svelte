@@ -3,9 +3,15 @@
 
 	type $$Props = AspectRatioPrimitive.Props;
 
-	export let ratio: $$Props["ratio"] = 4 / 3;
+	interface Props {
+		ratio?: $$Props["ratio"];
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let { ratio = 4 / 3, children, ...rest }: Props = $props();
 </script>
 
-<AspectRatioPrimitive.Root {ratio} {...$$restProps}>
-	<slot />
+<AspectRatioPrimitive.Root {ratio} {...rest}>
+	{@render children?.()}
 </AspectRatioPrimitive.Root>

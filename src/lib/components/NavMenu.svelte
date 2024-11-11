@@ -3,11 +3,15 @@
   import { createEventDispatcher } from 'svelte'
   import { Button } from './ui/button'
   import type { Conversation } from '$lib/types/Conversation'
-  import { convStore } from '$lib/stores/converstation'
+  import { convStore } from '$lib/stores/converstation.svelte'
   import { cn } from '$lib/utils/ui'
   import { location } from 'svelte-spa-router'
 
-  export let conversations: Conversation[]
+  interface Props {
+    conversations: Conversation[];
+  }
+
+  let { conversations }: Props = $props();
 
   const dispatch = createEventDispatcher<{
     deleteConversation: string
@@ -41,7 +45,7 @@
     <a
       href="#/"
       class="flex items-center gap-2 font-semibold"
-      on:click={() => dispatch('hideSidebar')}
+      onclick={() => dispatch('hideSidebar')}
     >
       <img src="/icon/32.png" class="h-6 w-6" alt="NovaChat" />
       <span class="">NovaChat</span>
@@ -67,7 +71,7 @@
             class={cn(sidebarItemClsx, 'group gap-1 justify-between', {
               'bg-accent text-primary': $location === `/conversation/${it.id}`,
             })}
-            on:click={() => dispatch('hideSidebar')}
+            onclick={() => dispatch('hideSidebar')}
           >
             <span class="flex-1 mr-auto truncate">{it.title}</span>
             <Button
@@ -96,12 +100,12 @@
       <a
         href="#/plugins"
         class={sidebarItemClsx}
-        on:click={() => dispatch('hideSidebar')}>Plugins</a
+        onclick={() => dispatch('hideSidebar')}>Plugins</a
       >
       <a
         href="#/settings"
         class={sidebarItemClsx}
-        on:click={() => dispatch('hideSidebar')}>Settings</a
+        onclick={() => dispatch('hideSidebar')}>Settings</a
       >
     </nav>
   </div>

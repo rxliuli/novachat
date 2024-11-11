@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import type { Message } from '$lib/types/Message'
   import { BotIcon, UserIcon, TriangleAlertIcon } from 'lucide-svelte'
   import { fromMarkdown } from 'mdast-util-from-markdown'
@@ -12,7 +14,6 @@
   import { cn } from '$lib/utils/ui'
   import CopyToClipBoardBtn from '../CopyToClipBoardBtn.svelte'
   import BotChatMessage from './BotChatMessage.svelte'
-  export let message: Message
   import * as Alert from '$lib/components/ui/alert'
   import { createHighlighter } from 'shiki'
   import { hastShiki, hastSvg } from '$lib/utils/md2html'
@@ -23,14 +24,19 @@
   import { once } from 'lodash-es'
   import { highlighter } from '$lib/utils/highlighter'
 
-  export let loading: boolean
+  interface Props {
+    message: Message;
+    loading: boolean;
+  }
+
+  let { message, loading }: Props = $props();
 
   const dispatch = createEventDispatcher<{
     retry: void
     delete: void
   }>()
 
-  let hast: Root
+  let hast: Root = $state()
 
   async function renderMarkdown() {
     const svgHandler = hastSvg()
@@ -52,9 +58,11 @@
       },
     ) as Root
   }
-  $: if (message.from === 'assistant') {
-    renderMarkdown()
-  }
+  run(() => {
+    if (message.from === 'assistant') {
+      renderMarkdown()
+    }
+  });
 </script>
 
 <div
@@ -105,11 +113,11 @@
           },
         )}"
       >
-        <button on:click={() => dispatch('retry')} class="h-5 w-5">
+        <button onclick={() => dispatch('retry')} class="h-5 w-5">
           <RotateCcwIcon class="w-4 h-4" />
         </button>
         <CopyToClipBoardBtn value={message.content} class="h-5 w-5 " />
-        <button on:click={() => dispatch('delete')} class="h-5 w-5">
+        <button onclick={() => dispatch('delete')} class="h-5 w-5">
           <Trash2Icon class="w-4 h-4" />
         </button>
       </div>

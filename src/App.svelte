@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import './app.css'
   import Router, { location } from 'svelte-spa-router'
   import Home from './routes/page.svelte'
@@ -12,7 +14,7 @@
   import { settingsStore } from '$lib/stores/settings'
   import { onDestroy, onMount } from 'svelte'
   import { dbApi, initDB } from '$lib/api/db'
-  import { convStore } from '$lib/stores/converstation'
+  import { convStore } from '$lib/stores/converstation.svelte'
   import { initPluginSystem, destoryPluginSystem } from '$lib/plugins/command'
   import Plugin from './routes/plugins/[id]/page.svelte'
 
@@ -25,9 +27,11 @@
     '*': NotFound,
   }
 
-  $: if ($settingsStore.theme) {
-    setMode($settingsStore.theme)
-  }
+  run(() => {
+    if ($settingsStore.theme) {
+      setMode($settingsStore.theme)
+    }
+  });
 
   onMount(async () => {
     await initDB()

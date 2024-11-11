@@ -8,9 +8,14 @@
 	};
 	type $$Events = RadioGroupPrimitive.ItemEvents;
 
-	let className: $$Props["class"] = undefined;
-	export let value: $$Props["value"];
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		value: $$Props["value"];
+		[key: string]: any
+	}
+
+	let { class: className = undefined, value, ...rest }: Props = $props();
+	
 </script>
 
 <RadioGroupPrimitive.Item
@@ -19,7 +24,7 @@
 		"border-primary text-primary focus-visible:ring-ring aspect-square h-4 w-4 rounded-full border shadow focus:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50",
 		className
 	)}
-	{...$$restProps}
+	{...rest}
 	on:click
 >
 	<div class="flex items-center justify-center">

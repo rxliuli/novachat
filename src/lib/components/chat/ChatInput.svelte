@@ -1,26 +1,47 @@
 <script lang="ts">
   import { isDesktop } from '$lib/utils/isDesktop'
   import { onMount } from 'svelte'
+  import type { FormEventHandler } from 'svelte/elements'
 
-  export let value = ''
-  export let minRows = 1
-  export let maxRows: null | number = null
-  export let placeholder = ''
-  export let disabled = false
+  interface Props {
+    value?: string
+    minRows?: number
+    maxRows?: null | number
+    placeholder?: string
+    disabled?: boolean
+    onInput?: FormEventHandler<HTMLTextAreaElement>
+    onPaste?: (event: ClipboardEvent) => void
+    onKeyDown?: (event: KeyboardEvent) => void
+    onCompositionStart?: () => void
+    onCompositionEnd?: () => void
+  }
 
-  let textareaElement: HTMLTextAreaElement
+  let {
+    value = $bindable(''),
+    minRows = 1,
+    maxRows = null,
+    placeholder = '',
+    disabled = false,
+    onInput,
+    onPaste,
+    onKeyDown,
+    onCompositionStart,
+    onCompositionEnd,
+  }: Props = $props()
 
-  $: minHeight = `${1 + minRows * 1.5}em`
-  $: maxHeight = maxRows ? `${1 + maxRows * 1.5}em` : `auto`
+  let textareaElement: HTMLTextAreaElement | undefined = $state()
+
+  let minHeight = $derived(`${1 + minRows * 1.5}em`)
+  let maxHeight = $derived(maxRows ? `${1 + maxRows * 1.5}em` : `auto`)
 
   onMount(() => {
     if (isDesktop(window)) {
-      textareaElement.focus()
+      textareaElement?.focus()
     }
   })
 </script>
 
-<div class="relative min-w-0 flex-1" on:paste>
+<div class="relative min-w-0 flex-1" onpaste={onPaste}>
   <pre
     class="scrollbar-custom invisible overflow-x-hidden overflow-y-scroll whitespace-pre-wrap break-words p-3 bg-gray-100 dark:bg-gray-700"
     aria-hidden="true"
@@ -36,13 +57,13 @@
     bind:value
     bind:this={textareaElement}
     {disabled}
-    on:input
-    on:compositionstart
-    on:compositionend
-    on:keydown
-    on:beforeinput
+    oninput={onInput}
+    oncompositionstart={onCompositionStart}
+    oncompositionend={onCompositionEnd}
+    onkeydown={onKeyDown}
+    onbeforeinput={onInput}
     {placeholder}
-  />
+  ></textarea>
 </div>
 
 <style>

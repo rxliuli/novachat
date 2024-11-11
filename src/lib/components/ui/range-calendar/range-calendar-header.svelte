@@ -4,13 +4,19 @@
 
 	type $$Props = RangeCalendarPrimitive.HeaderProps;
 
-	let className: $$Props["class"] = undefined;
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let { class: className = undefined, children, ...rest }: Props = $props();
+	
 </script>
 
 <RangeCalendarPrimitive.Header
 	class={cn("relative flex w-full items-center justify-between pt-1", className)}
-	{...$$restProps}
+	{...rest}
 >
-	<slot />
+	{@render children?.()}
 </RangeCalendarPrimitive.Header>

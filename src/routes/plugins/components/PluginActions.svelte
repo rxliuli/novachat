@@ -10,7 +10,12 @@
   import InstallButton from './InstallButton.svelte'
   import type { ResolvedPlugin } from '../types/plugin'
 
-  export let plugin: ResolvedPlugin
+  interface Props {
+    plugin: ResolvedPlugin;
+    [key: string]: any
+  }
+
+  let { ...props }: Props = $props();
 
   async function onInstallPlugin(manifest: PluginManifest) {
     try {
@@ -23,10 +28,10 @@
   }
 </script>
 
-<div class={$$props.class}>
-  {#if plugin.installed}
-    {#if plugin.canUpdate}
-      <InstallButton onClick={() => onInstallPlugin(plugin.manifest)}>
+<div class={props.class}>
+  {#if props.plugin.installed}
+    {#if props.plugin.canUpdate}
+      <InstallButton onClick={() => onInstallPlugin(props.plugin.manifest)}>
         Update
       </InstallButton>
     {/if}
@@ -34,13 +39,13 @@
       size="sm"
       on:click={(ev) => {
         ev.preventDefault()
-        uninstallPlugin(plugin.manifest.id)
+        uninstallPlugin(props.plugin.manifest.id)
       }}
     >
       Uninstall
     </Button>
   {:else}
-    <InstallButton onClick={() => onInstallPlugin(plugin.manifest)}>
+    <InstallButton onClick={() => onInstallPlugin(props.plugin.manifest)}>
       Install
     </InstallButton>
   {/if}

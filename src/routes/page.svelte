@@ -1,6 +1,6 @@
 <script lang="ts">
   import ChatWindow from '$lib/components/chat/ChatWindow.svelte'
-  import { convStore } from '$lib/stores/converstation'
+  import { convStore } from '$lib/stores/converstation.svelte'
   import { settingsStore } from '$lib/stores/settings'
   import type { Message } from '$lib/types/Message'
   import { nanoid } from 'nanoid'
@@ -10,7 +10,7 @@
   import { installedPlugins, pluginStore } from '$lib/plugins/store'
 
   let loading = false
-  let pending = false
+  let pending = $state(false)
 
   function handleMessage(msg: Pick<Message, 'content' | 'attachments'>) {
     const modelName = $settingsStore.defaultBot ?? $settingsStore.defaultModel

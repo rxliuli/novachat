@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy'
+
   import ChatWindow from '$lib/components/chat/ChatWindow.svelte'
-  import { convStore } from '$lib/stores/converstation'
+  import { convStore } from '$lib/stores/converstation.svelte'
   import type { Message } from '$lib/types/Message'
   import { nanoid } from 'nanoid'
   import { bot } from '$lib/api/bot'
@@ -8,18 +10,27 @@
   import { generateTitleForConversation } from '$lib/service/textGeneration/title'
   import { Button } from '$lib/components/ui/button'
   import { CircleAlertIcon } from 'lucide-svelte'
-  import { onDestroy } from 'svelte'
+  import { onDestroy, untrack } from 'svelte'
   import { type ActivatedModel } from '$lib/plugins/store'
   import { settingsStore } from '$lib/stores/settings'
 
-  export let params: { id: string } = { id: '' }
+  interface Props {
+    params?: { id: string }
+  }
 
-  $: conversation = $convStore.conversations.find((it) => it.id === params.id)
-  $: messages = conversation?.messages ?? []
+  let { params = { id: '' } }: Props = $props()
+
+  let conversation = $derived(
+    $convStore.conversations.find((it) => it.id === params.id),
+  )
+  let messages = $derived(conversation?.messages ?? [])
 
   let old: string = params.id
   async function onNavigate(id: string) {
-    console.log('setCurrentId', id)
+    console.log('setCurrentId', id, $convStore.id)
+    if (id === $convStore.id) {
+      return
+    }
     if (id !== old) {
       abortController?.abort()
       old = id
@@ -31,25 +42,17 @@
       await convStore.loadMessages(id)
     }
   }
-  $: if (params.id) {
-    onNavigate(params.id)
-  }
+  $effect(() => {
+    if (params.id) {
+      untrack(() => onNavigate(params.id))
+    }
+  })
   onDestroy(() => {
     onNavigate('')
   })
 
-  if (!conversation) {
-    // console.debug(
-    //   'Conversation not found',
-    //   conversation,
-    //   $convStore.conversations.find((it) => it.id === params.id),
-    // )
-    // toast.warning('Conversation not found')
-    // replace('/')
-  }
-
-  let loading = false
-  let pending = false
+  let loading = $state(false)
+  let pending = $state(false)
   let abortController: AbortController | null = null
 
   async function onSend() {
@@ -108,10 +111,15 @@
     }
   }
 
-  $: if ($convStore.newConv) {
-    onGenerateTitle()
-    onSend()
-  }
+  $effect(() => {
+    if ($convStore.newConv) {
+      // Avoid automatic dependency tracking https://svelte.dev/docs/svelte/svelte#untrack
+      untrack(() => {
+        onGenerateTitle()
+        onSend()
+      })
+    }
+  })
 
   async function handleMessage(msg: Pick<Message, 'content' | 'attachments'>) {
     if (!conversation) {

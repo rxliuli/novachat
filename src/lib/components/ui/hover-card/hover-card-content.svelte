@@ -4,12 +4,26 @@
 
 	type $$Props = HoverCardPrimitive.ContentProps;
 
-	let className: $$Props["class"] = undefined;
-	export let align: $$Props["align"] = "center";
-	export let sideOffset: $$Props["sideOffset"] = 4;
-	export let transition: $$Props["transition"] = flyAndScale;
-	export let transitionConfig: $$Props["transitionConfig"] = undefined;
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		align?: $$Props["align"];
+		sideOffset?: $$Props["sideOffset"];
+		transition?: $$Props["transition"];
+		transitionConfig?: $$Props["transitionConfig"];
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let {
+		class: className = undefined,
+		align = "center",
+		sideOffset = 4,
+		transition = flyAndScale,
+		transitionConfig = undefined,
+		children,
+		...rest
+	}: Props = $props();
+	
 </script>
 
 <HoverCardPrimitive.Content
@@ -21,7 +35,7 @@
 		"bg-popover text-popover-foreground z-50 w-64 rounded-md border p-4 shadow-md outline-none",
 		className
 	)}
-	{...$$restProps}
+	{...rest}
 >
-	<slot />
+	{@render children?.()}
 </HoverCardPrimitive.Content>

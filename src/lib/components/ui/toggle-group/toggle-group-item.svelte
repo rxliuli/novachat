@@ -6,12 +6,25 @@
 
 	type $$Props = ToggleGroupPrimitive.ItemProps & ToggleVariants;
 
-	let className: string | undefined | null = undefined;
 
-	export { className as class };
-	export let variant: $$Props["variant"] = "default";
-	export let size: $$Props["size"] = "default";
-	export let value: $$Props["value"];
+	
+	interface Props {
+		class?: string | undefined | null;
+		variant?: $$Props["variant"];
+		size?: $$Props["size"];
+		value: $$Props["value"];
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let {
+		class: className = undefined,
+		variant = "default",
+		size = "default",
+		value,
+		children,
+		...rest
+	}: Props = $props();
 
 	const ctx = getToggleGroupCtx();
 </script>
@@ -25,7 +38,7 @@
 		className
 	)}
 	{value}
-	{...$$restProps}
+	{...rest}
 >
-	<slot />
+	{@render children?.()}
 </ToggleGroupPrimitive.Item>

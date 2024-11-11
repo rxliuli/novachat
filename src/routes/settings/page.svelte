@@ -15,9 +15,9 @@
     onChange(name, (e.target as HTMLInputElement).value)
   }
 
-  let search = ''
+  let search = $state('')
 
-  $: schemas = $settingSchemaStore
+  let schemas = $derived($settingSchemaStore
     .flatMap((it) =>
       Object.entries(it.properties).map(([key, value]) => ({
         name: key as keyof typeof $settingsStore,
@@ -31,7 +31,7 @@
         it.name.includes(search) ||
         it.title.includes(search) ||
         it.schema.description?.includes(search),
-    )
+    ))
 </script>
 
 <div class="container p-2 md:p-4 max-w-3xl">

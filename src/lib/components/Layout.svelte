@@ -1,10 +1,17 @@
 <script lang="ts">
-  import { convStore } from '$lib/stores/converstation'
+  import { run } from 'svelte/legacy';
+
+  import { convStore } from '$lib/stores/converstation.svelte'
   import { push } from 'svelte-spa-router'
   import NavMenu from './NavMenu.svelte'
   import MobileNav from './MobileNav.svelte'
   import { location } from 'svelte-spa-router'
   import { sortBy } from 'lodash-es'
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
+
+  let { children }: Props = $props();
 
   function deleteConv(id: string) {
     const old = $convStore.id
@@ -14,13 +21,13 @@
     }
   }
 
-  $: conversations = sortBy(
+  let conversations = $derived(sortBy(
     $convStore.conversations,
     (it) => -new Date(it.updatedAt).getTime(),
-  )
-  let isNavOpen = false
-  let mobileNavTitle = 'New Chat'
-  $: {
+  ))
+  let isNavOpen = $state(false)
+  let mobileNavTitle = $state('New Chat')
+  run(() => {
     if ($location === `/conversation/${$convStore.id}`) {
       mobileNavTitle =
         $convStore.conversations.find((it) => it.id === $convStore.id)?.title ??
@@ -30,7 +37,7 @@
     } else {
       mobileNavTitle = ''
     }
-  }
+  });
 </script>
 
 <svelte:head>
@@ -62,6 +69,6 @@
     />
   </div>
   <div class="h-full overflow-auto">
-    <slot />
+    {@render children?.()}
   </div>
 </div>

@@ -3,13 +3,28 @@
 	import { cn, flyAndScale } from "$lib/utils/ui.js";
 
 	type $$Props = MenubarPrimitive.ContentProps;
-	let className: $$Props["class"] = undefined;
-	export let align: $$Props["align"] = "start";
-	export let alignOffset: $$Props["alignOffset"] = -4;
-	export let sideOffset: $$Props["sideOffset"] = 8;
-	export let transition: $$Props["transition"] = flyAndScale;
-	export let transitionConfig: $$Props["transitionConfig"] = undefined;
-	export { className as class };
+	interface Props {
+		class?: $$Props["class"];
+		align?: $$Props["align"];
+		alignOffset?: $$Props["alignOffset"];
+		sideOffset?: $$Props["sideOffset"];
+		transition?: $$Props["transition"];
+		transitionConfig?: $$Props["transitionConfig"];
+		children?: import('svelte').Snippet;
+		[key: string]: any
+	}
+
+	let {
+		class: className = undefined,
+		align = "start",
+		alignOffset = -4,
+		sideOffset = 8,
+		transition = flyAndScale,
+		transitionConfig = undefined,
+		children,
+		...rest
+	}: Props = $props();
+	
 </script>
 
 <MenubarPrimitive.Content
@@ -22,7 +37,7 @@
 		"bg-popover text-popover-foreground z-50 min-w-[12rem] rounded-md border p-1 shadow-md focus:outline-none",
 		className
 	)}
-	{...$$restProps}
+	{...rest}
 >
-	<slot />
+	{@render children?.()}
 </MenubarPrimitive.Content>
