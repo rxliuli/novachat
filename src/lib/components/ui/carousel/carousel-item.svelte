@@ -1,31 +1,30 @@
 <script lang="ts">
+	import type { WithElementRef } from "bits-ui";
 	import type { HTMLAttributes } from "svelte/elements";
 	import { getEmblaContext } from "./context.js";
 	import { cn } from "$lib/utils/ui.js";
 
-	type $$Props = HTMLAttributes<HTMLDivElement>;
-	interface Props {
-		class?: string | undefined | null;
-		children?: import('svelte').Snippet;
-		[key: string]: any
-	}
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 
-	let { class: className = undefined, children, ...rest }: Props = $props();
-	
-
-	const { orientation } = getEmblaContext("<Carousel.Item/>");
+	const emblaCtx = getEmblaContext("<Carousel.Item/>");
 </script>
 
 <div
+	bind:this={ref}
 	role="group"
 	aria-roledescription="slide"
 	class={cn(
 		"min-w-0 shrink-0 grow-0 basis-full",
-		$orientation === "horizontal" ? "pl-4" : "pt-4",
+		emblaCtx.orientation === "horizontal" ? "pl-4" : "pt-4",
 		className
 	)}
 	data-embla-slide=""
-	{...rest}
+	{...restProps}
 >
 	{@render children?.()}
 </div>

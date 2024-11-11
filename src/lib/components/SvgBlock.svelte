@@ -27,7 +27,7 @@
   <Button
     variant="ghost"
     size="icon"
-    on:click={handleClick}
+    onclick={handleClick}
     class="border-none bg-primary-foreground absolute top-2 right-2"
   >
     <DownloadIcon class="w-4 h-4" />

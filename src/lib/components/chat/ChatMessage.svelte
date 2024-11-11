@@ -36,7 +36,7 @@
     delete: void
   }>()
 
-  let hast: Root = $state()
+  let hast: Root | undefined = $state()
 
   async function renderMarkdown() {
     const svgHandler = hastSvg()
@@ -104,7 +104,7 @@
       <article
         class="prose dark:prose-invert max-sm:prose-sm max-w-none [&_p]:break-words [&_p]:break-all"
       >
-        <BotChatMessage node={hast} />
+        <BotChatMessage node={hast!} />
       </article>
       <div
         class="flex justify-end gap-1 md:group-hover/message:opacity-100 md:opacity-0 {cn(
@@ -132,7 +132,7 @@
         )}"
       >
         <Button
-          on:click={() => dispatch('retry')}
+          onclick={() => dispatch('retry')}
           variant={'ghost'}
           size={'icon'}
           class="h-5 w-5"
@@ -141,7 +141,7 @@
         </Button>
         <CopyToClipBoardBtn value={message.content} class="h-5 w-5 " />
         <Button
-          on:click={() => dispatch('delete')}
+          onclick={() => dispatch('delete')}
           variant={'ghost'}
           size={'icon'}
           class="h-5 w-5"

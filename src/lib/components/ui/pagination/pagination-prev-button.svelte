@@ -1,37 +1,25 @@
 <script lang="ts">
 	import { Pagination as PaginationPrimitive } from "bits-ui";
 	import ChevronLeft from "svelte-radix/ChevronLeft.svelte";
-	import { Button } from "$lib/components/ui/button/index.js";
 	import { cn } from "$lib/utils/ui.js";
+	import { buttonVariants } from "$lib/components/ui/button/index.js";
 
-	type $$Props = PaginationPrimitive.PrevButtonProps;
-	type $$Events = PaginationPrimitive.PrevButtonEvents;
-
-	interface Props {
-		class?: $$Props["class"];
-		children?: import('svelte').Snippet;
-		[key: string]: any
-	}
-
-	let { class: className = undefined, children, ...rest }: Props = $props();
-	
-
-	const children_render = $derived(children);
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: PaginationPrimitive.PrevButtonProps = $props();
 </script>
 
-<PaginationPrimitive.PrevButton asChild >
-	{#snippet children({ builder })}
-		<Button
-			variant="ghost"
-			class={cn("gap-1 pl-2.5", className)}
-			builders={[builder]}
-			on:click
-			{...rest}
-		>
-			{#if children_render}{@render children_render()}{:else}
-				<ChevronLeft class="h-4 w-4" />
-				<span>Previous</span>
-			{/if}
-		</Button>
-	{/snippet}
-</PaginationPrimitive.PrevButton>
+{#snippet Fallback()}
+	<span>Previous</span>
+	<ChevronLeft class="size-4" />
+{/snippet}
+
+<PaginationPrimitive.PrevButton
+	bind:ref
+	{...restProps}
+	class={cn(buttonVariants({ variant: "ghost", className: "gap-1 pl-2.5" }), className)}
+	children={children || Fallback}
+/>

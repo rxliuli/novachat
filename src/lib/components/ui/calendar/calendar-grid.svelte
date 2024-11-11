@@ -2,18 +2,15 @@
 	import { Calendar as CalendarPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils/ui.js";
 
-	type $$Props = CalendarPrimitive.GridProps;
-
-	interface Props {
-		class?: $$Props["class"];
-		children?: import('svelte').Snippet;
-		[key: string]: any
-	}
-
-	let { class: className = undefined, children, ...rest }: Props = $props();
-	
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: CalendarPrimitive.GridProps = $props();
 </script>
 
-<CalendarPrimitive.Grid class={cn("w-full border-collapse space-y-1", className)} {...rest}>
-	{@render children?.()}
-</CalendarPrimitive.Grid>
+<CalendarPrimitive.Grid
+	bind:ref
+	class={cn("w-full border-collapse space-y-1", className)}
+	{...restProps}
+/>

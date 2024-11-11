@@ -36,7 +36,7 @@
     <main class="flex-1 p-6">
       <div class="mb-8 flex justify-between">
         <h2 class="text-2xl font-bold mb-2">Plugins</h2>
-        <Button on:click={onInstallPluginFromLocal}>Install</Button>
+        <Button onclick={onInstallPluginFromLocal}>Install</Button>
       </div>
 
       {#await loadPluginsState}
@@ -64,7 +64,7 @@
           <p class="text-sm text-gray-500">
             Failed to load plugins: {somError.message}
           </p>
-          <Button on:click={loadPlugins}>Refresh</Button>
+          <Button onclick={loadPlugins}>Refresh</Button>
         </div>
       {/await}
     </main>

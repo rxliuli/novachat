@@ -37,7 +37,7 @@
     {/if}
     <Button
       size="sm"
-      on:click={(ev) => {
+      onclick={(ev) => {
         ev.preventDefault()
         uninstallPlugin(props.plugin.manifest.id)
       }}

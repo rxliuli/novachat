@@ -53,7 +53,7 @@
     <a href="#/" class="ml-auto">
       <Button
         variant="outline"
-        on:click={() => {
+        onclick={() => {
           convStore.setCurrentId('')
           dispatch('hideSidebar')
         }}
@@ -77,7 +77,7 @@
             <Button
               variant="ghost"
               size="icon"
-              on:click={(ev) => updateTitle(ev, it)}
+              onclick={(ev) => updateTitle(ev, it)}
               class="h-5 w-5 md:hidden md:group-hover:flex"
             >
               <PencilIcon class="h-4 w-4" />
@@ -85,7 +85,7 @@
             <Button
               variant="ghost"
               size="icon"
-              on:click={(ev) => deleteConv(ev, it.id)}
+              onclick={(ev) => deleteConv(ev, it.id)}
               class="h-5 w-5 md:hidden md:group-hover:flex"
             >
               <TrashIcon class="h-4 w-4" />

@@ -3,36 +3,26 @@
 	import ChevronRight from "svelte-radix/ChevronRight.svelte";
 	import { cn } from "$lib/utils/ui.js";
 
-	type $$Props = MenubarPrimitive.SubTriggerProps & {
+	let {
+		ref = $bindable(null),
+		class: className,
+		inset,
+		children,
+		...restProps
+	}: MenubarPrimitive.SubTriggerProps & {
 		inset?: boolean;
-	};
-	type $$Events = MenubarPrimitive.SubTriggerEvents;
-
-	interface Props {
-		class?: $$Props["class"];
-		inset?: $$Props["inset"];
-		children?: import('svelte').Snippet;
-		[key: string]: any
-	}
-
-	let { class: className = undefined, inset = undefined, children, ...rest }: Props = $props();
-	
+	} = $props();
 </script>
 
 <MenubarPrimitive.SubTrigger
+	bind:ref
 	class={cn(
 		"data-[highlighted]:bg-accent data-[state=open]:bg-accent data-[highlighted]:text-accent-foreground data-[state=open]:text-accent-foreground flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
 		inset && "pl-8",
 		className
 	)}
-	{...rest}
-	on:click
-	on:keydown
-	on:focusin
-	on:focusout
-	on:pointerleave
-	on:pointermove
+	{...restProps}
 >
 	{@render children?.()}
-	<ChevronRight class="ml-auto h-4 w-4" />
+	<ChevronRight class="ml-auto size-4" />
 </MenubarPrimitive.SubTrigger>

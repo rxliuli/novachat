@@ -50,7 +50,7 @@
 <Button
   variant="ghost"
   size="icon"
-  on:click={() =>
+  onclick={() =>
     props.scrollNode.scrollTo({
       top: props.scrollNode.scrollHeight,
       behavior: 'smooth',

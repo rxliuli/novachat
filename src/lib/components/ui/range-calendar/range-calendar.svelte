@@ -1,42 +1,25 @@
 <script lang="ts">
-	import { RangeCalendar as RangeCalendarPrimitive } from "bits-ui";
+	import { RangeCalendar as RangeCalendarPrimitive, type WithoutChildrenOrChild } from "bits-ui";
 	import * as RangeCalendar from "./index.js";
 	import { cn } from "$lib/utils/ui.js";
 
-	type $$Props = RangeCalendarPrimitive.Props;
-	type $$Events = RangeCalendarPrimitive.Events;
-
-
-	interface Props {
-		value?: $$Props["value"];
-		placeholder?: $$Props["placeholder"];
-		weekdayFormat?: $$Props["weekdayFormat"];
-		startValue?: $$Props["startValue"];
-		class?: $$Props["class"];
-		[key: string]: any
-	}
-
 	let {
-		value = $bindable(undefined),
-		placeholder = $bindable(undefined),
+		ref = $bindable(null),
+		value = $bindable(),
+		placeholder = $bindable(),
+		class: className,
 		weekdayFormat = "short",
-		startValue = $bindable(undefined),
-		class: className = undefined,
-		...rest
-	}: Props = $props();
-	
+		...restProps
+	}: WithoutChildrenOrChild<RangeCalendarPrimitive.RootProps> = $props();
 </script>
 
 <RangeCalendarPrimitive.Root
+	bind:ref
 	bind:value
 	bind:placeholder
-	bind:startValue
 	{weekdayFormat}
 	class={cn("p-3", className)}
-	{...rest}
-	on:keydown
-	
-	
+	{...restProps}
 >
 	{#snippet children({ months, weekdays })}
 		<RangeCalendar.Header>
@@ -60,8 +43,8 @@
 						{#each month.weeks as weekDates}
 							<RangeCalendar.GridRow class="mt-2 w-full">
 								{#each weekDates as date}
-									<RangeCalendar.Cell {date}>
-										<RangeCalendar.Day {date} month={month.value} />
+									<RangeCalendar.Cell {date} month={month.value}>
+										<RangeCalendar.Day />
 									</RangeCalendar.Cell>
 								{/each}
 							</RangeCalendar.GridRow>

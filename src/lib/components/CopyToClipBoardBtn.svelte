@@ -3,14 +3,15 @@
 
   import { CopyIcon } from 'lucide-svelte'
   import * as Tooltip from './ui/tooltip'
-  import { Button } from './ui/button'
+  import { Button, buttonVariants } from './ui/button'
+  import { cn } from '$lib/utils/ui'
 
   interface Props {
-    value: string;
+    value: string
     [key: string]: any
   }
 
-  let { ...props }: Props = $props();
+  let { ...props }: Props = $props()
 
   let isSuccess = $state(false)
   let timeout: ReturnType<typeof setTimeout>
@@ -41,24 +42,23 @@
 </script>
 
 <div class={props.class}>
-  <Tooltip.Root open={isSuccess}>
-    <Tooltip.Trigger asChild >
-      {#snippet children({ builder })}
-            <Button
-          builders={[builder]}
+  <Tooltip.Provider>
+    <Tooltip.Root open={isSuccess}>
+      <Tooltip.Trigger>
+        <Button
           variant="ghost"
           size="icon"
-          on:click={handleClick}
+          onclick={handleClick}
           class="border-none hover:bg-transparent {props.class}"
         >
           <CopyIcon class="w-4 h-4" />
         </Button>
-                {/snippet}
-        </Tooltip.Trigger>
-    {#if isSuccess}
+      </Tooltip.Trigger>
       <Tooltip.Content>
-        <p>Copied</p>
+        {#if isSuccess}
+          <p>Copied</p>
+        {/if}
       </Tooltip.Content>
-    {/if}
-  </Tooltip.Root>
+    </Tooltip.Root>
+  </Tooltip.Provider>
 </div>

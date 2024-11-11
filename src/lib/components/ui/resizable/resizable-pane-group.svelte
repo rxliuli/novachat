@@ -2,34 +2,21 @@
 	import * as ResizablePrimitive from "paneforge";
 	import { cn } from "$lib/utils/ui.js";
 
-	type $$Props = ResizablePrimitive.PaneGroupProps;
-
-	interface Props {
-		class?: $$Props["class"];
-		direction: $$Props["direction"];
-		paneGroup?: $$Props["paneGroup"];
-		el?: $$Props["el"];
-		children?: import('svelte').Snippet;
-		[key: string]: any
-	}
-
 	let {
-		class: className = undefined,
+		ref = $bindable(null),
+		class: className,
 		direction,
-		paneGroup = $bindable(undefined),
-		el = $bindable(undefined),
-		children,
-		...rest
-	}: Props = $props();
-	
+		this: paneGroup = $bindable(),
+		...restProps
+	}: ResizablePrimitive.PaneGroupProps & {
+		this?: ResizablePrimitive.PaneGroup;
+	} = $props();
 </script>
 
 <ResizablePrimitive.PaneGroup
-	bind:el
-	bind:paneGroup
+	bind:ref
+	bind:this={paneGroup}
 	{direction}
 	class={cn("flex h-full w-full data-[direction=vertical]:flex-col", className)}
-	{...rest}
->
-	{@render children?.()}
-</ResizablePrimitive.PaneGroup>
+	{...restProps}
+/>

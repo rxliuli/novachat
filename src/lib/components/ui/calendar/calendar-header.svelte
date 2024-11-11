@@ -2,21 +2,15 @@
 	import { Calendar as CalendarPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils/ui.js";
 
-	type $$Props = CalendarPrimitive.HeaderProps;
-
-	interface Props {
-		class?: $$Props["class"];
-		children?: import('svelte').Snippet;
-		[key: string]: any
-	}
-
-	let { class: className = undefined, children, ...rest }: Props = $props();
-	
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: CalendarPrimitive.HeaderProps = $props();
 </script>
 
 <CalendarPrimitive.Header
+	bind:ref
 	class={cn("relative flex w-full items-center justify-between pt-1", className)}
-	{...rest}
->
-	{@render children?.()}
-</CalendarPrimitive.Header>
+	{...restProps}
+/>

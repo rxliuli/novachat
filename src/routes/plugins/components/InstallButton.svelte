@@ -22,7 +22,7 @@
 
 <Button
   size="sm"
-  on:click={(ev) => {
+  onclick={(ev) => {
     ev.preventDefault()
     handleClick()
   }}

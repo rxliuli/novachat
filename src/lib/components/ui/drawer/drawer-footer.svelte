@@ -1,22 +1,18 @@
 <script lang="ts">
-	import type { HTMLAttributes } from "svelte/elements";
 	import { cn } from "$lib/utils/ui.js";
+	import type { WithElementRef } from "bits-ui";
+	import type { HTMLAttributes } from "svelte/elements";
 
-	type $$Props = HTMLAttributes<HTMLDivElement> & {
-		el?: HTMLDivElement;
-	};
+	let {
+		ref = $bindable(null),
+		class: className,
+		children,
+		...restProps
+	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 
-	interface Props {
-		el?: $$Props["el"];
-		class?: $$Props["class"];
-		children?: import('svelte').Snippet;
-		[key: string]: any
-	}
-
-	let { el = $bindable(undefined), class: className = undefined, children, ...rest }: Props = $props();
-	
+	export { className as class };
 </script>
 
-<div bind:this={el} class={cn("mt-auto flex flex-col gap-2 p-4", className)} {...rest}>
+<div bind:this={ref} class={cn("mt-auto flex flex-col gap-2 p-4", className)} {...restProps}>
 	{@render children?.()}
 </div>

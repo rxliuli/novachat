@@ -3,36 +3,17 @@
 	import { buttonVariants } from "$lib/components/ui/button/index.js";
 	import { cn } from "$lib/utils/ui.js";
 
-	type $$Props = CalendarPrimitive.DayProps;
-	type $$Events = CalendarPrimitive.DayEvents;
-
-	interface Props {
-		date: $$Props["date"];
-		month: $$Props["month"];
-		class?: $$Props["class"];
-		children?: import('svelte').Snippet<[any]>;
-		[key: string]: any
-	}
-
 	let {
-		date,
-		month,
-		class: className = undefined,
-		children,
-		...rest
-	}: Props = $props();
-	
-
-	const children_render = $derived(children);
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: CalendarPrimitive.DayProps = $props();
 </script>
 
 <CalendarPrimitive.Day
-	on:click
-	{date}
-	{month}
 	class={cn(
 		buttonVariants({ variant: "ghost" }),
-		"h-8 w-8 p-0 font-normal",
+		"size-8 p-0 font-normal",
 		// Today
 		"[&[data-today]:not([data-selected])]:bg-accent [&[data-today]:not([data-selected])]:text-accent-foreground",
 		// Selected
@@ -45,15 +26,6 @@
 		"data-[outside-month]:text-muted-foreground [&[data-outside-month][data-selected]]:bg-accent/50 [&[data-outside-month][data-selected]]:text-muted-foreground data-[outside-month]:pointer-events-none data-[outside-month]:opacity-50 [&[data-outside-month][data-selected]]:opacity-30",
 		className
 	)}
-	{...rest}
-	
-	
-	
-	
->
-	{#snippet children({ selected, disabled, unavailable, builder })}
-		{#if children_render}{@render children_render({ selected, disabled, unavailable, builder, })}{:else}
-			{date.day}
-		{/if}
-	{/snippet}
-</CalendarPrimitive.Day>
+	bind:ref
+	{...restProps}
+/>

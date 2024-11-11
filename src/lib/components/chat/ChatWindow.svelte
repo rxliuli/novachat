@@ -254,7 +254,7 @@
     <div class="w-full max-w-3xl">
       <div class="flex gap-2 justify-end items-center mb-2">
         {#if loading}
-          <Button variant="outline" on:click={() => dispatch('stop')}>
+          <Button variant="outline" onclick={() => dispatch('stop')}>
             <PauseIcon class="w-4 h-4" />
             <span>Stop generating</span>
           </Button>

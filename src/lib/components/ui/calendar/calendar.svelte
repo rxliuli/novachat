@@ -1,39 +1,29 @@
 <script lang="ts">
-	import { Calendar as CalendarPrimitive } from "bits-ui";
+	import { Calendar as CalendarPrimitive, type WithoutChildrenOrChild } from "bits-ui";
 	import * as Calendar from "./index.js";
 	import { cn } from "$lib/utils/ui.js";
 
-	type $$Props = CalendarPrimitive.Props;
-	type $$Events = CalendarPrimitive.Events;
-
-
-	interface Props {
-		value?: $$Props["value"];
-		placeholder?: $$Props["placeholder"];
-		weekdayFormat?: $$Props["weekdayFormat"];
-		class?: $$Props["class"];
-		[key: string]: any
-	}
-
 	let {
-		value = $bindable(undefined),
-		placeholder = $bindable(undefined),
+		ref = $bindable(null),
+		value = $bindable(),
+		placeholder = $bindable(),
+		class: className,
 		weekdayFormat = "short",
-		class: className = undefined,
-		...rest
-	}: Props = $props();
-	
+		...restProps
+	}: WithoutChildrenOrChild<CalendarPrimitive.RootProps> = $props();
 </script>
 
+<!--
+Discriminated Unions + Destructing (required for bindable) do not
+get along, so we shut typescript up by casting `value` to `never`.
+-->
 <CalendarPrimitive.Root
-	bind:value
+	bind:value={value as never}
+	bind:ref
 	bind:placeholder
 	{weekdayFormat}
 	class={cn("p-3", className)}
-	{...rest}
-	on:keydown
-	
-	
+	{...restProps}
 >
 	{#snippet children({ months, weekdays })}
 		<Calendar.Header>
@@ -57,8 +47,8 @@
 						{#each month.weeks as weekDates}
 							<Calendar.GridRow class="mt-2 w-full">
 								{#each weekDates as date}
-									<Calendar.Cell {date}>
-										<Calendar.Day {date} month={month.value} />
+									<Calendar.Cell {date} month={month.value}>
+										<Calendar.Day />
 									</Calendar.Cell>
 								{/each}
 							</Calendar.GridRow>

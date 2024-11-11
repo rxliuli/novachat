@@ -2,28 +2,15 @@
 	import { RangeCalendar as RangeCalendarPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils/ui.js";
 
-	type $$Props = RangeCalendarPrimitive.HeadingProps;
-
-	interface Props {
-		class?: string | undefined | null;
-		children?: import('svelte').Snippet<[any]>;
-		[key: string]: any
-	}
-
-	let { class: className = undefined, children, ...rest }: Props = $props();
-	
-
-	const children_render = $derived(children);
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: RangeCalendarPrimitive.HeadingProps = $props();
 </script>
 
 <RangeCalendarPrimitive.Heading
-	
+	bind:ref
 	class={cn("text-sm font-medium", className)}
-	{...rest}
->
-	{#snippet children({ headingValue })}
-		{#if children_render}{@render children_render({ headingValue, })}{:else}
-			{headingValue}
-		{/if}
-	{/snippet}
-</RangeCalendarPrimitive.Heading>
+	{...restProps}
+/>
