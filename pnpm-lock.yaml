@@ -39,11 +39,11 @@ importers:
         specifier: ^5.59.0
         version: 5.59.0(svelte@5.1.14)
       '@zenfs/core':
-        specifier: 1.0.0-rc.0
-        version: 1.0.0-rc.0
+        specifier: ^1.3.1
+        version: 1.3.1
       '@zenfs/dom':
-        specifier: ^0.2.15
-        version: 0.2.16(@zenfs/core@1.0.0-rc.0)
+        specifier: ^1.0.4
+        version: 1.0.4(@zenfs/core@1.3.1)
       acorn:
         specifier: ^8.14.0
         version: 8.14.0
@@ -1775,14 +1775,14 @@ packages:
   '@types/node@18.19.54':
     resolution: {integrity: sha512-+BRgt0G5gYjTvdLac9sIeE0iZcJxi4Jc4PV5EUzqi+88jmQLr+fRZdv2tCTV7IHKSGxM6SaLoOXQWWUiLUItMw==}
 
-  '@types/node@20.16.10':
-    resolution: {integrity: sha512-vQUKgWTjEIRFCvK6CyriPH3MZYiYlNy0fKiEYHWbcoWLEgs4opurGGKlebrTLqdSMIbXImH6XExNiIyNUv3WpA==}
+  '@types/node@20.17.6':
+    resolution: {integrity: sha512-VEI7OdvK2wP7XHnsuXbAJnEpEkF6NjSN45QJlL4VGqZSXsnicpesdTWsg9RISeSdYd3yeRj/y3k5KGjUXYnFwQ==}
 
   '@types/node@22.7.4':
     resolution: {integrity: sha512-y+NPi1rFzDs1NdQHHToqeiX2TIS79SWEAw9GYhkkx8bD0ChpfqC+n2j5OXOCpzfojBEBt6DnEnnG9MY0zk1XLg==}
 
-  '@types/readable-stream@4.0.15':
-    resolution: {integrity: sha512-oAZ3kw+kJFkEqyh7xORZOku1YAKvsFTogRY8kVl4vHpEKiDkfnSA/My8haRE7fvmix5Zyy+1pwzOi7yycGLBJw==}
+  '@types/readable-stream@4.0.18':
+    resolution: {integrity: sha512-21jK/1j+Wg+7jVw1xnSwy/2Q1VgVjWuFssbYGTREPUBeZ+rqVFl2udq0IkxzPC0ZhOzVceUbyIACFZKLqKEBlA==}
 
   '@types/retry@0.12.0':
     resolution: {integrity: sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA==}
@@ -1804,6 +1804,9 @@ packages:
 
   '@types/web-bluetooth@0.0.20':
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
+
+  '@types/wicg-file-system-access@2020.9.8':
+    resolution: {integrity: sha512-ggMz8nOygG7d/stpH40WVaNvBwuyYLnrg5Mbyf6bmsj/8+gb6Ei4ZZ9/4PNpcPNTT8th9Q8sM8wYmWGjMWLX/A==}
 
   '@typeschema/class-validator@0.2.0':
     resolution: {integrity: sha512-zq0qeflVu1Z6D0ttkqAWZMtxJeNEQ70yo/025sV0jujiOOgQx38JXrky77nSWWPp2E1KIMtgkToQbkzkXyW5yg==}
@@ -2007,16 +2010,19 @@ packages:
   '@vueuse/shared@11.1.0':
     resolution: {integrity: sha512-YUtIpY122q7osj+zsNMFAfMTubGz0sn5QzE5gPzAIiCmtt2ha3uQUY1+JPyL4gRCTsLPX82Y9brNbo/aqlA91w==}
 
-  '@zenfs/core@1.0.0-rc.0':
-    resolution: {integrity: sha512-hSAO54nS250IBTS6c+IVydLcWmt3x5jm3VHfVB2e+UknBKElO7pk7eahjYBXKjmad57jc2/2lv7KnNDq0TTicg==}
+  '@xterm/xterm@5.5.0':
+    resolution: {integrity: sha512-hqJHYaQb5OptNunnyAnkHyM8aCjZ1MEIDTQu1iIbbTD/xops91NB5yq1ZK/dC2JDbVWtF23zUtl9JE2NqwT87A==}
+
+  '@zenfs/core@1.3.1':
+    resolution: {integrity: sha512-xal5eveIhKNM6cVlmBN6sHjnhL7TMSfH0wHKpXZvCs5hayZpvixK7RIyAnPCRa5yHm7Q8D1CAyawa2OC9mjnuQ==}
     engines: {node: '>= 16'}
     hasBin: true
 
-  '@zenfs/dom@0.2.16':
-    resolution: {integrity: sha512-6Ev+ol9hZIgQECNZR+xxjQ/a99EhhrWeiQttm/+U7YJK3HdTjiKfU39DsfGeH64vSqhpa5Vj+LWRx75SHkjw0Q==}
+  '@zenfs/dom@1.0.4':
+    resolution: {integrity: sha512-XrkZ34JjA86odcGyjj9bSWFXByKtoVwDVcl6yHO2MqY3QmHInMpNxugnCcZm2HJZVA5Dfammls4O1zV7U4r9pA==}
     engines: {node: '>= 18'}
     peerDependencies:
-      '@zenfs/core': ^1.0.0
+      '@zenfs/core': ^1.3.0
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -2595,6 +2601,14 @@ packages:
       picomatch:
         optional: true
 
+  fetch-blob@3.2.0:
+    resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
+    engines: {node: ^12.20 || >= 14.13}
+
+  file-system-access@1.0.4:
+    resolution: {integrity: sha512-JDlhH+gJfZu/oExmtN4/6VX+q1etlrbJbR5uzoBa4BzfTRQbEXGFuGIBRk3ZcPocko3WdEclZSu+d/SByjG6Rg==}
+    engines: {node: '>=14'}
+
   file-type@16.5.4:
     resolution: {integrity: sha512-/yFHK0aGjFEgDJjEKP0pWCplsPFPhwyfwevf/pVxiN0tmE4L9LmwWxWukdJSHdoCli4VgQLehjJtwQBnqmsKcw==}
     engines: {node: '>=10'}
@@ -2955,8 +2969,8 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
-  langsmith@0.1.61:
-    resolution: {integrity: sha512-XQE4KPScwPmdaT0mWDzhNxj9gvqXUR+C7urLA0QFi27XeoQdm17eYpudenn4wxC0gIyUJutQCyuYJpfwlT5JnQ==}
+  langsmith@0.1.68:
+    resolution: {integrity: sha512-otmiysWtVAqzMx3CJ4PrtUBhWRG5Co8Z4o7hSZENPjlit9/j3/vm3TSvbaxpDYakZxtMjhkcJTqrdYFipISEiQ==}
     peerDependencies:
       openai: '*'
     peerDependenciesMeta:
@@ -3757,8 +3771,8 @@ packages:
     resolution: {integrity: sha512-2G2y++21dhj2R7iHAdd0FIzjGwuKZld+7Pl/bTU6YIkrC2ZMbVUjm+luj6A6V34Rv9XfKJDKpTWu9W4Gse1D9g==}
     engines: {node: '>=14.16'}
 
-  set-cookie-parser@2.7.0:
-    resolution: {integrity: sha512-lXLOiqpkUumhRdFF3k1osNXCy9akgx/dyPZ5p8qAg9seJzXr5ZrlqZuWIMuY6ejOsVLE6flJ5/h3lsn57fQ/PQ==}
+  set-cookie-parser@2.7.1:
+    resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
 
   setimmediate@1.0.5:
     resolution: {integrity: sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA==}
@@ -4213,8 +4227,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  utilium@0.6.3:
-    resolution: {integrity: sha512-RJHwJZsUVrMeipY4JkGajrVcYOBd473W21IxN58zrKXCYKX9NguEvKTQHwrj4cRWVHLRm3FZ2m5ca8uSm5wUDw==}
+  utilium@1.0.4:
+    resolution: {integrity: sha512-EGesAFASk3rUTA60heHpw9aspYzRbKe5+3+QO3bS/MoXdEZr0WbMI8SQ6PgI9aEXEUKiKdWnLv4zbArbAW8ohQ==}
 
   uuid@10.0.0:
     resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
@@ -4421,6 +4435,10 @@ packages:
   web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
 
+  web-streams-polyfill@3.3.3:
+    resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
+    engines: {node: '>= 8'}
+
   web-streams-polyfill@4.0.0-beta.3:
     resolution: {integrity: sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==}
     engines: {node: '>= 14'}
@@ -4549,6 +4567,11 @@ packages:
 
   zod-to-json-schema@3.23.3:
     resolution: {integrity: sha512-TYWChTxKQbRJp5ST22o/Irt9KC5nj7CdBKYB/AosCRdj/wxEMvv4NNaj9XVUHDOIp53ZxArGhnw5HMZziPFjog==}
+    peerDependencies:
+      zod: ^3.23.3
+
+  zod-to-json-schema@3.23.5:
+    resolution: {integrity: sha512-5wlSS0bXfF/BrL4jPAbz9da5hDlDptdEppYfe+x4eIJ7jioqKG9uUxOwPzqof09u/XeVdrgFu29lZi+8XNDJtA==}
     peerDependencies:
       zod: ^3.23.3
 
@@ -5389,13 +5412,13 @@ snapshots:
       camelcase: 6.3.0
       decamelize: 1.2.0
       js-tiktoken: 1.0.15
-      langsmith: 0.1.61(openai@4.67.1(zod@3.23.8))
+      langsmith: 0.1.68(openai@4.67.1(zod@3.23.8))
       mustache: 4.2.0
       p-queue: 6.6.2
       p-retry: 4.6.2
       uuid: 10.0.0
       zod: 3.23.8
-      zod-to-json-schema: 3.23.3(zod@3.23.8)
+      zod-to-json-schema: 3.23.5(zod@3.23.8)
     transitivePeerDependencies:
       - openai
 
@@ -5677,7 +5700,7 @@ snapshots:
       magic-string: 0.30.12
       mrmime: 2.0.0
       sade: 1.8.1
-      set-cookie-parser: 2.7.0
+      set-cookie-parser: 2.7.1
       sirv: 2.0.4
       svelte: 5.1.14
       tiny-glob: 0.2.9
@@ -5800,7 +5823,7 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
-  '@types/node@20.16.10':
+  '@types/node@20.17.6':
     dependencies:
       undici-types: 6.19.8
 
@@ -5808,7 +5831,7 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
-  '@types/readable-stream@4.0.15':
+  '@types/readable-stream@4.0.18':
     dependencies:
       '@types/node': 22.7.4
       safe-buffer: 5.1.2
@@ -5827,6 +5850,9 @@ snapshots:
     optional: true
 
   '@types/web-bluetooth@0.0.20': {}
+
+  '@types/wicg-file-system-access@2020.9.8':
+    optional: true
 
   '@typeschema/class-validator@0.2.0(@types/json-schema@7.0.15)(class-validator@0.14.1)':
     dependencies:
@@ -6083,19 +6109,25 @@ snapshots:
       - '@vue/composition-api'
       - vue
 
-  '@zenfs/core@1.0.0-rc.0':
+  '@xterm/xterm@5.5.0':
+    optional: true
+
+  '@zenfs/core@1.3.1':
     dependencies:
-      '@types/node': 20.16.10
-      '@types/readable-stream': 4.0.15
+      '@types/node': 20.17.6
+      '@types/readable-stream': 4.0.18
       buffer: 6.0.3
       eventemitter3: 5.0.1
       minimatch: 9.0.5
       readable-stream: 4.5.2
-      utilium: 0.6.3
+      utilium: 1.0.4
 
-  '@zenfs/dom@0.2.16(@zenfs/core@1.0.0-rc.0)':
+  '@zenfs/dom@1.0.4(@zenfs/core@1.3.1)':
     dependencies:
-      '@zenfs/core': 1.0.0-rc.0
+      '@zenfs/core': 1.3.1
+    optionalDependencies:
+      fake-indexeddb: 6.0.0
+      file-system-access: 1.0.4
 
   abort-controller@3.0.0:
     dependencies:
@@ -6725,6 +6757,21 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.2
 
+  fetch-blob@3.2.0:
+    dependencies:
+      node-domexception: 1.0.0
+      web-streams-polyfill: 3.3.3
+    optional: true
+
+  file-system-access@1.0.4:
+    dependencies:
+      '@types/wicg-file-system-access': 2020.9.8
+      fetch-blob: 3.2.0
+      node-domexception: 1.0.0
+    optionalDependencies:
+      web-streams-polyfill: 3.3.3
+    optional: true
+
   file-type@16.5.4:
     dependencies:
       readable-web-to-node-stream: 3.0.2
@@ -7204,7 +7251,7 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  langsmith@0.1.61(openai@4.67.1(zod@3.23.8)):
+  langsmith@0.1.68(openai@4.67.1(zod@3.23.8)):
     dependencies:
       '@types/uuid': 10.0.0
       commander: 10.0.1
@@ -8188,7 +8235,7 @@ snapshots:
     dependencies:
       type-fest: 2.19.0
 
-  set-cookie-parser@2.7.0: {}
+  set-cookie-parser@2.7.1: {}
 
   setimmediate@1.0.5: {}
 
@@ -8694,9 +8741,11 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  utilium@0.6.3:
+  utilium@1.0.4:
     dependencies:
       eventemitter3: 5.0.1
+    optionalDependencies:
+      '@xterm/xterm': 5.5.0
 
   uuid@10.0.0: {}
 
@@ -8977,6 +9026,9 @@ snapshots:
 
   web-namespaces@2.0.1: {}
 
+  web-streams-polyfill@3.3.3:
+    optional: true
+
   web-streams-polyfill@4.0.0-beta.3: {}
 
   webidl-conversions@3.0.1: {}
@@ -9108,6 +9160,10 @@ snapshots:
   zimmerframe@1.1.2: {}
 
   zod-to-json-schema@3.23.3(zod@3.23.8):
+    dependencies:
+      zod: 3.23.8
+
+  zod-to-json-schema@3.23.5(zod@3.23.8):
     dependencies:
       zod: 3.23.8
 

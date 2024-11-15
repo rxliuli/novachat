@@ -20,8 +20,6 @@ await configure({
   },
 })
 
-Reflect.set(globalThis, 'fs', fs.promises)
-
 export const dbStore: DBStore = {} as any
 
 export interface MyDB extends DBSchema {
