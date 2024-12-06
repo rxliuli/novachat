@@ -11,27 +11,29 @@
   function onChange(name: string, value: any) {
     ;($settingsStore as any)[name] = value
   }
-  function onChangeInput(e: InputEvent, name: string) {
+  function onChangeInput(e: Event, name: string) {
     onChange(name, (e.target as HTMLInputElement).value)
   }
 
   let search = $state('')
 
-  let schemas = $derived($settingSchemaStore
-    .flatMap((it) =>
-      Object.entries(it.properties).map(([key, value]) => ({
-        name: key as keyof typeof $settingsStore,
-        title: it.title,
-        schema: value,
-      })),
-    )
-    .filter(
-      (it) =>
-        search.trim().length === 0 ||
-        it.name.includes(search) ||
-        it.title.includes(search) ||
-        it.schema.description?.includes(search),
-    ))
+  let schemas = $derived(
+    $settingSchemaStore
+      .flatMap((it) =>
+        Object.entries(it.properties).map(([key, value]) => ({
+          name: key as keyof typeof $settingsStore,
+          title: it.title,
+          schema: value,
+        })),
+      )
+      .filter(
+        (it) =>
+          search.trim().length === 0 ||
+          it.name.includes(search) ||
+          it.title.includes(search) ||
+          it.schema.description?.includes(search),
+      ),
+  )
 </script>
 
 <div class="container p-2 md:p-4 max-w-3xl">
@@ -51,7 +53,7 @@
           <SelectUI
             name={it.name}
             value={$settingsStore[it.name]}
-            on:change={(ev) => onChange(it.name, ev.detail)}
+            onChange={(ev) => onChange(it.name, ev)}
             items={it.schema.enum.map((value, index) => ({
               value,
               label: it.schema.enumDescriptions?.[index] ?? value,
@@ -66,7 +68,7 @@
             <SelectUI
               name={it.name}
               value={$settingsStore[it.name]}
-              on:change={(ev) => onChange(it.name, ev.detail)}
+              onChange={(ev) => onChange(it.name, ev)}
               placeholder="Please select"
               items={$pluginStore.models
                 .filter((it) => it.type === 'llm')
@@ -81,7 +83,7 @@
               id={it.name}
               name={it.name}
               value={$settingsStore[it.name] ?? it.schema.default}
-              on:input={(e) => onChangeInput(e, it.name)}
+              oninput={(e) => onChangeInput(e, it.name)}
             />
           {/if}
         {/if}

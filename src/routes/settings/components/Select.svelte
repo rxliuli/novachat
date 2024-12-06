@@ -7,32 +7,22 @@
     label?: string
   }
   interface Props {
-    name: string;
-    value: any;
-    items: Selected<any>[];
-    placeholder: string;
+    name: string
+    value: any
+    items: Selected<any>[]
+    placeholder: string
+    onChange?: (value: any) => void
   }
 
-  let {
-    name,
-    value,
-    items,
-    placeholder
-  }: Props = $props();
+  let { name, value, items, placeholder, onChange }: Props = $props()
   let label = $derived(items.find((it) => it.value === value)?.label ?? value)
-
-  const dispatch = createEventDispatcher<{
-    change(value: any): void
-  }>()
 </script>
 
 <Select.Root
+  type="single"
   {name}
-  selected={{
-    value,
-    label,
-  }}
-  onSelectedChange={(ev) => dispatch('change', ev?.value)}
+  bind:value
+  onValueChange={() => onChange?.(value)}
 >
   <Select.Trigger class="w-full">
     {label ?? placeholder}
