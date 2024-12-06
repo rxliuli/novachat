@@ -3,7 +3,7 @@ import 'fake-indexeddb/auto'
 import { expect, it } from 'vitest'
 import { createModelCommand } from '../commands/model'
 import { mkdir, writeFile } from 'fs/promises'
-import { pluginStore } from '../store'
+import { usedModelHistory, models, pluginStore } from '../store'
 import { settingsStore } from '$lib/stores/settings'
 import { produce } from 'immer'
 import { definePluginProtocol, installPlugin } from '../command'
@@ -11,10 +11,7 @@ import path from 'pathe'
 import { buildCode } from '../builder'
 import manifest from './mock/openai/plugin.json'
 import code from './mock/openai/index.ts?raw'
-import { put } from '@fcanvas/communicate'
 import { get } from 'svelte/store'
-
-it('pluginStore', () => {})
 
 it('createModelCommand', async () => {
   createModelCommand()
@@ -59,4 +56,27 @@ it.todo('activePlugin', async () => {
   worker.terminate()
   await new Promise((resolve) => setTimeout(resolve, 1000))
   expect(get(pluginStore).models.some((it) => it.id === 'gpt-4o')).true
+})
+
+it('model history', async () => {
+  pluginStore.reset()
+  pluginStore.registerModels(
+    ['a', 'b', 'c'].map((id) => ({
+      id,
+      name: id,
+      pluginId: id,
+      type: 'llm',
+      command: { invoke: '', stream: '' },
+    })),
+  )
+  expect(get(models).map((it) => it.id)).toEqual(['a', 'b', 'c'])
+  usedModelHistory.use('c')
+  await new Promise((resolve) => setTimeout(resolve, 10))
+  expect(get(models).map((it) => it.id)).toEqual(['c', 'a', 'b'])
+  usedModelHistory.use('a')
+  await new Promise((resolve) => setTimeout(resolve, 10))
+  expect(get(models).map((it) => it.id)).toEqual(['a', 'c', 'b'])
+  usedModelHistory.use('b')
+  await new Promise((resolve) => setTimeout(resolve, 10))
+  expect(get(models).map((it) => it.id)).toEqual(['b', 'a', 'c'])
 })

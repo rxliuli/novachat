@@ -22,7 +22,12 @@
   import { dataURItoBlob } from '$lib/utils/datauri'
   import { nanoid } from 'nanoid'
   import { LightboxGallery, GalleryImage } from 'svelte-lightbox'
-  import { pluginStore, type ActivatedModel } from '$lib/plugins/store'
+  import {
+    models,
+    pluginStore,
+    usedModelHistory,
+    type ActivatedModel,
+  } from '$lib/plugins/store'
   import { isDesktop } from '$lib/utils/isDesktop'
   import { settingsStore } from '$lib/stores/settings'
   import { toast } from 'svelte-sonner'
@@ -137,7 +142,7 @@
 
     if (message.startsWith('@')) {
       const query = message.slice(1).toLowerCase()
-      filteredModels = $pluginStore.models.filter((model) =>
+      filteredModels = $models.filter((model) =>
         model.name.toLowerCase().includes(query),
       )
       showModelList = filteredModels.length > 0
@@ -194,6 +199,7 @@
 
   function handleModelSelect(selectedModel: ActivatedModel) {
     $settingsStore.defaultBot = selectedModel.id
+    usedModelHistory.use(selectedModel.id)
     dispatch('selectModel', selectedModel)
     toast.success(`Selected model: ${selectedModel.name}`)
     toggleModel = false
@@ -215,7 +221,7 @@
     if (!modelName) {
       return
     }
-    const model = $pluginStore.models.find((it) => it.id === modelName)
+    const model = $models.find((it) => it.id === modelName)
     return model?.name ?? modelName
   }
 
@@ -318,7 +324,7 @@
           <ChatInput
             placeholder={'Ask anything'}
             bind:value={message}
-            onPaste={onPaste}
+            {onPaste}
             onInput={handleInput}
             onKeyDown={handleKeydown}
             onCompositionStart={() => (isCompositionOn = true)}
@@ -369,7 +375,7 @@
   <Command.Input placeholder="Select a model..." />
   <Command.List>
     <Command.Empty>No results found.</Command.Empty>
-    {#each $pluginStore.models as model}
+    {#each $models as model}
       <Command.Item onSelect={() => handleModelSelect(model)}>
         <span>{model.name}</span>
       </Command.Item>

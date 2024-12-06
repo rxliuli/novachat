@@ -6,7 +6,7 @@
   import { settingSchemaStore } from '$lib/stores/settingSchema'
   import { Textarea } from '$lib/components/ui/textarea'
   import SelectUI from './components/Select.svelte'
-  import { pluginStore } from '$lib/plugins/store'
+  import { models, pluginStore } from '$lib/plugins/store'
 
   function onChange(name: string, value: any) {
     ;($settingsStore as any)[name] = value
@@ -70,7 +70,7 @@
               value={$settingsStore[it.name]}
               onChange={(ev) => onChange(it.name, ev)}
               placeholder="Please select"
-              items={$pluginStore.models
+              items={$models
                 .filter((it) => it.type === 'llm')
                 .map((it) => ({
                   value: it.id,

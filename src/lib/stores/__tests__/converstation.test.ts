@@ -6,9 +6,16 @@ import { get } from 'svelte/store'
 import { nanoid } from 'nanoid'
 import { settingsStore } from '../settings'
 import type { Message } from '$lib/types/Message'
-import { dbApi, dbStore } from '$lib/api/db'
+import { dbApi, dbStore, initDB } from '$lib/api/db'
 import dayjs from 'dayjs'
 import { sortBy } from 'lodash-es'
+
+beforeEach(async () => {
+  await initDB()
+  await dbStore.idb.clear('messages')
+  await dbStore.idb.clear('conversations')
+  await dbStore.idb.clear('attachments')
+})
 
 it('Create conversation', async () => {
   await convStore.init([])
@@ -165,46 +172,44 @@ describe('Retry message', async () => {
   })
 })
 
-it.only('send message in old conversation', async () => {
-  const chatId1 = nanoid()
-  const chatId2 = nanoid()
+it('send message in old conversation', async () => {
   await convStore.init([])
-  await convStore.create(chatId1, 'gpt-4o', {
+  await convStore.create('chat-1', 'gpt-4o', {
     id: '1',
     content: 'Request',
     from: 'user',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   })
-  await convStore.addMessage(chatId1, {
+  await convStore.addMessage('chat-1', {
     id: '2',
     content: 'Response',
     from: 'assistant',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   })
-  await convStore.create(chatId2, 'gpt-4o', {
+  await convStore.create('chat-2', 'gpt-4o', {
     id: '3',
     content: 'Request',
     from: 'user',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   })
-  await convStore.addMessage(chatId2, {
+  await convStore.addMessage('chat-2', {
     id: '4',
     content: 'Response',
     from: 'assistant',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   })
-  expect(get(sidebars).map((it) => it.id)).toEqual([chatId2, chatId1])
+  expect(get(sidebars).map((it) => it.id)).toEqual(['chat-2', 'chat-1'])
   // send message in old conversation
-  await convStore.addMessage(chatId1, {
+  await convStore.addMessage('chat-1', {
     id: '5',
     content: 'Request',
     from: 'user',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   })
-  expect(get(sidebars).map((it) => it.id)).toEqual([chatId1, chatId2])
+  expect(get(sidebars).map((it) => it.id)).toEqual(['chat-1', 'chat-2'])
 })

@@ -2,8 +2,8 @@ import { settingsStore } from '$lib/stores/settings'
 import type { SettingSchema } from '$lib/types/Settings'
 import { indexedDBAdapter, localStore } from '$lib/utils/localStore'
 import { produce } from 'immer'
-import { uniqBy } from 'lodash-es'
-import { get, writable } from 'svelte/store'
+import { sortBy, uniqBy } from 'lodash-es'
+import { derived, get, writable } from 'svelte/store'
 
 interface Command {
   type: 'system' | 'plugin'
@@ -47,6 +47,42 @@ const store = writable({
   plugins: [] as ActivatedPlugin[],
   models: [] as ActivatedModel[],
 })
+
+const _usedModelHistory = localStore(
+  'modelHistory',
+  {} as Record<string, string>,
+  indexedDBAdapter(),
+)
+
+export const usedModelHistory = {
+  use: (id: string) => {
+    _usedModelHistory.update(
+      produce((draft) => {
+        draft[id] = new Date().toISOString()
+      }),
+    )
+  },
+}
+
+export const models = derived(
+  [store, _usedModelHistory],
+  ([$store, _usedModelHistory]) => {
+    return [...$store.models].sort((a, b) => {
+      const aUsedAt = _usedModelHistory[a.id]
+      const bUsedAt = _usedModelHistory[b.id]
+      if (aUsedAt && bUsedAt) {
+        return bUsedAt.localeCompare(aUsedAt)
+      }
+      if (!aUsedAt && !bUsedAt) {
+        return a.name.localeCompare(b.name)
+      }
+      if (aUsedAt) {
+        return -1
+      }
+      return 1
+    })
+  },
+)
 
 export interface PluginInstallState {
   id: string
