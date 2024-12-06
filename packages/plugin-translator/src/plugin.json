@@ -190,6 +190,12 @@
         "type": "string",
         "description": "Model",
         "format": "model"
+      },
+      "translator.entities": {
+        "type": "string",
+        "description": "Entities",
+        "default": "original 1: translated 1\noriginal 2: translated 2",
+        "format": "markdown"
       }
     }
   }

@@ -14,7 +14,8 @@
     "setup": "pnpm build",
     "build": "novachat",
     "dev": "pnpm build --watch",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build",
+    "test": "vitest run"
   },
   "sideEffects": false,
   "devDependencies": {
