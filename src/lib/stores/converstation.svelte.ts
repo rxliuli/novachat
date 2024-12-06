@@ -90,7 +90,7 @@ export const convStore = {
         if (!conversation) {
           return
         }
-        conversation.messages.push(message)
+        conversation.messages.push($state.snapshot(message))
         conversation.updatedAt = new Date().toISOString()
       }),
     )

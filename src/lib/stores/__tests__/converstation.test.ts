@@ -188,6 +188,7 @@ it('send message in old conversation', async () => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   })
+  await new Promise((resolve) => setTimeout(resolve, 10))
   await convStore.create('chat-2', 'gpt-4o', {
     id: '3',
     content: 'Request',
@@ -202,6 +203,7 @@ it('send message in old conversation', async () => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   })
+  await new Promise((resolve) => setTimeout(resolve, 10))
   expect(get(sidebars).map((it) => it.id)).toEqual(['chat-2', 'chat-1'])
   // send message in old conversation
   await convStore.addMessage('chat-1', {
