@@ -4,7 +4,7 @@ import type { Message } from '$lib/types/Message'
 import { blobToDataURI } from '$lib/utils/datauri'
 import { produce } from 'immer'
 import { omit, sortBy } from 'lodash-es'
-import { get, writable } from 'svelte/store'
+import { derived, get, writable } from 'svelte/store'
 
 type Store = {
   id: string
@@ -16,6 +16,10 @@ const store = writable<Store>({
   id: '',
   conversations: [],
   newConv: false,
+})
+
+export const sidebars = derived(store, ($store) => {
+  return sortBy($store.conversations, (it) => -new Date(it.updatedAt).getTime())
 })
 
 export const convStore = {
@@ -80,14 +84,16 @@ export const convStore = {
     })
   },
   addMessage: async (id: string, message: Message) => {
-    store.update((state) => ({
-      ...state,
-      conversations: state.conversations.map((conversation) =>
-        conversation.id === id
-          ? { ...conversation, messages: [...conversation.messages, message] }
-          : conversation,
-      ),
-    }))
+    store.update(
+      produce((draft) => {
+        const conversation = draft.conversations.find((it) => it.id === id)
+        if (!conversation) {
+          return
+        }
+        conversation.messages.push(message)
+        conversation.updatedAt = new Date().toISOString()
+      }),
+    )
     await Promise.all([
       dbApi.conversations.update({
         id,
@@ -108,26 +114,27 @@ export const convStore = {
     ])
   },
   updateMessage: async (id: string, message: Message) => {
-    store.update((state) => ({
-      ...state,
-      conversations: state.conversations.map((conversation) =>
-        conversation.id === id
-          ? {
-              ...conversation,
-              messages: conversation.messages.map((it) => {
-                if (it.id !== message.id) {
-                  return it
-                }
-                return {
-                  ...it,
-                  ...message,
-                  updatedAt: new Date().toISOString(),
-                }
-              }),
-            }
-          : conversation,
-      ),
-    }))
+    store.update(
+      produce((draft) => {
+        const conversation = draft.conversations.find((it) => it.id === id)
+        if (!conversation) {
+          return
+        }
+        const index = conversation.messages.findIndex(
+          (it) => it.id === message.id,
+        )
+        if (index === -1) {
+          return
+        }
+        const now = new Date().toISOString()
+        conversation.messages[index] = {
+          ...conversation.messages[index],
+          ...message,
+          updatedAt: now,
+        }
+        conversation.updatedAt = now
+      }),
+    )
     await dbApi.messages.update({
       ...$state.snapshot(message),
       conversationId: id,

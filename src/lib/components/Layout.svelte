@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
+  import { run } from 'svelte/legacy'
 
-  import { convStore } from '$lib/stores/converstation.svelte'
+  import { convStore, sidebars } from '$lib/stores/converstation.svelte'
   import { push } from 'svelte-spa-router'
   import NavMenu from './NavMenu.svelte'
   import MobileNav from './MobileNav.svelte'
   import { location } from 'svelte-spa-router'
   import { sortBy } from 'lodash-es'
   interface Props {
-    children?: import('svelte').Snippet;
+    children?: import('svelte').Snippet
   }
 
-  let { children }: Props = $props();
+  let { children }: Props = $props()
 
   function deleteConv(id: string) {
     const old = $convStore.id
@@ -21,10 +21,6 @@
     }
   }
 
-  let conversations = $derived(sortBy(
-    $convStore.conversations,
-    (it) => -new Date(it.updatedAt).getTime(),
-  ))
   let isNavOpen = $state(false)
   let mobileNavTitle = $state('New Chat')
   run(() => {
@@ -37,7 +33,7 @@
     } else {
       mobileNavTitle = ''
     }
-  });
+  })
 </script>
 
 <svelte:head>
@@ -53,7 +49,7 @@
     on:toggle={(ev) => (isNavOpen = ev.detail)}
   >
     <NavMenu
-      {conversations}
+      conversations={$sidebars}
       on:deleteConversation={(ev) => deleteConv(ev.detail)}
       on:editCurrentConversation={(ev) =>
         convStore.updateTitle(ev.detail.id, ev.detail.title)}
@@ -62,7 +58,7 @@
   </MobileNav>
   <div class="bg-muted/40 hidden border-r md:block">
     <NavMenu
-      {conversations}
+      conversations={$sidebars}
       on:deleteConversation={(ev) => deleteConv(ev.detail)}
       on:editCurrentConversation={(ev) =>
         convStore.updateTitle(ev.detail.id, ev.detail.title)}

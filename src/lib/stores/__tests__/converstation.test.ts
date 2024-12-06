@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import 'fake-indexeddb/auto'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { convStore } from '../converstation.svelte.svelte'
+import { sidebars, convStore } from '../converstation.svelte'
 import { get } from 'svelte/store'
 import { nanoid } from 'nanoid'
 import { settingsStore } from '../settings'
@@ -163,4 +163,48 @@ describe('Retry message', async () => {
     await convStore.retryMessage('11')
     expect(await dbStore.idb.getAll('messages')).length(11)
   })
+})
+
+it.only('send message in old conversation', async () => {
+  const chatId1 = nanoid()
+  const chatId2 = nanoid()
+  await convStore.init([])
+  await convStore.create(chatId1, 'gpt-4o', {
+    id: '1',
+    content: 'Request',
+    from: 'user',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  })
+  await convStore.addMessage(chatId1, {
+    id: '2',
+    content: 'Response',
+    from: 'assistant',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  })
+  await convStore.create(chatId2, 'gpt-4o', {
+    id: '3',
+    content: 'Request',
+    from: 'user',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  })
+  await convStore.addMessage(chatId2, {
+    id: '4',
+    content: 'Response',
+    from: 'assistant',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  })
+  expect(get(sidebars).map((it) => it.id)).toEqual([chatId2, chatId1])
+  // send message in old conversation
+  await convStore.addMessage(chatId1, {
+    id: '5',
+    content: 'Request',
+    from: 'user',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  })
+  expect(get(sidebars).map((it) => it.id)).toEqual([chatId1, chatId2])
 })
