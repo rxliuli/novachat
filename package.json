@@ -13,7 +13,8 @@
     "docs:dev": "typedoc && vitepress dev docs",
     "docs:build": "typedoc && vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "test:browser": "vitest --workspace=vitest.workspace.ts"
+    "test:browser": "vitest --workspace=vitest.workspace.ts",
+    "postinstall": "pnpm exec playwright install"
   },
   "devDependencies": {
     "@internationalized/date": "^3.5.6",
