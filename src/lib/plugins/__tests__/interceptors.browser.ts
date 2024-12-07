@@ -1,4 +1,3 @@
-// @vitest-environment happy-dom
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { interceptFetch, interceptXHR } from '../interceptors'
 
@@ -19,7 +18,7 @@ describe('interceptFetch', () => {
       },
     })
     await fetch('https://example.com/')
-    expect(logger.mock.calls[0][0]).toBe('https://example.com/')
+    expect(logger.mock.calls[0][0]).eq('https://example.com/')
     await fetch(new URL('https://example.com/'))
     expect(logger.mock.calls[1][0]).toBe('https://example.com/')
     await fetch(new Request('https://example.com/'))
@@ -59,7 +58,7 @@ describe('interceptXHR', () => {
     expect(logger.mock.calls[0][0]).toBe('https://example.com/')
     unIntercept()
   })
-  it.skip('should intercept XHR and modify url', () => {
+  it('should intercept XHR and modify url', () => {
     const unIntercept = interceptXHR({
       request: (req) => {
         return new Request('https://example.org/test', req)

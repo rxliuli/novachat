@@ -38,7 +38,7 @@ export const convStore = {
         ...state.conversations,
         {
           id,
-          messages: [message],
+          messages: [$state.snapshot(message)],
           title: 'New Chat',
           model,
           createdAt: new Date().toISOString(),

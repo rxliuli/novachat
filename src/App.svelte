@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
+  import { run } from 'svelte/legacy'
 
   import './app.css'
   import Router, { location } from 'svelte-spa-router'
@@ -31,7 +31,7 @@
     if ($settingsStore.theme) {
       setMode($settingsStore.theme)
     }
-  });
+  })
 
   onMount(async () => {
     await initDB()

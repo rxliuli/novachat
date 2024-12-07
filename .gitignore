@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 .temp
+**/__tests__/__screenshots__
 docs/.vitepress/dist
 docs/.vitepress/cache
 

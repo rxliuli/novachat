@@ -215,3 +215,27 @@ it('send message in old conversation', async () => {
   })
   expect(get(sidebars).map((it) => it.id)).toEqual(['chat-1', 'chat-2'])
 })
+
+it('send message and attach file', async () => {
+  await convStore.init([])
+  const id = nanoid()
+  await convStore.create(id, get(settingsStore).defaultModel ?? 'gpt-4o', {
+    id: nanoid(),
+    content: 'Request',
+    from: 'user',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    attachments: [
+      {
+        id: nanoid(),
+        url: 'https://picsum.photos/200/300',
+        name: 'test.png',
+        data: new Blob(['test']),
+        type: 'image/jpeg',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    ],
+  })
+  expect(get(convStore).conversations[0].messages[0].attachments).length(1)
+})

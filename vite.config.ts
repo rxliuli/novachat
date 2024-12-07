@@ -57,9 +57,6 @@ function script(): Plugin {
 }
 
 export default defineConfig({
-  test: {
-    include: ['src/**/*.test.ts'],
-  },
   plugins: [svelte(), script(), plugin() as any],
   resolve: {
     alias: {
@@ -69,5 +66,8 @@ export default defineConfig({
   build: {
     target: 'esnext',
     sourcemap: true,
+  },
+  test: {
+    include: ['src/**/*.test.ts'],
   },
 })
