@@ -9,12 +9,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
-    "test": "vitest run",
+    "test": "pnpm exec playwright install && vitest run",
     "docs:dev": "typedoc && vitepress dev docs",
     "docs:build": "typedoc && vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "test:browser": "vitest --workspace=vitest.workspace.ts",
-    "postinstall": "pnpm exec playwright install"
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@internationalized/date": "^3.5.6",
