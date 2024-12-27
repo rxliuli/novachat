@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["id", "name", "version"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the plugin"
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the plugin"
+    },
+    "version": {
+      "type": "string",
+      "description": "The version of the plugin"
+    },
+    "description": {
+      "type": "string",
+      "description": "The description of the plugin"
+    },
+    "author": {
+      "type": "string",
+      "description": "The author of the plugin"
+    },
+    "homepage": {
+      "type": "string",
+      "description": "The homepage of the plugin"
+    },
+    "repository": {
+      "type": "string",
+      "description": "The repository of the plugin"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "description": "The last updated date of the plugin"
+    },
+    "icons": {
+      "type": "object",
+      "description": "The icons of the plugin"
+    },
+    "configuration": {
+      "type": "object",
+      "description": "The configuration of the plugin",
+      "$ref": "http://json-schema.org/draft-07/schema#"
+    }
+  }
+}

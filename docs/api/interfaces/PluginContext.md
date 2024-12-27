@@ -10,4 +10,4 @@
 
 #### Defined in
 
-[protocol.ts:5](https://github.com/rxliuli/novachat/blob/b423327ab0f911302f2f2b05ace9a3a4a3e8ff91/packages/plugin/src/protocol.ts#L5)
+[protocol.ts:5](https://github.com/rxliuli/novachat/blob/97dc804dd6578dc1784dfce501bf1d3c196c6da2/packages/plugin/src/protocol.ts#L5)
