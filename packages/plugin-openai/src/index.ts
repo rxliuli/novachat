@@ -35,18 +35,60 @@ function convertReq(
   }
 }
 
-export async function activate(context: novachat.PluginContext) {
-  const client = async () => {
-    return new OpenAI({
-      apiKey: await novachat.setting.get('openai.apiKey'),
-      baseURL: await novachat.setting.get('openai.baseURL'),
-      dangerouslyAllowBrowser: true,
+async function getProvider(): Promise<
+  | {
+      client: OpenAI
+      models: OpenAI.Model[]
+    }[]
+> {
+  const providers = (await novachat.setting.get('openai.providers')) as {
+    apiKey: string
+    baseURL: string
+  }[]
+  const apiKey = await novachat.setting.get('openai.apiKey')
+  const baseURL = await novachat.setting.get('openai.baseURL')
+  if (apiKey && baseURL) {
+    providers.push({
+      apiKey,
+      baseURL,
     })
   }
-  const list = await (await client()).models.list()
+  const list = await Promise.all(
+    providers.map(async (it) => {
+      const client = new OpenAI({
+        apiKey: it.apiKey,
+        baseURL: it.baseURL,
+        dangerouslyAllowBrowser: true,
+      })
+      const list = await client.models.list()
+      try {
+        return {
+          client,
+          models: list.data,
+        }
+      } catch (e) {
+        return null
+      }
+    }),
+  )
+  return list.filter((it) => it !== null)
+}
+
+export async function activate(context: novachat.PluginContext) {
+  const providers = await getProvider()
+  const models = providers.flatMap((it) => it.models)
+  function getClient(modelId: string) {
+    const client = providers.find((it) =>
+      it.models.some((model) => model.id === modelId),
+    )?.client
+    if (!client) {
+      throw new Error('Model not found' + modelId)
+    }
+    return client
+  }
   await novachat.model.registerProvider({
     name: 'OpenAI',
-    models: list.data
+    models: models
       .filter((model) =>
         ['text-', 'dall-', 'tts-', 'winsper-', 'davinci', 'babbage'].every(
           (it) => !(model.id as string).startsWith(it),
@@ -64,9 +106,8 @@ export async function activate(context: novachat.PluginContext) {
       { id: 'gpt-4-turbo', name: 'GPT-4o-turbo' },
     ],
     async invoke(query) {
-      const response = await (
-        await client()
-      ).chat.completions.create(
+      const client = getClient(query.model)
+      const response = await client.chat.completions.create(
         convertReq(query) as OpenAI.ChatCompletionCreateParamsNonStreaming,
       )
       return {
@@ -74,9 +115,8 @@ export async function activate(context: novachat.PluginContext) {
       }
     },
     async *stream(query) {
-      const response = await (
-        await client()
-      ).chat.completions.create(
+      const client = getClient(query.model)
+      const response = await client.chat.completions.create(
         convertReq(query, true) as OpenAI.ChatCompletionCreateParamsStreaming,
       )
       for await (const it of response) {

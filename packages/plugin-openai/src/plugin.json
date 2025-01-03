@@ -1,4 +1,5 @@
 {
+  "$schema": "https://novachat.dev/plugin/schema.json",
   "id": "novachat.openai",
   "name": "OpenAI",
   "description": "OpenAI Provider",
@@ -7,6 +8,27 @@
   "configuration": {
     "title": "OpenAI",
     "properties": {
+      "openai.providers": {
+        "type": "array",
+        "description": "OpenAI Compatible Providers",
+        "default": [],
+        "items": {
+          "type": "object",
+          "properties": {
+            "apiKey": {
+              "type": "string",
+              "description": "OpenAI API key",
+              "default": "",
+              "format": "password"
+            },
+            "baseURL": {
+              "type": "string",
+              "description": "OpenAI Base URL",
+              "default": "https://api.openai.com/v1"
+            }
+          }
+        }
+      },
       "openai.apiKey": {
         "type": "string",
         "description": "OpenAI API key",
