@@ -32,6 +32,9 @@ importers:
       '@novachat/plugin':
         specifier: workspace:*
         version: link:packages/plugin
+      '@rxliuli/vista':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@shikijs/rehype':
         specifier: ^1.21.0
         version: 1.21.0
@@ -1675,6 +1678,9 @@ packages:
 
   '@rushstack/ts-command-line@4.22.8':
     resolution: {integrity: sha512-XbFjOoV7qZHJnSuFUHv0pKaFA4ixyCuki+xMjsMfDwfvQjs5MYG0IK5COal3tRnG7KCDe2l/G+9LrzYE/RJhgg==}
+
+  '@rxliuli/vista@0.1.0':
+    resolution: {integrity: sha512-bKwFnUYlwU1HfYZHtGIHY/qHRxMKMOjVihd7yi4jLyE1dYMxiDCm//vIB95iI3qxY7nDWpkV30g7evOl0CHn5Q==}
 
   '@shikijs/core@1.21.0':
     resolution: {integrity: sha512-zAPMJdiGuqXpZQ+pWNezQAk5xhzRXBNiECFPcJLtUdsFM3f//G95Z15EHTnHchYycU8kIIysqGgxp8OVSj1SPQ==}
@@ -6022,6 +6028,8 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
     optional: true
+
+  '@rxliuli/vista@0.1.0': {}
 
   '@shikijs/core@1.21.0':
     dependencies:
