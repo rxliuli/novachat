@@ -255,7 +255,7 @@
     />
   </div>
   <div
-    class="absolute bottom-0 left-0 right-0 flex justify-center px-3.5 py-4 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent"
+    class="absolute bottom-0 left-0 right-0 flex justify-center px-3.5 py-4"
   >
     <div class="w-full max-w-3xl">
       <div class="flex gap-2 justify-end items-center mb-2">
